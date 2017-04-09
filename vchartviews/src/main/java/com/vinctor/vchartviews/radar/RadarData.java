@@ -1,4 +1,4 @@
-package com.vinctor.vchartviews;
+package com.vinctor.vchartviews.radar;
 
 /**
  * Created by Vinctor on 2017/4/8.

@@ -1,4 +1,4 @@
-package com.vinctor.vchartviews;
+package com.vinctor.vchartviews.radar;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -16,7 +16,7 @@ import java.util.List;
  * Created by Vinctor on 2017/4/8.
  */
 
-public class RadarView extends View {
+public class RadarChart extends View {
     private int count = 6;                //数据个数
     private Context context;
 
@@ -44,17 +44,17 @@ public class RadarView extends View {
     private int lineColor = 0xff929292;
     private int titleColor = Color.GRAY;
 
-    public RadarView(Context context) {
+    public RadarChart(Context context) {
         super(context);
         init(context);
     }
 
-    public RadarView(Context context, AttributeSet attrs) {
+    public RadarChart(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public RadarView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RadarChart(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
