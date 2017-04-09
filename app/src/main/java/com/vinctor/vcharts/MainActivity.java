@@ -33,5 +33,6 @@ public class MainActivity extends AppCompatActivity {
         radarView.setList(list);
         radarView.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "生物"});
         radarView.setMinAndMax(60, 100);
+        radarView.setDensity(6);
     }
 }

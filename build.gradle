@@ -37,6 +37,6 @@ ext {
     userOrg = 'xcht1209'
     groupId = 'com.vinctor'
     publishVersion = '0.0.1'
-    website = 'https://github.com/Vinctor/xxxxxxx'
+    website = 'https://github.com/Vinctor/VinctorCharts'
     licences = ['Apache-2.0']
 }

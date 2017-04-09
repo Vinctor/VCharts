@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -105,12 +106,20 @@ public class RadarView extends View {
 
     public void setMin(float min) {
         this.min = min;
-        peerDiff = (max - min) / density;
-        postInvalidate();
+        reset();
     }
 
     public void setMax(float max) {
         this.max = max;
+        reset();
+    }
+
+    public void setDensity(int density) {
+        this.density = density;
+        reset();
+    }
+
+    private void reset() {
         peerDiff = (max - min) / density;
         postInvalidate();
     }
@@ -118,8 +127,7 @@ public class RadarView extends View {
     public void setMinAndMax(float min, float max) {
         this.min = min;
         this.max = max;
-        peerDiff = (max - min) / density;
-        postInvalidate();
+        reset();
     }
 
     @Override
@@ -281,7 +289,7 @@ public class RadarView extends View {
      * @param canvas
      */
     private void drawIconText(Canvas canvas) {
-        float factor = 1.0f;
+        float factor = 1.2f;
         float r = maxRadius / density;//r是蜘蛛丝之间的间距
         float textWidth = 0;
         for (int i = 0; i <= density; i++) {
@@ -298,7 +306,9 @@ public class RadarView extends View {
             float top = y - tagTextSize;
             float right = x + textWidth / 2 * factor;
             float bottom = y + tagTextSize;
-            canvas.drawRect(left, top, right, bottom, tagPaintBack);
+            RectF rect = new RectF(left, top, right, bottom);
+
+            canvas.drawRoundRect(rect, (right - left) / 2, (bottom - top) / 2, tagPaintBack);
             float currentWidth = tagPaint.measureText(tag);
             canvas.drawText(tag, x - currentWidth / 2, y + tagTextSize / 2, tagPaint);
         }

@@ -29,7 +29,7 @@ dependencies {
 }
 
 publish {
-    artifactId = 'VinctorCharts'
+    artifactId = 'vcharts'
     userOrg = rootProject.userOrg
     groupId = rootProject.groupId
     publishVersion = rootProject.publishVersion
