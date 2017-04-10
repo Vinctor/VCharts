@@ -8,6 +8,8 @@
 
     <com.vinctor.vchartviews.bar.BarChart
         android:id="@+id/bar"
-        android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_width="368dp"
+        android:layout_height="400dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp" />
 </android.support.constraint.ConstraintLayout>

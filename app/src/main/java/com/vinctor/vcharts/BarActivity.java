@@ -24,11 +24,11 @@ public class BarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bar);
         bar = (BarChart) findViewById(R.id.bar);
         bar.setMinAndMax(50, 100)
-                .setDensity(4)
-                .setBarWidth(30)
-                .setGraduationTextSize(30)
-                .setTitleTextSize(30)
-                .setBarTextSize(30)
+                .setDensity(4)//数值方向的刻度密度
+                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
+                .setGraduationTextSize(30)//左侧刻度的文字大小
+                .setTitleTextSize(30)//底部文字大小
+                .setBarTextSize(30)//柱状图上方数字大小
                 .setData(new BarData("语文", 0, Color.BLUE))
                 .addData(new BarData("数学", 80, Color.RED))
                 .addData(new BarData("英语", 120, Color.MAGENTA))

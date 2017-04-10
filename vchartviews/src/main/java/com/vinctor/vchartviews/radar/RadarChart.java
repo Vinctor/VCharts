@@ -25,7 +25,7 @@ public class RadarChart extends View {
     private int height;
     private int width;
     private float maxRadius;//半径
-    private int titleTextSize = 70;//标题文字大小
+    private int titleTextSize = 30;//标题文字大小
     private int density = 8;
     private Paint mainPaint = new Paint();//雷达底图画笔
     private Paint tagPaint = new Paint();//标记画笔
@@ -90,7 +90,7 @@ public class RadarChart extends View {
         return this;
     }
 
-    public RadarChart clearData(RadarData data) {
+    public RadarChart clearData() {
         list.clear();
         return this;
     }
@@ -257,7 +257,7 @@ public class RadarChart extends View {
                     break;
                 case 0:
                     x -= titleCurrentWidth / 2;
-                    y -= titleTextSize/2;
+                    y -= titleTextSize / 2;
                     break;
                 case 5:
                     x -= titleCurrentWidth / 2;

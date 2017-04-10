@@ -51,8 +51,9 @@ public class LineChart extends View {
     private String titles[] = new String[]{"考试1", "考试2", "考试3", "考试4", "考试5"};
     List<LineData> list = new ArrayList<>();
 
-    public void setLineSmoothness(float smoothness) {
+    public LineChart setLineSmoothness(float smoothness) {
         BesselCalculator.setSmoothness(smoothness);
+        return this;
     }
 
     public void resetSmoothness() {
