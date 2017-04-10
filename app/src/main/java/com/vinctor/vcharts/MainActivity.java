@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        RadarActivity.start(this);
     }
 
     @OnClick({R.id.radar, R.id.bar, R.id.line})

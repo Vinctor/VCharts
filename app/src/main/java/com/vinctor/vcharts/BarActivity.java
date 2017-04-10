@@ -25,7 +25,7 @@ public class BarActivity extends AppCompatActivity {
         bar = (BarChart) findViewById(R.id.bar);
         bar.setMinAndMax(50, 100)
                 .setDensity(4)
-                .setBarWidth(20)
+                .setBarWidth(30)
                 .setGraduationTextSize(30)
                 .setTitleTextSize(30)
                 .setBarTextSize(30)
