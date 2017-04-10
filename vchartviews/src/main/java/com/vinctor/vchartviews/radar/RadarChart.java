@@ -32,7 +32,7 @@ public class RadarChart extends View {
     private Paint valuePaint = new Paint();//雷达范围画笔
     private Paint tagPaintBack = new Paint();//标记画笔背景
     private Paint titlePaint = new Paint();//标题画笔
-    private float tagTextSize;//标记文字大小
+    private float tagTextSize = 0f;//标记文字大小
     private List<RadarData> list = new ArrayList<>();
     private String[] titles = new String[]{"012345678", "fad", "d", "adf", "afd", "adf"};
     float peerAngle;
@@ -43,6 +43,91 @@ public class RadarChart extends View {
     private float maxTitleWidth;
     private int lineColor = 0xff929292;
     private int titleColor = Color.GRAY;
+
+    public RadarChart setCount(int count) {
+        this.count = count;
+        return this;
+    }
+
+    public RadarChart setTitleTextSize(int titleTextSize) {
+        this.titleTextSize = titleTextSize;
+        return this;
+    }
+
+    public RadarChart setTagTextSize(float tagTextSize) {
+        this.tagTextSize = tagTextSize;
+        return this;
+    }
+
+    public RadarChart setAlpha(int alpha) {
+        this.alpha = alpha;
+        return this;
+    }
+
+    public RadarChart setLineColor(int lineColor) {
+        this.lineColor = lineColor;
+        return this;
+    }
+
+    public RadarChart setTitleColor(int titleColor) {
+        this.titleColor = titleColor;
+        return this;
+    }
+
+    public RadarChart setList(List<RadarData> list) {
+        this.list = list;
+        return this;
+    }
+
+    public RadarChart setData(RadarData data) {
+        list.clear();
+        list.add(data);
+        return this;
+    }
+
+    public RadarChart addData(RadarData data) {
+        list.add(data);
+        return this;
+    }
+
+    public RadarChart clearData(RadarData data) {
+        list.clear();
+        return this;
+    }
+
+    public RadarChart setTitles(String[] titles) {
+        this.titles = titles;
+        if (titles.length != count)
+            throw new IllegalArgumentException("titles's lenth must be " + count);
+        return this;
+    }
+
+    public RadarChart setMin(float min) {
+        this.min = min;
+        return this;
+    }
+
+    public RadarChart setMax(float max) {
+        this.max = max;
+        return this;
+    }
+
+    public RadarChart setDensity(int density) {
+        this.density = density;
+        commit();
+        return this;
+    }
+
+    public RadarChart setMinAndMax(float min, float max) {
+        this.min = min;
+        this.max = max;
+        return this;
+    }
+
+    public void commit() {
+        setPaint();
+        postInvalidate();
+    }
 
     public RadarChart(Context context) {
         super(context);
@@ -63,17 +148,14 @@ public class RadarChart extends View {
         this.context = context;
         setBackgroundColor(0xffffffff);
 
-        peerDiff = (max - min) / density;
 
         mainPaint.setAntiAlias(true);
-        mainPaint.setColor(lineColor);
         mainPaint.setStyle(Paint.Style.STROKE);
-        mainPaint.setStrokeWidth(3);
+
 
         tagPaint.setAntiAlias(true);
-        tagPaint.setColor(lineColor);
         tagPaint.setStyle(Paint.Style.FILL);
-        tagPaint.setStrokeWidth(3);
+
 
         tagPaintBack.setAntiAlias(true);
         tagPaintBack.setColor(0xffffffff);
@@ -81,53 +163,22 @@ public class RadarChart extends View {
 
         valuePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-        titlePaint.setColor(titleColor);
+
         titlePaint.setAntiAlias(true);
-        titlePaint.setTextSize(titleTextSize);
 
+        setPaint();
     }
 
-    public void setList(List<RadarData> list) {
-        this.list = list;
-        postInvalidate();
-    }
-
-    public void setRadarData(RadarData data) {
-        list.add(data);
-        postInvalidate();
-    }
-
-    public void setTitles(String[] titles) {
-        this.titles = titles;
-        if (titles.length != count)
-            throw new IllegalArgumentException("titles's lenth must be " + count);
-        postInvalidate();
-    }
-
-    public void setMin(float min) {
-        this.min = min;
-        reset();
-    }
-
-    public void setMax(float max) {
-        this.max = max;
-        reset();
-    }
-
-    public void setDensity(int density) {
-        this.density = density;
-        reset();
-    }
-
-    private void reset() {
+    private void setPaint() {
         peerDiff = (max - min) / density;
-        postInvalidate();
-    }
 
-    public void setMinAndMax(float min, float max) {
-        this.min = min;
-        this.max = max;
-        reset();
+        mainPaint.setColor(lineColor);
+        mainPaint.setStrokeWidth(3);
+
+        tagPaint.setColor(lineColor);
+        tagPaint.setStrokeWidth(3);
+        titlePaint.setColor(titleColor);
+        titlePaint.setTextSize(titleTextSize);
     }
 
     @Override
@@ -162,7 +213,9 @@ public class RadarChart extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         peerAngle = 360 / count;
-        tagTextSize = (int) (maxRadius / (density + 2));
+        if (tagTextSize == 0f) {
+            tagTextSize = (int) (maxRadius / (density + 2));
+        }
         tagPaint.setTextSize(tagTextSize);
         drawPolygon(canvas);//雷达环形
         drawLines(canvas);//雷达连接线
@@ -204,6 +257,7 @@ public class RadarChart extends View {
                     break;
                 case 0:
                     x -= titleCurrentWidth / 2;
+                    y -= titleTextSize/2;
                     break;
                 case 5:
                     x -= titleCurrentWidth / 2;

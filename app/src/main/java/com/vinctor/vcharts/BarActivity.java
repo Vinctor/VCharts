@@ -23,12 +23,16 @@ public class BarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bar);
         bar = (BarChart) findViewById(R.id.bar);
-        bar.setMinAndMax(50, 100);
-        bar.setDensity(4);
-        bar.setData(new BarData("语文", 0, Color.BLUE));
-        bar.addData(new BarData("数学", 80, Color.RED));
-        bar.addData(new BarData("英语", 120, Color.MAGENTA));
-        bar.addData(new BarData("物理", 60, Color.GREEN));
-        bar.commit();
+        bar.setMinAndMax(50, 100)
+                .setDensity(4)
+                .setBarWidth(20)
+                .setGraduationTextSize(30)
+                .setTitleTextSize(30)
+                .setBarTextSize(30)
+                .setData(new BarData("语文", 0, Color.BLUE))
+                .addData(new BarData("数学", 80, Color.RED))
+                .addData(new BarData("英语", 120, Color.MAGENTA))
+                .addData(new BarData("物理", 60, Color.GREEN))
+                .commit();
     }
 }

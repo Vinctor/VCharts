@@ -16,8 +16,14 @@ import java.util.List;
 /**
  * Created by Vinctor on 2017/4/9.
  */
-
 public class BarChart extends View {
+
+    float availableWidth;
+    float availableBottom;
+    float availableTop;
+    float availableLeft;
+    float availableRight;
+
     private int density = 4;
     private int min = 0;
     private int max = 100;
@@ -27,7 +33,7 @@ public class BarChart extends View {
     private int titleColor = 0xff222222;
     private float barTitleMargin = 20;
     private int titleTextSize = 50;
-    private float barTextMargin = 20;
+    private float barTextMargin = 10;
     private int barTextSize = 50;
 
 
@@ -38,48 +44,89 @@ public class BarChart extends View {
     private int height;
     private int width;
     private float graduationStrokeWidth = 3;
-    private float barWidth;
-
+    private float barWidth = 0;
 
     private List<BarData> list = new ArrayList<>();
 
-    public void setData(BarData barData) {
-        list.clear();
-        this.list.add(barData);
-        postInvalidate();
+    public BarChart setBarWidth(float barWidth) {
+        this.barWidth = barWidth;
+        return this;
     }
 
-    public void addData(BarData barData) {
+    public BarChart setGraduationTextSize(int graduationTextSize) {
+        this.graduationTextSize = graduationTextSize;
+        return this;
+    }
+
+    public BarChart setGraduationColor(int graduationColor) {
+        this.graduationColor = graduationColor;
+        return this;
+    }
+
+    public BarChart setTitleColor(int titleColor) {
+        this.titleColor = titleColor;
+        return this;
+    }
+
+    public BarChart setTitleTextSize(int titleTextSize) {
+        this.titleTextSize = titleTextSize;
+        return this;
+    }
+
+    public BarChart setBarTextSize(int barTextSize) {
+        this.barTextSize = barTextSize;
+        return this;
+    }
+
+    public BarChart setLineWidth(float graduationStrokeWidth) {
+        this.graduationStrokeWidth = graduationStrokeWidth;
+        return this;
+    }
+
+    public BarChart setData(BarData barData) {
+        list.clear();
         this.list.add(barData);
+        return this;
+    }
+
+    public BarChart addData(BarData barData) {
+        this.list.add(barData);
+        return this;
+    }
+
+    public BarChart setList(List<BarData> list) {
+        this.list = list;
+        return this;
+    }
+
+    public BarChart clearDatas() {
+        list.clear();
+        return this;
+    }
+
+    public BarChart setDensity(int density) {
+        this.density = density;
+        return this;
+    }
+
+    public BarChart setMin(int min) {
+        this.min = min;
+        return this;
+    }
+
+    public BarChart setMax(int max) {
+        this.max = max;
+        return this;
+    }
+
+    public BarChart setMinAndMax(int min, int max) {
+        this.min = min;
+        this.max = max;
+        return this;
     }
 
     public void commit() {
-        postInvalidate();
-    }
-
-    public void setList(List<BarData> list) {
-        this.list = list;
-        postInvalidate();
-    }
-
-    public void setDensity(int density) {
-        this.density = density;
-        postInvalidate();
-    }
-
-    public void setMin(int min) {
-        this.min = min;
-        postInvalidate();
-    }
-
-    public void setMax(int max) {
-        this.max = max;
-        postInvalidate();
-    }
-
-    public void setMinAndMax(int min, int max) {
-        this.min = min;
-        this.max = max;
+        setPaint();
         postInvalidate();
     }
 
@@ -106,18 +153,26 @@ public class BarChart extends View {
 
     private void init(Context context) {
         graduationPaint.setAntiAlias(true);
+
+        titlePaint.setAntiAlias(true);
+        titlePaint.setStyle(Paint.Style.FILL);
+
+
+        barPaint.setAntiAlias(true);
+        barPaint.setStyle(Paint.Style.FILL);
+
+        setPaint();
+    }
+
+    private void setPaint() {
         graduationPaint.setColor(graduationColor);
         graduationPaint.setTextSize(graduationTextSize);
         graduationPaint.setStrokeWidth(graduationStrokeWidth);
 
-        titlePaint.setAntiAlias(true);
-        titlePaint.setStyle(Paint.Style.FILL);
         titlePaint.setStrokeWidth(graduationStrokeWidth);
         titlePaint.setColor(titleColor);
         titlePaint.setTextSize(titleTextSize);
 
-        barPaint.setAntiAlias(true);
-        barPaint.setStyle(Paint.Style.FILL);
         barPaint.setTextSize(barTextSize);
     }
 
@@ -136,6 +191,11 @@ public class BarChart extends View {
         drawBar(canvas);
     }
 
+    /**
+     * 绘制柱状图
+     *
+     * @param canvas
+     */
     private void drawBar(Canvas canvas) {
         int barCount = list.size();
         if (barCount == 0) return;
@@ -149,15 +209,15 @@ public class BarChart extends View {
             int trueNum = num;
             if (num >= max) trueNum = max;
             if (num <= min) trueNum = min;
-            float currentBarLeft = left + i * barWidth + (i + 1) * barMargin;
+            float currentBarLeft = availableLeft + i * barWidth + (i + 1) * barMargin;
             float currentBarRight = currentBarLeft + barWidth;
-            float currentBarBottom = bottom;
-            float currentBarTop = bottom - (trueNum - min) * (bottom - top) / (max - min);
+            float currentBarBottom = availableBottom;
+            float currentBarTop = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
             RectF rectF = new RectF(currentBarLeft, currentBarTop, currentBarRight, currentBarBottom);
 
             //柱子
             barPaint.setColor(barColor);
-            canvas.drawRoundRect(rectF, 10, 10, barPaint);
+            canvas.drawRoundRect(rectF, barWidth / 10, barWidth / 10, barPaint);
 
             //数字
             float currentTextWidth = barPaint.measureText(num + "");
@@ -169,22 +229,15 @@ public class BarChart extends View {
             //标题文字
             float currentTitleWidth = titlePaint.measureText(title);
             float titleCenterX = textCenterX;
-            float titleY = bottom + barTitleMargin + titleTextSize;
+            float titleY = availableBottom + barTitleMargin + titleTextSize;
             float titleX = titleCenterX - currentTitleWidth / 2;
             canvas.drawText(title, titleX, titleY, titlePaint);
         }
     }
 
-
     private float measureGraduationTextWidth() {
         return graduationPaint.measureText(max + "");
     }
-
-    float availableWidth;
-    float bottom;
-    float top;
-    float left;
-    float right;
 
     /**
      * 绘制网格线
@@ -194,23 +247,25 @@ public class BarChart extends View {
      */
     private void drawGraduation(Canvas canvas, float graduationWidth) {
         float graduaionMargin = graduationWidth * 0.5f;//刻度margin
-        top = barTextSize + barTextMargin;
-        left = graduationWidth + graduaionMargin;
-        bottom = height - titleTextSize - barTitleMargin - graduationStrokeWidth - barTitleMargin;
-        right = width;
-        availableWidth = right - left;
-        barWidth = availableWidth / 10;
+        availableTop = barTextSize + barTextMargin * 2;
+        availableLeft = graduationWidth + graduaionMargin;
+        availableBottom = height - titleTextSize - barTitleMargin - graduationStrokeWidth - barTitleMargin;
+        availableRight = width;
+        availableWidth = availableRight - availableLeft;
+        if (barWidth == 0) {
+            barWidth = availableWidth / 10;
+        }
 
         //刻度外矩形
         graduationPaint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(left, top, right, bottom, graduationPaint);
+        canvas.drawRect(availableLeft, availableTop, availableRight, availableBottom, graduationPaint);
 
 
-        float peerLineHeight = (bottom - top) / density;
+        float peerLineHeight = (availableBottom - availableTop) / density;
         for (int i = 1; i <= density; i++) {
-            float currentLine = top + peerLineHeight * i;
+            float currentLine = availableTop + peerLineHeight * i;
             //横向网格
-            canvas.drawLine(left, currentLine, right, currentLine, graduationPaint);
+            canvas.drawLine(availableLeft, currentLine, availableRight, currentLine, graduationPaint);
         }
 
         //刻度
@@ -218,11 +273,11 @@ public class BarChart extends View {
         float peerDiff = totalDiff / density;
         graduationPaint.setStyle(Paint.Style.FILL);
         for (int i = 0; i <= density; i++) {
-            float graduationTextY = top + peerLineHeight * i;
+            float graduationTextY = availableTop + peerLineHeight * i;
             String currentGraduation = (int) (max - i * peerDiff) + "";
             float currentGraduationTextWidth = graduationPaint.measureText(currentGraduation);
             canvas.drawText(currentGraduation,
-                    left - currentGraduationTextWidth - graduaionMargin, graduationTextY + graduationTextSize / 2, graduationPaint);
+                    availableLeft - currentGraduationTextWidth - graduaionMargin, graduationTextY + graduationTextSize / 2, graduationPaint);
         }
     }
 }

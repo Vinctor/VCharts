@@ -83,4 +83,7 @@ public class BesselCalculator {
         besselPoints.add(p11);
     }
 
+    public static void setSmoothness(float smoothness) {
+        BesselCalculator.smoothness = smoothness;
+    }
 }

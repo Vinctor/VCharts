@@ -37,9 +37,12 @@ public class RadarActivity extends AppCompatActivity {
         data2.setColor(0x0000ff);
         data2.setDatas(new float[]{92, 88, 84, 67, 88, 78});
         list.add(data2);
-        radarView.setList(list);
-        radarView.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "生物"});
-        radarView.setMinAndMax(60, 100);
-        radarView.setDensity(6);
+        radarView.setList(list)
+                .setTitleTextSize(30)
+                .setTagTextSize(30)
+                .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "生物"})
+                .setMinAndMax(60, 100)
+                .setDensity(6)
+                .commit();
     }
 }

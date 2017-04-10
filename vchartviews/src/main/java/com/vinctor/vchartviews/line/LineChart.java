@@ -51,57 +51,88 @@ public class LineChart extends View {
     private String titles[] = new String[]{"考试1", "考试2", "考试3", "考试4", "考试5"};
     List<LineData> list = new ArrayList<>();
 
-    public void setMin(int min) {
+    public void setLineSmoothness(float smoothness) {
+        BesselCalculator.setSmoothness(smoothness);
+    }
+
+    public void resetSmoothness() {
+        BesselCalculator.setSmoothness(0.6f);
+    }
+
+    public LineChart setMin(int min) {
         this.min = min;
+        return this;
     }
 
-    public void setMax(int max) {
+    public LineChart setMax(int max) {
         this.max = max;
+        return this;
     }
 
-    public void setMinAndMax(int min, int max) {
+    public LineChart setMinAndMax(int min, int max) {
         this.min = min;
         this.max = max;
+        return this;
     }
 
-    public void setDensity(int density) {
+    public LineChart setDensity(int density) {
         this.density = density;
+        return this;
     }
 
-    public void setTitles(String[] titles) {
+    public LineChart setTitles(String[] titles) {
         this.titles = titles;
+        return this;
     }
 
-    public void setData(LineData data) {
+    public LineChart setData(LineData data) {
         list.clear();
         list.add(data);
+        return this;
     }
 
-    public void setList(List<LineData> list) {
+    public LineChart addData(LineData data) {
+        list.add(data);
+        return this;
+    }
+
+    public LineChart setList(List<LineData> list) {
         this.list = list;
+        return this;
     }
 
-    public void setCoorinateColor(int coorinateColor) {
+    public LineChart clearDatas() {
+        this.list.clear();
+        return this;
+    }
+
+    public LineChart setCoorinateColor(int coorinateColor) {
         this.coorinateColor = coorinateColor;
+        return this;
     }
 
-    public void setTitleCorlor(int titleCorlor) {
+    public LineChart setTitleCorlor(int titleCorlor) {
         this.titleCorlor = titleCorlor;
+        return this;
     }
 
-    public void setCoordinateTextSize(int coordinateTextSize) {
+    public LineChart setCoordinateTextSize(int coordinateTextSize) {
         this.coordinateTextSize = coordinateTextSize;
+        return this;
     }
 
-    public void setTitleTextSize(int titleTextSize) {
+    public LineChart setTitleTextSize(int titleTextSize) {
         this.titleTextSize = titleTextSize;
+        return this;
     }
 
-    public void setLineStrokeWidth(float lineStrokeWidth) {
+    public LineChart setLineStrokeWidth(float lineStrokeWidth) {
         this.lineStrokeWidth = lineStrokeWidth;
+        return this;
     }
 
     public void commit() {
+        setPaint();
         postInvalidate();
     }
 
@@ -303,7 +334,7 @@ public class LineChart extends View {
     }
 
     private float measureGraduationTextWidth() {
-        return coordinatePaint.measureText(max + "");
+        return Math.max(coordinatePaint.measureText(max + ""), coordinatePaint.measureText(min + ""));
     }
 
     static class CirclePoint {
