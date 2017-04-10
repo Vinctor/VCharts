@@ -2,8 +2,8 @@
 
 ## Preview
 
-![bar]{/screenshot/bar.png}
+![bar]{screenshot/bar.png}
 
-![radar]{/screenshot/radar.png}
+![radar]{screenshot/radar.png}
 
-![line]{/screenshot/line.png}
+![line]{screenshot/line.png}
