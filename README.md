@@ -2,7 +2,9 @@
 
 ## Preview
 
-![bar](screenshot/bar.png)
+![bar](screenshot/barsingle.gif)
+
+![bar](screenshot/barmulti.gif)
 
 ![radar](screenshot/radar.png)
 
@@ -35,11 +37,11 @@
                 .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "生物"})//边角文字
                 .commit();//以上设置需要此方法才能生效
 
-### 柱状图
+### 单条柱状图
 
 添加至```xml```中
 
-    <com.vinctor.vchartviews.bar.BarChart
+    <com.vinctor.vchartviews.bar.BarCharSingle
         android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="400dp" />
@@ -47,7 +49,8 @@
 ```java```代码中
 
       bar.setMinAndMax(50, 100)
-                .setDensity(4)//数值方向的刻度密度
+                .setShowGraduation(true)//设置背景网格线是否显示
+                .setDensity(4)//数值方向的刻度密度
                 .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
                 .setGraduationTextSize(30)//左侧刻度的文字大小
                 .setTitleTextSize(30)//底部文字大小
@@ -56,6 +59,40 @@
                 .addData(new BarData("数学", 80, Color.RED))
                 .addData(new BarData("英语", 120, Color.MAGENTA))
                 .addData(new BarData("物理", 60, Color.GREEN))
+                .commit();
+                
+                
+### 多条柱状图
+
+添加至```xml```中
+
+    <com.vinctor.vchartviews.bar.BarCharMulti
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="400dp" />
+        
+```java```代码中
+
+       multiBar = (BarCharMulti) findViewById(R.id.bar_multi);
+       multiBar.setShowGraduation(true)
+                .setMinAndMax(50, 100)
+                .setShowGraduation(false)
+                .setDensity(4)//数值方向的刻度密度
+                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
+                .setGraduationTextSize(30)//左侧刻度的文字大小
+                .setTitleTextSize(30)//底部文字大小
+                .setBarTextSize(30)//柱状图上方数字大小
+                .commit();
+        List<SingleData> singles = new ArrayList<>();
+        singles.add(new SingleData(90, Color.BLUE));
+        singles.add(new SingleData(80, Color.RED));
+
+        List<SingleData> singles2 = new ArrayList<>();
+        singles2.add(new SingleData(120, Color.MAGENTA));
+        singles2.add(new SingleData(60, Color.GREEN));
+
+        multiBar.addData(new BarDataMulti(singles, "语文"))
+                .addData(new BarDataMulti(singles2, "数学"))
                 .commit();
                 
 ### 折线图
