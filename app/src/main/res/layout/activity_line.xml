@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.vinctor.vcharts.BarActivity">
+    tools:context="com.vinctor.vcharts.LineActivity">
 
-    <com.vinctor.vchartviews.bar.BarChart
-        android:id="@+id/bar"
+    <com.vinctor.vchartviews.line.LineChart
+        android:id="@+id/line"
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>

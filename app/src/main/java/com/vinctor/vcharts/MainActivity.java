@@ -14,9 +14,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        LineActivity.startActivity(this);
     }
 
-    @OnClick({R.id.radar, R.id.bar})
+    @OnClick({R.id.radar, R.id.bar, R.id.line})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.radar:
@@ -24,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bar:
                 BarActivity.start(this);
+                break;
+            case R.id.line:
+                LineActivity.startActivity(this);
                 break;
         }
     }

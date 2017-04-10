@@ -15,7 +15,7 @@
         android:background="@drawable/back"
         android:padding="15dp"
         android:text="雷达图"
-        android:textSize="20dp"></TextView>
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/bar"
@@ -25,5 +25,15 @@
         android:background="@drawable/back"
         android:padding="15dp"
         android:text="柱状图"
-        android:textSize="20dp"></TextView>
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/back"
+        android:padding="15dp"
+        android:text="折线图"
+        android:textSize="20dp" />
 </LinearLayout>
