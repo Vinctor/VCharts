@@ -2,7 +2,7 @@
 
 ## Preview
 
-![bar]{screenshot/bar.png}
+![bar]{https://github.com/Vinctor/VCharts/blob/master/screenshot/bar.png}
 
 ![radar]{screenshot/radar.png}
 
