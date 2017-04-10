@@ -133,8 +133,15 @@ public class LineChart extends View {
     }
 
     public void commit() {
+        checkMinAndMax();
         setPaint();
         postInvalidate();
+    }
+
+    private void checkMinAndMax() {
+        if (min >= max) {
+            throw new IllegalArgumentException("you cannot set max less than max!");
+        }
     }
 
     public LineChart(Context context) {

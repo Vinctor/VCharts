@@ -18,13 +18,23 @@
         android:textSize="20dp" />
 
     <TextView
-        android:id="@+id/bar"
+        android:id="@+id/bar_single"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:background="@drawable/back"
         android:padding="15dp"
-        android:text="柱状图"
+        android:text="单柱柱状图"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/bar_multi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/back"
+        android:padding="15dp"
+        android:text="多柱柱状图"
         android:textSize="20dp" />
 
     <TextView

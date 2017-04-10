@@ -17,8 +17,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RadarActivity" />
-        <activity android:name=".BarActivity" />
-        <activity android:name=".LineActivity"></activity>
+        <activity android:name=".BarSingleActivity" />
+        <activity android:name=".LineActivity" />
+        <activity android:name=".BarMultiActivity"></activity>
     </application>
 
 </manifest>

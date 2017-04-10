@@ -125,8 +125,15 @@ public class RadarChart extends View {
     }
 
     public void commit() {
+        checkMinAndMax();
         setPaint();
         postInvalidate();
+    }
+
+    private void checkMinAndMax() {
+        if (min >= max) {
+            throw new IllegalArgumentException("you cannot set max less than max!");
+        }
     }
 
     public RadarChart(Context context) {

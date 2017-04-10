@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BesselCalculator {
 
-    private static float smoothness = 0.6f;
+    private static float smoothness = 0.4f;
 
     /**
      * 计算贝塞尔结点
