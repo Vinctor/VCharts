@@ -4,15 +4,15 @@ package com.vinctor.vchartviews.bar;
  * Created by Vinctor on 2017/4/9.
  */
 
-public class BarData {
+public class BarDataSingle {
     String title;
     int num;
     int barColor;
 
-    public BarData() {
+    public BarDataSingle() {
     }
 
-    public BarData(String title, int num, int color) {
+    public BarDataSingle(String title, int num, int color) {
         this.title = title;
         this.num = num;
         this.barColor = color;

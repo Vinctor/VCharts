@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.vinctor.vchartviews.bar.BarCharSingle
-        android:id="@+id/bar_single"
+    <com.vinctor.vchartviews.bar.BarCharMulti
+        android:id="@+id/bar_multi"
         android:layout_width="match_parent"
         android:layout_height="400dp" />
 

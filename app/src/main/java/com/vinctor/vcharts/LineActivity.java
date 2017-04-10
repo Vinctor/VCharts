@@ -24,7 +24,7 @@ public class LineActivity extends AppCompatActivity {
         line = (LineChart) findViewById(R.id.line);
         line.setDensity(5)
                 .setTitleTextSize(30)//底部标题大小
-                .setLineSmoothness(0.3f)//折线平滑度
+                //.setLineSmoothness(0.3f)//折线平滑度
                 .setCoordinateTextSize(30)//刻度文字大小
                 .setCoorinateColor(0xff888888)//刻度文字颜色
                 .setLineStrokeWidth(8)//网格线宽度
