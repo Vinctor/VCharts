@@ -2,13 +2,7 @@
 
 ## Preview
 
-![bar](screenshot/barsingle.gif)
-
-![bar](screenshot/barmulti.gif)
-
-![radar](screenshot/radar.png)
-
-![line](screenshot/line.png)
+![bar](screenshot/barsingle.gif)![bar](screenshot/barmulti.gif)![radar](screenshot/radar.png)![line](screenshot/line.png)
 
 ## usage
 
