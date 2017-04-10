@@ -10,7 +10,7 @@
 
 ## usage
 
->compile 'com.vinctor:vcharts:0.0.2'
+>compile 'com.vinctor:vcharts:0.0.3'
 
 ### 雷达图
 
