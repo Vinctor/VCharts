@@ -22,7 +22,7 @@ public class LineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line);
         line = (LineChart) findViewById(R.id.line);
-        line.setData(new LineData(new int[]{20, 40, 60, 90, 100}, 0xff61B6E7));
+        line.setData(new LineData(new int[]{20, 50, 20, 70, 0}, 0xff61B6E7));
         line.commit();
     }
 }

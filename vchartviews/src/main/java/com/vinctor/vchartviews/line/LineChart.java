@@ -175,7 +175,8 @@ public class LineChart extends View {
         int titleCount = titles.length;
         float peerWidth = availableWidth / (titleCount - 1);
         Path path = new Path();
-        List<CirclePoint> points = new ArrayList<>();
+        List<Point> points = new ArrayList<>();
+        List<CirclePoint> circlePoints = new ArrayList<>();
         for (int i = 0; i < dataCount; i++) {
             LineData data = list.get(i);
             int lineColor = data.getLineColor();
@@ -186,20 +187,27 @@ public class LineChart extends View {
                 throw new IllegalArgumentException("the data nums's lengh must be " + titles.length + "!");
             path.reset();
             points.clear();
+            circlePoints.clear();
             for (int j = 0; j < numsCount; j++) {
                 float currentX = availableLeft + j * (peerWidth + coordinateStrokeWidth);
                 int trueNum = nums[j];
                 if (trueNum >= max) trueNum = max;
                 if (trueNum <= min) trueNum = min;
                 float currentY = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
-                if (j == 0) path.moveTo(currentX, currentY);
-                else path.lineTo(currentX, currentY);
-                //小圆圈
+                points.add(new Point(currentX, currentY));
                 //外圆
-                points.add(new CirclePoint(currentX, currentY));
+                circlePoints.add(new CirclePoint(currentX, currentY));
+            }
+            //贝塞尔曲线
+            List<Point> besselPoints = BesselCalculator.computeBesselPoints(points);
+            for (int j = 0; j < besselPoints.size(); j = j + 3) {
+                if (j == 0) {
+                    path.moveTo(besselPoints.get(j).x, besselPoints.get(j).y);
+                } else
+                    path.cubicTo(besselPoints.get(j - 2).x, besselPoints.get(j - 2).y, besselPoints.get(j - 1).x, besselPoints.get(j - 1).y, besselPoints.get(j).x, besselPoints.get(j).y);
             }
             canvas.drawPath(path, linePaint);
-            drawCircleRing(points, lineColor, canvas);
+            drawCircleRing(circlePoints, lineColor, canvas);
         }
     }
 
