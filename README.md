@@ -2,11 +2,11 @@
 
 ## Preview
 
-![bar](screenshot/barsingle.gif)![bar](screenshot/barmulti.gif)![radar](screenshot/radar.png)![line](screenshot/line.png)
+![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png)![line](screenshot/line.png)
 
 ## usage
 
->compile 'com.vinctor:vcharts:0.0.4'
+>compile 'com.vinctor:vcharts:0.0.5'
 
 ### 雷达图
 
@@ -70,8 +70,8 @@
 ```java```代码中
 
        multiBar = (BarCharMulti) findViewById(R.id.bar_multi);
-       multiBar.setShowGraduation(true)
-                .setMinAndMax(50, 100)
+        multiBar.setShowGraduation(true)
+                .setMinAndMax(0, 100)
                 .setShowGraduation(false)
                 .setDensity(4)//数值方向的刻度密度
                 .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
@@ -82,15 +82,18 @@
         List<SingleData> singles = new ArrayList<>();
         singles.add(new SingleData(90, Color.BLUE));
         singles.add(new SingleData(80, Color.RED));
-
+        singles.add(new SingleData(40, Color.DKGRAY));
+        
         List<SingleData> singles2 = new ArrayList<>();
         singles2.add(new SingleData(120, Color.MAGENTA));
         singles2.add(new SingleData(60, Color.GREEN));
-
-        multiBar.addData(new BarDataMulti(singles, "语文"))
-                .addData(new BarDataMulti(singles2, "数学"))
-                .commit();
-                
+        singles2.add(new SingleData(30, Color.CYAN));
+        
+         multiBar.setBarGroupCount(3)//设置每组中柱状图的个数
+                    .addData(new BarDataMulti(singles, "语文"))
+                    .addData(new BarDataMulti(singles2, "数学"))
+                    .commit();
+                  
 ### 折线图
 
 添加至```xml```中
