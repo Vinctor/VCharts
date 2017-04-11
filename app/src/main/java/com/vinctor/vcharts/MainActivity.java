@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line})
+    @OnClick({R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.radar:
@@ -26,10 +26,13 @@ public class MainActivity extends AppCompatActivity {
                 BarSingleActivity.start(this);
                 break;
             case R.id.bar_multi:
-                BarMultiActivity.startActivity(this );
+                BarMultiActivity.startActivity(this);
                 break;
             case R.id.line:
                 LineActivity.startActivity(this);
+                break;
+            case R.id.pie:
+                RingActivity.startActivity(this);
                 break;
         }
     }

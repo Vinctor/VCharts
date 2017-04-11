@@ -19,7 +19,8 @@
         <activity android:name=".RadarActivity" />
         <activity android:name=".BarSingleActivity" />
         <activity android:name=".LineActivity" />
-        <activity android:name=".BarMultiActivity"></activity>
+        <activity android:name=".BarMultiActivity" />
+        <activity android:name=".RingActivity"></activity>
     </application>
 
 </manifest>
