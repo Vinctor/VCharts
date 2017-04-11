@@ -83,6 +83,9 @@ public class BarCharMulti extends AbsBarChart {
             float lastLeft = availableLeft + (i + 1) * peerWidth + peerGroupTotalWidth * i;
             List<SingleData> singleList = multi.getList();
             int count = singleList.size();
+            if (count != barGroupCount) {
+                throw new IllegalArgumentException("peer group's size should be " + groupCount + ", you can invoke setBarGroupCount() to set the group count!");
+            }
             for (int j = 0; j < count; j++) {
                 SingleData single = singleList.get(j);
                 int num = single.getNum();
@@ -96,6 +99,14 @@ public class BarCharMulti extends AbsBarChart {
                 RectF rect = new RectF(singleLeft, singleTop, singleRight, availableBottom);
                 barPaint.setColor(barColor);
                 canvas.drawRoundRect(rect, barWidth / 10, barWidth / 10, barPaint);
+
+
+                //数字
+                float currentTextWidth = barPaint.measureText(num + "");
+                float textCenterX = (singleLeft + singleRight) / 2;
+                float textY = singleTop - barTextMargin;
+                float textX = textCenterX - currentTextWidth / 2;
+                canvas.drawText(num + "", textX, textY, barPaint);
             }
 
             //title

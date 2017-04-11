@@ -33,10 +33,10 @@ public class BarMultiActivity extends AppCompatActivity {
 
         multiBar = (BarCharMulti) findViewById(R.id.bar_multi);
         multiBar.setShowGraduation(true)
-                .setMinAndMax(50, 100)
+                .setMinAndMax(0, 100)
                 .setShowGraduation(false)
                 .setDensity(4)//数值方向的刻度密度
-//                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
+                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
                 .setGraduationTextSize(30)//左侧刻度的文字大小
                 .setTitleTextSize(30)//底部文字大小
                 .setBarTextSize(30)//柱状图上方数字大小
@@ -44,12 +44,15 @@ public class BarMultiActivity extends AppCompatActivity {
         List<SingleData> singles = new ArrayList<>();
         singles.add(new SingleData(90, Color.BLUE));
         singles.add(new SingleData(80, Color.RED));
+        singles.add(new SingleData(40, Color.DKGRAY));
 
         List<SingleData> singles2 = new ArrayList<>();
         singles2.add(new SingleData(120, Color.MAGENTA));
         singles2.add(new SingleData(60, Color.GREEN));
+        singles2.add(new SingleData(30, Color.CYAN));
 
-        multiBar.addData(new BarDataMulti(singles, "语文"))
+        multiBar.setBarGroupCount(3)
+                .addData(new BarDataMulti(singles, "语文"))
                 .addData(new BarDataMulti(singles2, "数学"))
                 .commit();
     }
