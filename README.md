@@ -2,7 +2,7 @@
 
 ## Preview
 
-![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png)![line](screenshot/line.png)
+![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.png) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
 
 ## usage
 
@@ -118,5 +118,33 @@
                 .addData(new LineData(new int[]{30, 80, 50, 60, 100}, 0xffF8AC58))
                 .addData(new LineData(new int[]{-10, 30, 60, 80, 1500}, 0xffF593A0))
                 .commit();
+                
+### 环形图
+
+```xml```中
+
+     <com.vinctor.vchartviews.ring.RingChart
+        android:id="@+id/pie"
+        android:layout_width="match_parent"
+        android:layout_height="400dp" />
+        
+ ```java```:
+ 
+     chart = (RingChart) findViewById(R.id.pie);
+
+        List<Data> datas = new ArrayList<>();
+        datas.add(new Data(1, "1人掌握"));
+        datas.add(new Data(17, "17人掌握"));
+        datas.add(new Data(17, "17人掌握"));
+        datas.add(new Data(2, "2人掌握"));
+        datas.add(new Data(3, "3人掌握"));
+        datas.add(new Data(16, "16人掌握"));
+        datas.add(new Data(17, "17人掌握"));
+        datas.add(new Data(1, "1人掌握"));
+
+        chart.setMaxRingWidth(100)
+                .setMinRingWidth(70)
+                .setData(new RingData(datas,
+                        new int[]{0xff5EB9EE, 0xffC9E9FE, 0xff3B8DBD, 0xff31769F, Color.GREEN, Color.CYAN, 0xff3176eF, 0xff3f769F,}));
                 
 ### 未完待续
