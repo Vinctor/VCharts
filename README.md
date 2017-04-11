@@ -83,17 +83,17 @@
         singles.add(new SingleData(90, Color.BLUE));
         singles.add(new SingleData(80, Color.RED));
         singles.add(new SingleData(40, Color.DKGRAY));
-
+        
         List<SingleData> singles2 = new ArrayList<>();
         singles2.add(new SingleData(120, Color.MAGENTA));
         singles2.add(new SingleData(60, Color.GREEN));
         singles2.add(new SingleData(30, Color.CYAN));
-
-        multiBar.setBarGroupCount(3)//设置每组中柱状图的个数
-                .addData(new BarDataMulti(singles, "语文"))
-                .addData(new BarDataMulti(singles2, "数学"))
-                .commit();
-                
+        
+         multiBar.setBarGroupCount(3)//设置每组中柱状图的个数
+                    .addData(new BarDataMulti(singles, "语文"))
+                    .addData(new BarDataMulti(singles2, "数学"))
+                    .commit();
+                  
 ### 折线图
 
 添加至```xml```中
