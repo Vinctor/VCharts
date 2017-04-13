@@ -8,7 +8,8 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.View;
+
+import com.vinctor.vchartviews.AutoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * Created by Vinctor on 2017/4/10.
  */
 
-public class LineChart extends View {
+public class LineChart extends AutoView {
 
     private int width;
     private int height;
@@ -118,24 +119,24 @@ public class LineChart extends View {
     }
 
     public LineChart setCoordinateTextSize(int coordinateTextSize) {
-        this.coordinateTextSize = coordinateTextSize;
+        this.coordinateTextSize = getAutoHeightSize(coordinateTextSize);
         return this;
     }
 
     public LineChart setTitleTextSize(int titleTextSize) {
-        this.titleTextSize = titleTextSize;
+        this.titleTextSize = getAutoHeightSize(titleTextSize);
         return this;
     }
 
     public LineChart setLineStrokeWidth(float lineStrokeWidth) {
-        this.lineStrokeWidth = lineStrokeWidth;
+        this.lineStrokeWidth = getAutoWidthSize(lineStrokeWidth);
         return this;
     }
 
     public void commit() {
         checkMinAndMax();
         setPaint();
-        postInvalidate();
+        invalidate();
     }
 
     private void checkMinAndMax() {

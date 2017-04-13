@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.vinctor.vchartviews.bar.BarCharMulti;
 import com.vinctor.vchartviews.bar.multi.BarDataMulti;
@@ -16,7 +16,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BarMultiActivity extends AppCompatActivity {
+public class BarMultiActivity extends BaseActivity {
 
     private BarCharMulti multiBar;
 
@@ -32,15 +32,7 @@ public class BarMultiActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         multiBar = (BarCharMulti) findViewById(R.id.bar_multi);
-        multiBar.setShowGraduation(true)
-                .setMinAndMax(0, 100)
-                .setShowGraduation(false)
-                .setDensity(4)//数值方向的刻度密度
-                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
-                .setGraduationTextSize(30)//左侧刻度的文字大小
-                .setTitleTextSize(30)//底部文字大小
-                .setBarTextSize(30)//柱状图上方数字大小
-                .commit();
+        setStyle();
         List<SingleData> singles = new ArrayList<>();
         singles.add(new SingleData(90, Color.BLUE));
         singles.add(new SingleData(80, Color.RED));
@@ -57,8 +49,29 @@ public class BarMultiActivity extends AppCompatActivity {
                 .commit();
     }
 
-    @OnClick(R.id.toggle_show)
-    public void onViewClicked() {
-        multiBar.setShowGraduation(!multiBar.isShowGraduation()).commit();
+
+    @OnClick({R.id.toggle_show, R.id.auto})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.toggle_show:
+                multiBar.setShowGraduation(!multiBar.isShowGraduation()).commit();
+                break;
+            case R.id.auto:
+                multiBar.setAuto(!multiBar.isAuto());
+                setStyle();
+                break;
+        }
+    }
+
+    private void setStyle() {
+        multiBar.setShowGraduation(true)
+                .setMinAndMax(0, 100)
+                .setShowGraduation(false)
+                .setDensity(4)//数值方向的刻度密度
+                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
+                .setGraduationTextSize(30)//左侧刻度的文字大小
+                .setTitleTextSize(30)//底部文字大小
+                .setBarTextSize(30)//柱状图上方数字大小
+                .commit();
     }
 }

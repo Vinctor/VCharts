@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.vinctor.vchartviews.bar.BarCharSingle;
 import com.vinctor.vchartviews.bar.BarDataSingle;
@@ -12,7 +12,7 @@ import com.vinctor.vchartviews.bar.BarDataSingle;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BarSingleActivity extends AppCompatActivity {
+public class BarSingleActivity extends BaseActivity {
 
     BarCharSingle singleBar;
 
@@ -27,14 +27,7 @@ public class BarSingleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bar);
         ButterKnife.bind(this);
         singleBar = (BarCharSingle) findViewById(R.id.bar_single);
-        singleBar.setShowGraduation(true)
-                .setMinAndMax(50, 100)
-                .setDensity(4)//数值方向的刻度密度
-//                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
-                .setGraduationTextSize(30)//左侧刻度的文字大小
-                .setTitleTextSize(30)//底部文字大小
-                .setBarTextSize(30)//柱状图上方数字大小
-                .commit();
+        setStyle();
         singleBar.setData(new BarDataSingle("语文", 0, Color.BLUE))
                 .addData(new BarDataSingle("数学", 80, Color.RED))
                 .addData(new BarDataSingle("英语", 120, Color.MAGENTA))
@@ -42,8 +35,27 @@ public class BarSingleActivity extends AppCompatActivity {
                 .commit();
     }
 
-    @OnClick(R.id.toggle_show)
-    public void onViewClicked() {
-        singleBar.setShowGraduation(!singleBar.isShowGraduation()).commit();
+    @OnClick({R.id.toggle_show, R.id.auto})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.toggle_show:
+                singleBar.setShowGraduation(!singleBar.isShowGraduation()).commit();
+                break;
+            case R.id.auto:
+                singleBar.setAuto(!singleBar.isAuto());
+                setStyle();
+                break;
+        }
+    }
+
+    private void setStyle() {
+        singleBar.setShowGraduation(true)
+                .setMinAndMax(50, 100)
+                .setDensity(4)//数值方向的刻度密度
+                .setBarWidth(30)//柱状图宽度.默认为宽度的1/10
+                .setGraduationTextSize(30)//左侧刻度的文字大小
+                .setTitleTextSize(30)//底部文字大小
+                .setBarTextSize(30)//柱状图上方数字大小
+                .commit();
     }
 }

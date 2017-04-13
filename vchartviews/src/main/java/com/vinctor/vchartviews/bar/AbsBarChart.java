@@ -7,12 +7,13 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.View;
+
+import com.vinctor.vchartviews.AutoView;
 
 /**
  * Created by Vinctor on 2017/4/9.
  */
-public abstract class AbsBarChart extends View {
+public abstract class AbsBarChart extends AutoView {
 
     float availableWidth;
     float availableBottom;
@@ -55,12 +56,12 @@ public abstract class AbsBarChart extends View {
     }
 
     public AbsBarChart setBarWidth(float barWidth) {
-        this.barWidth = barWidth;
+        this.barWidth = getAutoWidthSize(barWidth);
         return this;
     }
 
     public AbsBarChart setGraduationTextSize(int graduationTextSize) {
-        this.graduationTextSize = graduationTextSize;
+        this.graduationTextSize = getAutoHeightSize(graduationTextSize);
         return this;
     }
 
@@ -75,17 +76,17 @@ public abstract class AbsBarChart extends View {
     }
 
     public AbsBarChart setTitleTextSize(int titleTextSize) {
-        this.titleTextSize = titleTextSize;
+        this.titleTextSize = getAutoHeightSize(titleTextSize);
         return this;
     }
 
     public AbsBarChart setBarTextSize(int barTextSize) {
-        this.barTextSize = barTextSize;
+        this.barTextSize = getAutoHeightSize(barTextSize);
         return this;
     }
 
     public AbsBarChart setLineWidth(float graduationStrokeWidth) {
-        this.graduationStrokeWidth = graduationStrokeWidth;
+        this.graduationStrokeWidth = getAutoWidthSize(graduationStrokeWidth);
         return this;
     }
 
@@ -113,7 +114,7 @@ public abstract class AbsBarChart extends View {
     public void commit() {
         checkMinAndMax();
         setPaint();
-        postInvalidate();
+        invalidate();
     }
 
     private void checkMinAndMax() {

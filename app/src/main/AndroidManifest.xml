@@ -9,6 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="design_width"
+            android:value="480"></meta-data>
+        <meta-data
+            android:name="design_height"
+            android:value="800"></meta-data>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +27,8 @@
         <activity android:name=".BarSingleActivity" />
         <activity android:name=".LineActivity" />
         <activity android:name=".BarMultiActivity" />
-        <activity android:name=".RingActivity"></activity>
+        <activity android:name=".RingActivity" />
+        <activity android:name=".BaseActivity"></activity>
     </application>
 
 </manifest>

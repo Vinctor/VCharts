@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.vinctor.vchartviews.ring.Data;
 import com.vinctor.vchartviews.ring.RingChart;
@@ -16,7 +16,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RingActivity extends AppCompatActivity {
+public class RingActivity extends BaseActivity {
 
     public static void startActivity(Context context) {
         Intent starter = new Intent(context, RingActivity.class);
@@ -42,14 +42,28 @@ public class RingActivity extends AppCompatActivity {
         datas.add(new Data(17, "17人掌握"));
         datas.add(new Data(1, "1人掌握"));
 
-        chart.setMaxRingWidth(100)
-                .setMinRingWidth(70)
+        chart
                 .setData(new RingData(datas,
                         new int[]{0xff5EB9EE, 0xffC9E9FE, 0xff3B8DBD, 0xff31769F, Color.GREEN, Color.CYAN, 0xff3176eF, 0xff3f769F,}));
     }
 
-    @OnClick(R.id.btn)
-    public void onViewClicked() {
-        chart.setShowTag(!chart.isShowTag()).commit();
+    @OnClick({R.id.btn, R.id.auto})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn:
+                chart.setShowTag(!chart.isShowTag()).commit();
+                break;
+            case R.id.auto:
+                chart.setAuto(!chart.isAuto());
+                set();
+                break;
+        }
+    }
+
+    private void set() {
+        chart
+                .setMaxRingWidth(100)
+                .setMinRingWidth(70)
+                .commit();
     }
 }
