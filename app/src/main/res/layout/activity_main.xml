@@ -56,4 +56,5 @@
         android:padding="15dp"
         android:text="环形图"
         android:textSize="20dp" />
+
 </LinearLayout>

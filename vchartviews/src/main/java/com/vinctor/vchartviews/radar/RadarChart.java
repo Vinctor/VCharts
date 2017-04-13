@@ -7,7 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.View;
+
+import com.vinctor.vchartviews.AutoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  * Created by Vinctor on 2017/4/8.
  */
 
-public class RadarChart extends View {
+public class RadarChart extends AutoView {
     private int count = 6;                //数据个数
     private Context context;
 
@@ -50,12 +51,12 @@ public class RadarChart extends View {
     }
 
     public RadarChart setTitleTextSize(int titleTextSize) {
-        this.titleTextSize = titleTextSize;
+        this.titleTextSize = getAutoHeightSize(titleTextSize);
         return this;
     }
 
     public RadarChart setTagTextSize(float tagTextSize) {
-        this.tagTextSize = tagTextSize;
+        this.tagTextSize = getAutoHeightSize(tagTextSize);
         return this;
     }
 
@@ -127,7 +128,7 @@ public class RadarChart extends View {
     public void commit() {
         checkMinAndMax();
         setPaint();
-        postInvalidate();
+        invalidate();
     }
 
     private void checkMinAndMax() {

@@ -9,7 +9,8 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.View;
+
+import com.vinctor.vchartviews.AutoView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by Vinctor on 2017/4/11.
  */
 
-public class RingChart extends View {
+public class RingChart extends AutoView {
     boolean isDebug = false;
 
     private final int LEFT = 0;
@@ -69,13 +70,30 @@ public class RingChart extends View {
     }
 
     public RingChart setMaxRingWidth(float maxRingWidth) {
-        this.maxUserSetRingWidth = maxRingWidth;
+        this.maxUserSetRingWidth = getAutoWidthSize(maxRingWidth);
         return this;
     }
 
     public RingChart setMinRingWidth(float minRingWidth) {
-        this.minUserSetRingWidth = minRingWidth;
+        this.minUserSetRingWidth = getAutoWidthSize(minRingWidth);
         return this;
+    }
+
+
+    public void setTagTextSize(int tagTextSize) {
+        this.tagTextSize = getAutoHeightSize(tagTextSize);
+    }
+
+    public void setTagRectColor(int tagRectColor) {
+        this.tagRectColor = tagRectColor;
+    }
+
+    public void setTagTextColor(int tagTextColor) {
+        this.tagTextColor = tagTextColor;
+    }
+
+    public void setTagStrokeWidth(int tagStrokeWidth) {
+        this.tagStrokeWidth = getAutoWidthSize(tagStrokeWidth);
     }
 
     public RingChart setData(RingData data) {
@@ -126,7 +144,10 @@ public class RingChart extends View {
         centerX = width / 2;
         centerY = height / 2;
 
-        resetAvailable();
+        if (!isInEditMode()) {
+            resetAvailable();
+        }
+
 
         super.onSizeChanged(w, h, oldw, oldh);
     }
