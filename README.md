@@ -1,6 +1,6 @@
 # VCharts
 
-## Preview
+## Preview([demo](apk/app-debug.apk))
 
 ![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.png) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
 
@@ -9,7 +9,7 @@
 
 >view.setAuto(boolean);//默认开启
 
-## usage
+## usage([demo](apk/app-debug.apk))
 
 >compile 'com.vinctor:vcharts:0.0.7'
 
