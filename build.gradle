@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath 'com.novoda:bintray-release:0.4.0'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -36,7 +36,7 @@ allprojects {
 ext {
     userOrg = 'xcht1209'
     groupId = 'com.vinctor'
-    publishVersion = '0.0.6'
+    publishVersion = '0.0.8'
     website = 'https://github.com/Vinctor/VCharts'
     licences = ['Apache-2.0']
 }
