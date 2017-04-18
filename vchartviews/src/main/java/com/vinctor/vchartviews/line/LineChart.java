@@ -187,7 +187,7 @@ public class LineChart extends AutoView {
         setPaint();
         float leftWidth = getLeftWidth();
         availableLeft = leftWidth;
-        availableTop = 100;
+        availableTop = coordinateTextSize;
         availableRight = width - titlePaint.measureText(titles[titles.length - 1]) / 2;
         availableBottom = height - titleTextSize * 2;
         availableHeight = availableBottom - availableTop;
