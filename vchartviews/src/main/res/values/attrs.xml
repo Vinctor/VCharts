@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="DiagramView">
+        <attr name="content" format="string|reference" />
+        <attr name="contentSize" format="dimension" />
+        <attr name="contentMargin" format="dimension" />
+        <attr name="contentColor" format="color" />
+        <attr name="viewColor" format="color" />
+        <attr name="viewSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="DiagramViewFlowLayout">
+        <attr name="spaceHorizontal" format="dimension" />
+        <attr name="spaceVertical" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="TagFlowLayout">
+        <attr name="gravity">
+            <enum name="left" value="-1" />
+            <enum name="center" value="0" />
+            <enum name="right" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

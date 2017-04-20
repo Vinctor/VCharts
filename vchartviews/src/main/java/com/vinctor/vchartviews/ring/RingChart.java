@@ -160,7 +160,9 @@ public class RingChart extends AutoView {
      * @param canvas
      */
     private void drawRing(Canvas canvas) {
-
+        if (data == null) {
+            return;
+        }
         List<Data> list = data.getList();
         int colors[] = data.getColors();
         int ringCount = list.size();
@@ -438,12 +440,16 @@ public class RingChart extends AutoView {
 
             tagRectHeight = tagTextSize + 2 * tagPadding + 2 * tagMargin;
 
-            List<Data> list = data.getList();
-            int count = list.size();
             float tagMaxWidth = 0;
-            for (int i = 0; i < count; i++) {
-                float current = tagpaint.measureText(list.get(i).getTag());
-                if (current >= tagMaxWidth) tagMaxWidth = current;
+            if (data == null || data.list.size() == 0) {
+                tagMaxWidth = tagpaint.measureText("测试测试");
+            } else {
+                List<Data> list = data.getList();
+                int count = list.size();
+                for (int i = 0; i < count; i++) {
+                    float current = tagpaint.measureText(list.get(i).getTag());
+                    if (current >= tagMaxWidth) tagMaxWidth = current;
+                }
             }
             tagMaxRectWidth = getTagWidth(tagMaxWidth) + tagMargin * 2;
 
