@@ -11,7 +11,7 @@
 
 ## usage([demo](apk/app-debug.apk))
 
->compile 'com.vinctor:vcharts:0.0.7'
+>compile 'com.vinctor:vcharts:0.1.3'
 
 ### 雷达图
 
