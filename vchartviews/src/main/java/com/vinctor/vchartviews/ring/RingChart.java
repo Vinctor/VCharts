@@ -5,9 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 
 import com.vinctor.vchartviews.AutoView;
@@ -121,11 +119,6 @@ public class RingChart extends AutoView {
         init(context);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public RingChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context);
-    }
 
     private void init(Context context) {
         setBackgroundColor(0xfffffff);
@@ -167,7 +160,9 @@ public class RingChart extends AutoView {
      * @param canvas
      */
     private void drawRing(Canvas canvas) {
-
+        if (data == null) {
+            return;
+        }
         List<Data> list = data.getList();
         int colors[] = data.getColors();
         int ringCount = list.size();
@@ -445,12 +440,16 @@ public class RingChart extends AutoView {
 
             tagRectHeight = tagTextSize + 2 * tagPadding + 2 * tagMargin;
 
-            List<Data> list = data.getList();
-            int count = list.size();
             float tagMaxWidth = 0;
-            for (int i = 0; i < count; i++) {
-                float current = tagpaint.measureText(list.get(i).getTag());
-                if (current >= tagMaxWidth) tagMaxWidth = current;
+            if (data == null || data.list.size() == 0) {
+                tagMaxWidth = tagpaint.measureText("测试测试");
+            } else {
+                List<Data> list = data.getList();
+                int count = list.size();
+                for (int i = 0; i < count; i++) {
+                    float current = tagpaint.measureText(list.get(i).getTag());
+                    if (current >= tagMaxWidth) tagMaxWidth = current;
+                }
             }
             tagMaxRectWidth = getTagWidth(tagMaxWidth) + tagMargin * 2;
 

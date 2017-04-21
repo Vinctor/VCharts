@@ -3,9 +3,7 @@ package com.vinctor.vchartviews.bar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 
 import java.util.ArrayList;
@@ -52,10 +50,6 @@ public class BarCharSingle extends AbsBarChart {
         super(context, attrs, defStyleAttr);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public BarCharSingle(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
 
     /**
      * 绘制柱状图
