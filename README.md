@@ -151,5 +151,8 @@
                 .setMinRingWidth(70)
                 .setData(new RingData(datas,
                         new int[]{0xff5EB9EE, 0xffC9E9FE, 0xff3B8DBD, 0xff31769F, Color.GREEN, Color.CYAN, 0xff3176eF, 0xff3f769F,}));
-                
+  
+### 图例
+
+     
 ### 未完待续
