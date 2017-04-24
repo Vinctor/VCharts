@@ -10,10 +10,10 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="design_width"
-            android:value="480"></meta-data>
+            android:value="480" />
         <meta-data
             android:name="design_height"
-            android:value="800"></meta-data>
+            android:value="800" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -27,7 +27,8 @@
         <activity android:name=".LineActivity" />
         <activity android:name=".BarMultiActivity" />
         <activity android:name=".RingActivity" />
-        <activity android:name=".BaseActivity"></activity>
+        <activity android:name=".BaseActivity" />
+        <activity android:name=".DiagragActivity"></activity>
     </application>
 
 </manifest>

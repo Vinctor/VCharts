@@ -8,6 +8,16 @@
     tools:context="com.vinctor.vcharts.MainActivity">
 
     <TextView
+        android:id="@+id/diagram"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/back"
+        android:padding="15dp"
+        android:text="图例"
+        android:textSize="20dp" />
+
+    <TextView
         android:id="@+id/radar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

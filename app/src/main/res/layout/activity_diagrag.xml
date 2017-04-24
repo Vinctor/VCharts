@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    tools:context="com.vinctor.vcharts.DiagragActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单个图例"
+        android:textColor="#4a4a4a"
+        android:textSize="20dp" />
+
+    <com.vinctor.vchartviews.diagram.DiagramView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:content="图例"
+        app:contentColor="#9b9b9b"
+        app:contentMargin="14px"
+        app:contentSize="24px"
+        app:viewColor="#9b9b9b"
+        app:viewSize="20px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="图例组(支持适应,自动换行)"
+        android:textSize="20dp" />
+
+    <com.vinctor.vchartviews.diagram.DiagramFlowLayout
+        android:id="@+id/flowlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18px"
+        app:contentColor="#9b9b9b"
+        app:contentMargin="14px"
+        app:contentSize="24px"
+        app:viewSize="20px" />
+</LinearLayout>
