@@ -154,5 +154,41 @@
   
 ### 图例
 
+#### 单图例
+
+      <com.vinctor.vchartviews.diagram.DiagramView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:content="图例"
+        app:contentColor="#9b9b9b"
+        app:contentMargin="14px"
+        app:contentSize="24px"
+        app:viewColor="#9b9b9b"
+        app:viewSize="20px" />
+        
+ #### 多图例
+
+```xml```中
+
+      <com.vinctor.vchartviews.diagram.DiagramFlowLayout
+        android:id="@+id/flowlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18px"
+        app:contentColor="#9b9b9b"
+        app:contentMargin="14px"
+        app:contentSize="24px"
+        app:viewSize="20px" />
+        
+```java```中
+
+      DiagramFlowLayout flowLayout = (DiagramFlowLayout) findViewById(R.id.flowlayout);
+        List<DiagramData> list = new ArrayList<>();
+        list.add(new DiagramData(0xff3B8DBD, "0~25个知识点"));
+        list.add(new DiagramData(0xff30769F, "25~50个知识点"));
+        list.add(new DiagramData(0xffC8E9FE, "50~75个知识点"));
+        list.add(new DiagramData(0xff5EB9EE, "75~100个知识点"));
+        flowLayout.setList(list);
+
      
 ### 未完待续
