@@ -3,6 +3,7 @@ package com.vinctor.vcharts;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.vinctor.vchartviews.line.LineChart;
 import com.vinctor.vchartviews.line.LineData;
@@ -31,6 +32,12 @@ public class LineActivity extends BaseActivity {
                 .addData(new LineData(new int[]{30, 80, 50, 60, 100}, 0xffF8AC58))
                 .addData(new LineData(new int[]{-10, 30, 60, 80, 1500}, 0xffF593A0))
                 .commit();
+        line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
+            @Override
+            public void onClick(LineChart linechart, String title, int index) {
+                Toast.makeText(LineActivity.this, title, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @OnClick(R.id.auto)

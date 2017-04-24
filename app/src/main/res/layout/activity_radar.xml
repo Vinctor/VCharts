@@ -10,7 +10,7 @@
     <com.vinctor.vchartviews.radar.RadarChart
         android:id="@+id/radarview"
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_height="500dp" />
 
     <Button
         android:id="@+id/auto"

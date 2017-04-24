@@ -45,6 +45,25 @@ public class RadarChart extends AutoView {
     private int lineColor = 0xff929292;
     private int titleColor = Color.GRAY;
 
+
+    private float radarStrokeWidth = 3;
+
+    private float widthAviable;
+    private float heightAviable;
+    private float leftAviable;
+    private float topAviable;
+    private float rightAviable;
+    private float bottomAviable;
+
+    private float titleHorMargin;
+    private int titleVerMargin;
+
+
+    public RadarChart setRadarStrokeWidth(float radarStrokeWidth) {
+        this.radarStrokeWidth = getAutoWidthSize(radarStrokeWidth);
+        return this;
+    }
+
     public RadarChart setCount(int count) {
         this.count = count;
         return this;
@@ -181,7 +200,7 @@ public class RadarChart extends AutoView {
         peerDiff = (max - min) / density;
 
         mainPaint.setColor(lineColor);
-        mainPaint.setStrokeWidth(3);
+        mainPaint.setStrokeWidth(radarStrokeWidth);
 
         tagPaint.setColor(lineColor);
         tagPaint.setStrokeWidth(3);
@@ -195,8 +214,15 @@ public class RadarChart extends AutoView {
         titlePaint.setTextSize(titleTextSize);
         maxTitleWidth = getMaxTitleWidth();
 
-        int widthAviable = (int) ((w - 2 * maxTitleWidth));
-        int heightAviable = (h - 2 * titleTextSize);
+        titleHorMargin = maxTitleWidth / 4;
+        titleVerMargin = titleTextSize;
+
+        widthAviable = (w - 2 * maxTitleWidth - 2 * titleHorMargin);
+        heightAviable = (h - 2 * titleTextSize - 2 * titleHorMargin - titleVerMargin);
+        leftAviable = maxTitleWidth + titleHorMargin;
+        topAviable = titleTextSize + titleHorMargin;
+        rightAviable = w - maxTitleWidth;
+        bottomAviable = h - titleTextSize;
         maxRadius = Math.min(widthAviable, heightAviable) / 2;
         height = h;
         width = w;
@@ -241,18 +267,17 @@ public class RadarChart extends AutoView {
         for (int i = 0; i < count; i++) {
 
             float titleCurrentWidth = titlePaint.measureText(titles[i]);
-            float margin = titleCurrentWidth / 4;
-            float x = getPointX(i * peerAngle, maxRadius + margin);
-            float y = getPointY(i * peerAngle, maxRadius + margin);
+            float x = getPointX(i * peerAngle, maxRadius + titleHorMargin);
+            float y = getPointY(i * peerAngle, maxRadius + titleHorMargin);
 
             int quadrant = getQuadrant(i);
             switch (quadrant) {
                 case 1:
-                    x -= margin;
+                    x -= titleHorMargin;
 //                    y += titleTextSize / 2;
                     break;
                 case 2:
-//                    x -= margin;
+//                    x -= titleHorMargin;
                     y += titleTextSize / 2;
                     break;
                 case 3:
@@ -330,14 +355,14 @@ public class RadarChart extends AutoView {
         for (int i = 0; i < count; i++) {
             path.reset();
             if (i == 0) {
-                path.moveTo(centerX, centerY + titleTextSize);
+                path.moveTo(centerX, centerY);
                 float x = getPointX(i * peerAngle, r);
                 float y = getPointY(i * peerAngle, r);
                 path.lineTo(x, y);
                 canvas.drawPath(path, mainPaint);
                 continue;
             }
-            path.moveTo(centerX, centerY + titleTextSize);
+            path.moveTo(centerX, centerY);
             float x = getPointX(i * peerAngle, maxRadius);
             float y = getPointY(i * peerAngle, maxRadius);
             path.lineTo(x, y);
@@ -466,11 +491,11 @@ public class RadarChart extends AutoView {
         switch (qr) {
             case 1:
             case 2:
-                res = maxRadius + width + maxTitleWidth;
+                res = centerX + width;
                 break;
             case 3:
             case 4:
-                res = maxRadius - width + maxTitleWidth;
+                res = centerX - width;
                 break;
             default:
                 break;
@@ -490,11 +515,11 @@ public class RadarChart extends AutoView {
         switch (qr) {
             case 1:
             case 4:
-                res = maxRadius - height + offset + titleTextSize;
+                res = centerY - height;
                 break;
             case 2:
             case 3:
-                res = maxRadius + height + offset + titleTextSize;
+                res = centerY + height;
                 break;
             default:
                 break;

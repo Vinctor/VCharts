@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import com.vinctor.vchartviews.AutoView;
 
@@ -49,6 +51,12 @@ public class LineChart extends AutoView {
 
     private String titles[] = new String[]{"考试1", "考试2", "考试3", "考试4", "考试5"};
     List<LineData> list = new ArrayList<>();
+    List<RegionData> regionDatas = new ArrayList<>();
+    private OnTitleClickListener onTitleClickListener;
+
+    public void setOnTitleClickListener(OnTitleClickListener onTitleClickListener) {
+        this.onTitleClickListener = onTitleClickListener;
+    }
 
     public LineChart setLineSmoothness(float smoothness) {
         BesselCalculator.setSmoothness(smoothness);
@@ -160,6 +168,7 @@ public class LineChart extends AutoView {
 
 
     private void init(Context context) {
+        setClickable(true);
         setBackgroundColor(0xffffffff);
 
         coordinatePaint.setAntiAlias(true);
@@ -305,6 +314,8 @@ public class LineChart extends AutoView {
         }
 
         //title
+        float offset = titleTextSize / 2;
+        regionDatas.clear();
         int titleCount = titles.length;
         float peerWidth = availableWidth / (titleCount - 1);
         for (int i = 0; i < titleCount; i++) {
@@ -313,7 +324,69 @@ public class LineChart extends AutoView {
             float currentX = titleCenterX - currentTitleWidth / 2;
             float currentY = availableBottom + titleTextSize + coordinateTextSize / 2;
             canvas.drawText(titles[i], currentX, currentY, titlePaint);
+            //add region
+
+            Region region = new Region(
+                    (int) (currentX - offset),
+                    (int) (currentY - titleTextSize - offset),
+                    (int) (currentX + currentTitleWidth + offset),
+                    (int) (currentY + offset)
+            );
+            regionDatas.add(new RegionData(region, i, titles[i]));
         }
+    }
+
+    int downIndex = -1;
+    int upIndex = -1;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+
+        int action = event.getAction();
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                downIndex = getPressIndex(x, y);
+                if (downIndex < 0) {
+                    return false;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                upIndex = getPressIndex(x, y);
+                if (upIndex < 0) {
+                    return false;
+                }
+                if (upIndex == downIndex && onTitleClickListener != null) {
+                    onTitleClickListener.onClick(this, regionDatas.get(downIndex).getTitle(), downIndex);
+                    downIndex = -1;
+                    upIndex = -1;
+                    return true;
+                }
+                downIndex = -1;
+                upIndex = -1;
+                return false;
+            case MotionEvent.ACTION_CANCEL:
+                downIndex = -1;
+                upIndex = -1;
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private int getPressIndex(int x, int y) {
+        int size = regionDatas.size();
+        if (size < 1) {
+            return -1;
+        }
+        for (int i = 0; i < size; i++) {
+            Region region = regionDatas.get(i).getRegion();
+            if (region.contains(x, y)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void setPaint() {
@@ -355,5 +428,37 @@ public class LineChart extends AutoView {
         public float getY() {
             return y;
         }
+    }
+
+    static class RegionData {
+        Region region;
+        int index;
+        String title;
+
+        public RegionData(Region region, int index, String title) {
+            this.region = region;
+            this.index = index;
+            this.title = title;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public Region getRegion() {
+            return region;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+    }
+
+    public interface OnTitleClickListener {
+        void onClick(LineChart linechart, String title, int index);
     }
 }
