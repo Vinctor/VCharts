@@ -15,7 +15,7 @@
 
 >compile 'com.vinctor:vcharts:x.y.z'
 
-lastest version：x.y.x-> ![Download](https://api.bintray.com/packages/xcht1209/maven/vcharts/images/download.svg)
+lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/maven/vcharts/images/download.svg)
 
 ### 雷达图
 
