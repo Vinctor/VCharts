@@ -13,7 +13,7 @@
 
 ## usage([demo](apk/app-debug.apk))
 
->compile 'com.vinctor:vcharts:0.1.3'
+>compile 'com.vinctor:vcharts:0.1.6'
 
 ### 雷达图
 
@@ -125,6 +125,13 @@
                 .addData(new LineData(new int[]{30, 80, 50, 60, 100}, 0xffF8AC58))
                 .addData(new LineData(new int[]{-10, 30, 60, 80, 1500}, 0xffF593A0))
                 .commit();
+       //底部title点击事件
+        line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
+            @Override
+            public void onClick(LineChart linechart, String title, int index) {
+                ToastUtil.show(title + "index--" + index);
+            }
+        });
                 
 ### 环形图
 
