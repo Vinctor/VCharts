@@ -13,7 +13,9 @@
 
 ## usage([demo](apk/app-debug.apk))
 
->compile 'com.vinctor:vcharts:0.1.6'
+>compile 'com.vinctor:vcharts:x.y.z'
+
+lastest version：x.y.x-> ![Download](https://api.bintray.com/packages/xcht1209/maven/vcharts/images/download.svg)
 
 ### 雷达图
 
