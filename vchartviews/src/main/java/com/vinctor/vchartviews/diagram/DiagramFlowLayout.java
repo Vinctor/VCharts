@@ -82,6 +82,7 @@ public class DiagramFlowLayout extends FlowLayout {
         diagramSize = ta.getDimensionPixelSize(R.styleable.DiagramView_viewSize, diagramSize);
         textMargin = ta.getDimensionPixelSize(R.styleable.DiagramView_contentMargin, textMargin);
         textSize = ta.getDimensionPixelSize(R.styleable.DiagramView_contentSize, textSize);
+        textColor = ta.getColor(R.styleable.DiagramView_contentColor, Color.GRAY);
         ta.recycle();
 
         TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.DiagramViewFlowLayout);
