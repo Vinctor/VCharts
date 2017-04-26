@@ -166,16 +166,13 @@ public class LineChart extends AutoView {
         init(context);
     }
 
-
     private void init(Context context) {
         setClickable(true);
         setBackgroundColor(0xffffffff);
 
         coordinatePaint.setAntiAlias(true);
 
-
         linePaint.setAntiAlias(true);
-
 
         titlePaint.setAntiAlias(true);
 
@@ -203,7 +200,16 @@ public class LineChart extends AutoView {
         availableWidth = availableRight - availableLeft;
 
         drawCoordinate(canvas);//绘制刻度
-        drawLineAndPoints(canvas);//绘制折线
+        if (isError) {
+            drawError(canvas);
+        } else {
+            drawLineAndPoints(canvas);//绘制折线
+        }
+    }
+
+    //绘制错误
+    private void drawError(Canvas canvas) {
+        drawErrorText(canvas, width, height);
     }
 
     /**
@@ -402,6 +408,7 @@ public class LineChart extends AutoView {
 
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeWidth(lineStrokeWidth);
+
     }
 
     private float getLeftWidth() {

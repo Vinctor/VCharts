@@ -26,6 +26,7 @@ public class LineActivity extends BaseActivity {
         setContentView(R.layout.activity_line);
         ButterKnife.bind(this);
         line = (LineChart) findViewById(R.id.line);
+        line.showError("的撒气我的我");
         setSetting();
         line
                 .addData(new LineData(new float[]{20, 50, 20, 70, 0}, 0xff61B6E7))//需与title长度一致
