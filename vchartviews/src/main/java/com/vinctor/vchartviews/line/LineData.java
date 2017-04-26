@@ -5,19 +5,19 @@ package com.vinctor.vchartviews.line;
  */
 
 public class LineData {
-    int nums[];
+    float nums[];
     int lineColor;
 
-    public LineData(int[] nums, int lineColor) {
+    public LineData(float[] nums, int lineColor) {
         this.nums = nums;
         this.lineColor = lineColor;
     }
 
-    public int[] getNums() {
+    public float[] getNums() {
         return nums;
     }
 
-    public void setNums(int nums[]) {
+    public void setNums(float nums[]) {
         this.nums = nums;
     }
 

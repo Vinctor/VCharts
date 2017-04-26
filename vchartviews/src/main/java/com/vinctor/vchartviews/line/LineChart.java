@@ -45,11 +45,11 @@ public class LineChart extends AutoView {
 
     private float leftMargin;
 
-    private int min = 0;
-    private int max = 100;
+    private float min = 0;
+    private float max = 100;
     private int density = 10;
 
-    private String titles[] = new String[]{"考试1", "考试2", "考试3", "考试4", "考试5"};
+    private String titles[] = new String[]{"", "", "", "", ""};
     List<LineData> list = new ArrayList<>();
     List<RegionData> regionDatas = new ArrayList<>();
     private OnTitleClickListener onTitleClickListener;
@@ -67,17 +67,17 @@ public class LineChart extends AutoView {
         BesselCalculator.setSmoothness(0.6f);
     }
 
-    public LineChart setMin(int min) {
+    public LineChart setMin(float min) {
         this.min = min;
         return this;
     }
 
-    public LineChart setMax(int max) {
+    public LineChart setMax(float max) {
         this.max = max;
         return this;
     }
 
-    public LineChart setMinAndMax(int min, int max) {
+    public LineChart setMinAndMax(float min, float max) {
         this.min = min;
         this.max = max;
         return this;
@@ -223,7 +223,7 @@ public class LineChart extends AutoView {
             LineData data = list.get(i);
             int lineColor = data.getLineColor();
             linePaint.setColor(lineColor);
-            int nums[] = data.getNums();
+            float nums[] = data.getNums();
             int numsCount = nums.length;
             if (numsCount != titles.length)
                 throw new IllegalArgumentException("the data nums's lengh must be " + titles.length + "!");
@@ -232,7 +232,7 @@ public class LineChart extends AutoView {
             circlePoints.clear();
             for (int j = 0; j < numsCount; j++) {
                 float currentX = availableLeft + j * (peerWidth + coordinateStrokeWidth);
-                int trueNum = nums[j];
+                float trueNum = nums[j];
                 if (trueNum >= max) trueNum = max;
                 if (trueNum <= min) trueNum = min;
                 float currentY = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
@@ -341,6 +341,9 @@ public class LineChart extends AutoView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (onTitleClickListener == null) {
+            return false;
+        }
         int x = (int) event.getX();
         int y = (int) event.getY();
 

@@ -28,9 +28,9 @@ public class LineActivity extends BaseActivity {
         line = (LineChart) findViewById(R.id.line);
         setSetting();
         line
-                .addData(new LineData(new int[]{20, 50, 20, 70, 0}, 0xff61B6E7))//需与title长度一致
-                .addData(new LineData(new int[]{30, 80, 50, 60, 100}, 0xffF8AC58))
-                .addData(new LineData(new int[]{-10, 30, 60, 80, 1500}, 0xffF593A0))
+                .addData(new LineData(new float[]{20, 50, 20, 70, 0}, 0xff61B6E7))//需与title长度一致
+                .addData(new LineData(new float[]{30, 80, 50, 60, 100}, 0xffF8AC58))
+                .addData(new LineData(new float[]{-10, 30, 60, 80, 1500}, 0xffF593A0))
                 .commit();
         line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
             @Override
