@@ -1,12 +1,14 @@
 package com.vinctor.vchartviews.bar;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.vinctor.vchartviews.AutoView;
+import com.vinctor.vchartviews.R;
 
 /**
  * Created by Vinctor on 2017/4/9.
@@ -43,6 +45,11 @@ public abstract class AbsBarChart extends AutoView {
     protected boolean isEnableGraduation = true;
 
     private float graduaionMargin;
+
+    public AbsBarChart setBarTitleMargin(float barTitleMargin) {
+        this.barTitleMargin = getAutoHeightSize(barTitleMargin);
+        return this;
+    }
 
     public AbsBarChart setShowGraduation(boolean enableGraduation) {
         isEnableGraduation = enableGraduation;
@@ -123,21 +130,42 @@ public abstract class AbsBarChart extends AutoView {
 
     public AbsBarChart(Context context) {
         super(context);
-        init(context);
+        init(context, null);
     }
 
     public AbsBarChart(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(context, attrs);
     }
 
     public AbsBarChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(context, attrs);
     }
 
 
-    private void init(Context context) {
+    private void init(Context context, AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.AbsBarChart);
+            setBarTitleMargin(ta.getDimension(R.styleable.AbsBarChart_barTitleMargin, barTitleMargin));
+            setShowGraduation(ta.getBoolean(R.styleable.AbsBarChart_showGraduation, true));
+            setBarWidth(ta.getDimension(R.styleable.AbsBarChart_barWidth, barWidth));
+            setGraduationTextSize(ta.getDimensionPixelSize(R.styleable.AbsBarChart_gradutionTextSize, graduationTextSize));
+            setGraduationColor(ta.getColor(R.styleable.AbsBarChart_gradutaionColor, graduationColor));
+            setTitleColor(ta.getColor(R.styleable.AbsBarChart_titleColor, titleColor));
+            setTitleTextSize(ta.getDimensionPixelSize(R.styleable.AbsBarChart_titleTextSize, titleTextSize));
+            setBarTextSize(ta.getDimensionPixelSize(R.styleable.AbsBarChart_barTextSize, barTextSize));
+            setLineWidth(ta.getDimension(R.styleable.AbsBarChart_gradutaionLineWidth, graduationStrokeWidth));
+            setDensity(ta.getInt(R.styleable.AbsBarChart_density, density));
+            setMin(ta.getInt(R.styleable.AbsBarChart_min, min));
+            setMax(ta.getInt(R.styleable.AbsBarChart_max, max));
+
+            ta.recycle();
+
+            checkMinAndMax();
+        }
+
+
         graduationPaint.setAntiAlias(true);
 
         titlePaint.setAntiAlias(true);

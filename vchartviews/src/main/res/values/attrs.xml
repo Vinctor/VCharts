@@ -15,11 +15,27 @@
         <attr name="spaceHorizontal" format="dimension" />
         <attr name="spaceVertical" format="dimension" />
     </declare-styleable>
+
     <declare-styleable name="TagFlowLayout">
         <attr name="gravity">
             <enum name="left" value="-1" />
             <enum name="center" value="0" />
             <enum name="right" value="1" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="AbsBarChart">
+        <attr name="barTitleMargin" format="dimension" />
+        <attr name="showGraduation" format="boolean" />
+        <attr name="barWidth" format="dimension" />
+        <attr name="gradutionTextSize" format="dimension" />
+        <attr name="gradutaionColor" format="color" />
+        <attr name="titleColor" format="color" />
+        <attr name="titleTextSize" format="dimension" />
+        <attr name="barTextSize" format="dimension" />
+        <attr name="gradutaionLineWidth" format="dimension" />
+        <attr name="density" format="integer" />
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
     </declare-styleable>
 </resources>
