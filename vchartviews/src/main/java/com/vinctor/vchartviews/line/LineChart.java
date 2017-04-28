@@ -1,15 +1,22 @@
 package com.vinctor.vchartviews.line;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathMeasure;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.animation.LinearInterpolator;
 
 import com.vinctor.vchartviews.AutoView;
+import com.vinctor.vchartviews.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +26,8 @@ import java.util.List;
  */
 
 public class LineChart extends AutoView {
+    private int[] animatorMinAndMax = new int[]{0, 100};
+    private int duration = 3000;
 
     private int width;
     private int height;
@@ -53,6 +62,16 @@ public class LineChart extends AutoView {
     List<LineData> list = new ArrayList<>();
     List<RegionData> regionDatas = new ArrayList<>();
     private OnTitleClickListener onTitleClickListener;
+    //animator
+    boolean isShowAnimation = false;
+    private boolean animationEnd = false;
+    List<LineAndCircle> dataLines = new ArrayList<>();
+    private ValueAnimator animatior;
+
+    public LineChart setShowAnimation(boolean showAnimation) {
+        isShowAnimation = showAnimation;
+        return this;
+    }
 
     public void setOnTitleClickListener(OnTitleClickListener onTitleClickListener) {
         this.onTitleClickListener = onTitleClickListener;
@@ -64,7 +83,7 @@ public class LineChart extends AutoView {
     }
 
     public void resetSmoothness() {
-        BesselCalculator.setSmoothness(0.6f);
+        BesselCalculator.setSmoothness(0.3f);
     }
 
     public LineChart setMin(float min) {
@@ -142,7 +161,21 @@ public class LineChart extends AutoView {
     public void commit() {
         checkMinAndMax();
         setPaint();
-        invalidate();
+        if (isShowAnimation) {
+            startAnimation();
+        } else {
+            showDataLine();
+        }
+    }
+
+
+    public void startAnimation() {
+        isShowAnimation = true;
+        initAnimation();
+        if (animatior != null) {
+            animatior.cancel();
+            animatior.start();
+        }
     }
 
     private void checkMinAndMax() {
@@ -153,20 +186,31 @@ public class LineChart extends AutoView {
 
     public LineChart(Context context) {
         super(context);
-        init(context);
+        init(context, null);
     }
 
     public LineChart(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(context, attrs);
     }
 
     public LineChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(context, attrs);
     }
 
-    private void init(Context context) {
+    private void init(Context context, AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LineChart);
+            setCoordinateTextSize(ta.getDimensionPixelSize(R.styleable.LineChart_lineGradutionTextSize, coordinateTextSize));
+            setCoorinateColor(ta.getColor(R.styleable.LineChart_lineGradutaionColor, coorinateColor));
+            setTitleCorlor(ta.getColor(R.styleable.LineChart_lineTitleColor, titleCorlor));
+            setTitleTextSize(ta.getDimensionPixelSize(R.styleable.LineChart_lineTitleTextSize, titleTextSize));
+            setLineStrokeWidth(ta.getDimension(R.styleable.LineChart_lineGradutaionLineWidth, lineStrokeWidth));
+            setDensity(ta.getInt(R.styleable.LineChart_linedensity, density));
+            setMin(ta.getFloat(R.styleable.LineChart_lineMin, min));
+            setMax(ta.getFloat(R.styleable.LineChart_lineMax, max));
+        }
         setClickable(true);
         setBackgroundColor(0xffffffff);
 
@@ -184,60 +228,36 @@ public class LineChart extends AutoView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         width = w;
         height = h;
+        setAvaiable();
+        computeLines();
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        setPaint();
-        float leftWidth = getLeftWidth();
-        availableLeft = leftWidth;
-        availableTop = coordinateTextSize;
-        availableRight = width - titlePaint.measureText(titles[titles.length - 1]) / 2;
-        availableBottom = height - titleTextSize * 2;
-        availableHeight = availableBottom - availableTop;
-        availableWidth = availableRight - availableLeft;
 
-        drawCoordinate(canvas);//绘制刻度
-        if (isError) {
-            drawError(canvas);
-        } else {
-            drawLineAndPoints(canvas);//绘制折线
+    private void computeLines() {
+        if (list.size() == 0) {
+            return;
         }
-    }
-
-    //绘制错误
-    private void drawError(Canvas canvas) {
-        drawErrorText(canvas, width, height);
-    }
-
-    /**
-     * 绘制折线
-     *
-     * @param canvas
-     */
-    private void drawLineAndPoints(Canvas canvas) {
         int dataCount = list.size();
         if (dataCount <= 0) return;
         int titleCount = titles.length;
         float peerWidth = availableWidth / (titleCount - 1);
-        Path path = new Path();
+
         List<Point> points = new ArrayList<>();
-        List<CirclePoint> circlePoints = new ArrayList<>();
         for (int i = 0; i < dataCount; i++) {
+            Path path = new Path();
+
             LineData data = list.get(i);
-            int lineColor = data.getLineColor();
-            linePaint.setColor(lineColor);
+            final int lineColor = data.getLineColor();
             float nums[] = data.getNums();
             int numsCount = nums.length;
             if (numsCount != titles.length)
                 throw new IllegalArgumentException("the data nums's lengh must be " + titles.length + "!");
-            path.reset();
             points.clear();
+            List<CirclePoint> circlePoints = new ArrayList<>();
             circlePoints.clear();
             for (int j = 0; j < numsCount; j++) {
-                float currentX = availableLeft + j * (peerWidth + coordinateStrokeWidth);
+                float currentX = availableLeft + j * (peerWidth );
                 float trueNum = nums[j];
                 if (trueNum >= max) trueNum = max;
                 if (trueNum <= min) trueNum = min;
@@ -254,8 +274,110 @@ public class LineChart extends AutoView {
                 } else
                     path.cubicTo(besselPoints.get(j - 2).x, besselPoints.get(j - 2).y, besselPoints.get(j - 1).x, besselPoints.get(j - 1).y, besselPoints.get(j).x, besselPoints.get(j).y);
             }
-            canvas.drawPath(path, linePaint);
-            drawCircleRing(circlePoints, lineColor, canvas);
+            dataLines.add(new LineAndCircle(lineColor, path, circlePoints));
+        }
+    }
+
+    boolean isFirst = true;
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (isFirst) {
+            isFirst = false;
+            if (isShowAnimation) {
+                initAnimation();
+                animatior.start();
+            } else {
+                animatorLineAndCircleList.clear();
+                animatorLineAndCircleList.addAll(dataLines);
+            }
+        }
+        drawCoordinate(canvas);//绘制刻度
+        if (isError) {
+            drawError(canvas);
+        } else {
+            drawLineAndPoints(canvas);//绘制折线
+        }
+    }
+
+    List<LineAndCircle> animatorLineAndCircleList = new ArrayList<>();
+
+    private void initAnimation() {
+        animationEnd = false;
+        animatorLineAndCircleList.clear();
+        if (animatior == null) {
+            animatior = ValueAnimator.ofFloat(animatorMinAndMax[0], animatorMinAndMax[1]);
+            animatior.setDuration(duration);
+            animatior.setInterpolator(new LinearInterpolator());
+            animatior.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    animationEnd = false;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    animationEnd = false;
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    animationEnd = true;
+                }
+            });
+        }
+        animatior.removeAllUpdateListeners();
+        for (LineAndCircle peer : dataLines) {
+            final LineAndCircle lineAndCircle = new LineAndCircle();
+            lineAndCircle.getPath().moveTo(peer.getCirclePoints().get(0).getX(), peer.getCirclePoints().get(0).getY());
+            final float[] start = {0.0f};
+            final PathMeasure pathMeasure = new PathMeasure(peer.getPath(), false);
+            animatior.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float animatorValue = (float) animation.getAnimatedValue() / (animatorMinAndMax[1] - animatorMinAndMax[0]) * pathMeasure.getLength();
+                    //硬件加速 你妈逼
+                    pathMeasure.getSegment(start[0], animatorValue, lineAndCircle.getPath(), false);
+                    start[0] = animatorValue;
+                    invalidate();
+                }
+            });
+            lineAndCircle.setLineColor(peer.getLineColor());
+            lineAndCircle.setCirclePoints(peer.circlePoints);
+            animatorLineAndCircleList.add(lineAndCircle);
+        }
+    }
+
+    private void showDataLine() {
+        animatorLineAndCircleList.clear();
+        animatorLineAndCircleList.addAll(dataLines);
+        invalidate();
+    }
+
+    //绘制错误
+    private void drawError(Canvas canvas) {
+        drawErrorText(canvas, width, height);
+    }
+
+    /**
+     * 绘制折线
+     *
+     * @param canvas
+     */
+    private void drawLineAndPoints(Canvas canvas) {
+
+        for (LineAndCircle lineAndCircle : animatorLineAndCircleList) {
+            linePaint.setColor(lineAndCircle.getLineColor());
+            if (!isShowAnimation) {
+                canvas.drawPath(lineAndCircle.getPath(), linePaint);
+                drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+            } else {
+                canvas.drawPath(lineAndCircle.getPath(), linePaint);
+                if (animationEnd) {
+                    drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                }
+            }
         }
     }
 
@@ -269,6 +391,8 @@ public class LineChart extends AutoView {
     private void drawCircleRing(List<CirclePoint> list, int lineColor, Canvas canvas) {
         for (CirclePoint point : list) {
             circlePaint.setColor(lineColor);
+
+
             canvas.drawCircle(point.getX(), point.getY(), getCircleRadius(innerCircleRadius), circlePaint);
 
             circlePaint.setColor(0xffffffff);
@@ -408,7 +532,16 @@ public class LineChart extends AutoView {
 
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeWidth(lineStrokeWidth);
+    }
 
+    private void setAvaiable() {
+        float leftWidth = getLeftWidth();
+        availableLeft = leftWidth;
+        availableTop = coordinateTextSize;
+        availableRight = width - Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2, getCircleRadius(innerCircleRadius) / 2);
+        availableBottom = height - titleTextSize * 2;
+        availableHeight = availableBottom - availableTop;
+        availableWidth = availableRight - availableLeft;
     }
 
     private float getLeftWidth() {
@@ -465,6 +598,55 @@ public class LineChart extends AutoView {
 
         public String getTitle() {
             return title;
+        }
+    }
+
+    static class LineAndCircle {
+
+        public LineAndCircle() {
+
+        }
+
+        int lineColor;
+        Path path = new Path();
+        List<CirclePoint> circlePoints;
+
+        public LineAndCircle(int lineColor, List<CirclePoint> circlePoints) {
+            this.lineColor = lineColor;
+            this.circlePoints = circlePoints;
+        }
+
+        public LineAndCircle(int lineColor, android.graphics.Path path, List<CirclePoint> circlePoints) {
+            this.lineColor = lineColor;
+            this.path = path;
+            this.circlePoints = circlePoints;
+        }
+
+        public Path getPath() {
+            return path;
+        }
+
+        public List<CirclePoint> getCirclePoints() {
+            return circlePoints;
+        }
+
+        public int getLineColor() {
+            return lineColor;
+        }
+
+        public LineAndCircle setLineColor(int lineColor) {
+            this.lineColor = lineColor;
+            return this;
+        }
+
+        public LineAndCircle setCirclePoints(List<CirclePoint> circlePoints) {
+            this.circlePoints = circlePoints;
+            return this;
+        }
+
+        public LineAndCircle setPath(android.graphics.Path path) {
+            this.path = path;
+            return this;
         }
     }
 

@@ -119,6 +119,7 @@ public class AutoView extends View {
     Paint shadowErrorPaint = new Paint();
 
     private void init() {
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         errorPaint.setColor(errorColor);
         errorPaint.setAntiAlias(true);
         errorPaint.setTextSize(errorTextSize);

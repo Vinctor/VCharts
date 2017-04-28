@@ -38,4 +38,15 @@
         <attr name="min" format="integer" />
         <attr name="max" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="LineChart">
+        <attr name="lineGradutionTextSize" format="dimension" />
+        <attr name="lineGradutaionColor" format="color" />
+        <attr name="lineTitleColor" format="color" />
+        <attr name="lineTitleTextSize" format="dimension" />
+        <attr name="lineGradutaionLineWidth" format="dimension" />
+        <attr name="linedensity" format="integer" />
+        <attr name="lineMin" format="float" />
+        <attr name="lineMax" format="float" />
+    </declare-styleable>
 </resources>
