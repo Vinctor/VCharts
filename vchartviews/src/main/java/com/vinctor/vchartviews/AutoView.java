@@ -130,16 +130,16 @@ public class AutoView extends View {
         shadowErrorPaint.setAntiAlias(true);
     }
 
-    public void showError(String errorText) {
-        this.isError = true;
-        this.errorText = errorText;
-        postInvalidate();
-    }
-
-    public void showError(boolean isError) {
-        this.isError = isError;
-        postInvalidate();
-    }
+//    public void showError(String errorText) {
+//        this.isError = true;
+//        this.errorText = errorText;
+//        postInvalidate();
+//    }
+//
+//    public void showError(boolean isError) {
+//        this.isError = isError;
+//        postInvalidate();
+//    }
 
 
     protected void drawErrorText(Canvas canvas, float width, float height) {

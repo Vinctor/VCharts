@@ -28,13 +28,14 @@ public class LineActivity extends BaseActivity {
         line = (LineChart) findViewById(R.id.line);
         setSetting();
         line
+                .clearDatas()
                 .addData(new LineData(new float[]{20, 50, 20, 70, 90, 70, 76}, 0xff61B6E7))//需与title长度一致
                 .addData(new LineData(new float[]{30, 80, 50, 80, 70, 60, 100}, 0xffF8AC58))
-                .addData(new LineData(new float[]{-10, 30, 80, 50, 60, 80, 1500}, 0xffF593A0))
-                .addData(new LineData(new float[]{10, 60, 80, 65, 0, 80, 100}, 0xff61B6E7))//需与title长度一致
-
-                .addData(new LineData(new float[]{90, 90, 87, 78, 60, 50, 0}, 0xfffFeeA0))
-                .addData(new LineData(new float[]{0, 90, 98, 40, 80, 80, 0}, 0xffF85558))
+//                .addData(new LineData(new float[]{-10, 30, 80, 50, 60, 80, 1500}, 0xffF593A0))
+//                .addData(new LineData(new float[]{10, 60, 80, 65, 0, 80, 100}, 0xff61B6E7))//需与title长度一致
+//
+//                .addData(new LineData(new float[]{90, 90, 87, 78, 60, 50, 0}, 0xfffFeeA0))
+//                .addData(new LineData(new float[]{0, 90, 98, 40, 80, 80, 0}, 0xffF85558))
                 .setShowAnimation(true)
                 .commit();
         line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
@@ -47,7 +48,10 @@ public class LineActivity extends BaseActivity {
 
     @OnClick(R.id.auto)
     public void onViewClicked() {
-        line.startAnimation();
+        line.setTitles(new String[]{"语文"})
+                .clearDatas()
+                .addData(new LineData(new float[]{20}, 0xff61B6E7))
+                .commit();
     }
 
     void setSetting() {

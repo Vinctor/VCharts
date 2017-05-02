@@ -68,6 +68,11 @@ public class LineChart extends AutoView {
     List<LineAndCircle> dataLines = new ArrayList<>();
     private ValueAnimator animatior;
 
+    public LineChart setDuration(int duration) {
+        this.duration = duration;
+        return this;
+    }
+
     public LineChart setShowAnimation(boolean showAnimation) {
         isShowAnimation = showAnimation;
         return this;
@@ -83,7 +88,7 @@ public class LineChart extends AutoView {
     }
 
     public void resetSmoothness() {
-        BesselCalculator.setSmoothness(0.3f);
+        BesselCalculator.setSmoothness(0.4f);
     }
 
     public LineChart setMin(float min) {
@@ -153,6 +158,23 @@ public class LineChart extends AutoView {
         return this;
     }
 
+    /**
+     * 网格线宽度
+     *
+     * @param coordinateStrokeWidth
+     * @return
+     */
+    public LineChart setCoordinateStrokeWidth(float coordinateStrokeWidth) {
+        this.coordinateStrokeWidth = coordinateStrokeWidth;
+        return this;
+    }
+
+    /**
+     * 折线宽度
+     *
+     * @param lineStrokeWidth
+     * @return
+     */
     public LineChart setLineStrokeWidth(float lineStrokeWidth) {
         this.lineStrokeWidth = getAutoWidthSize(lineStrokeWidth);
         return this;
@@ -161,13 +183,18 @@ public class LineChart extends AutoView {
     public void commit() {
         checkMinAndMax();
         setPaint();
+        setAvaiable();
+        computeLines();
+        if (titles.length == 1) {
+            showDataLine();
+            return;
+        }
         if (isShowAnimation) {
             startAnimation();
         } else {
             showDataLine();
         }
     }
-
 
     public void startAnimation() {
         isShowAnimation = true;
@@ -206,10 +233,13 @@ public class LineChart extends AutoView {
             setCoorinateColor(ta.getColor(R.styleable.LineChart_lineGradutaionColor, coorinateColor));
             setTitleCorlor(ta.getColor(R.styleable.LineChart_lineTitleColor, titleCorlor));
             setTitleTextSize(ta.getDimensionPixelSize(R.styleable.LineChart_lineTitleTextSize, titleTextSize));
-            setLineStrokeWidth(ta.getDimension(R.styleable.LineChart_lineGradutaionLineWidth, lineStrokeWidth));
+            setLineStrokeWidth(ta.getDimension(R.styleable.LineChart_lineWidth, lineStrokeWidth));
+            setCoordinateStrokeWidth(ta.getDimension(R.styleable.LineChart_lineGradutaionWidth, coordinateStrokeWidth));
             setDensity(ta.getInt(R.styleable.LineChart_linedensity, density));
             setMin(ta.getFloat(R.styleable.LineChart_lineMin, min));
             setMax(ta.getFloat(R.styleable.LineChart_lineMax, max));
+            setShowAnimation(ta.getBoolean(R.styleable.LineChart_showAnimation, false));
+            setDuration(ta.getInteger(R.styleable.LineChart_animationduration, 3000));
 
             checkMinAndMax();
             setPaint();
@@ -239,15 +269,41 @@ public class LineChart extends AutoView {
 
 
     private void computeLines() {
-        if (list.size() == 0) {
-            return;
-        }
+        dataLines.clear();
         int dataCount = list.size();
         if (dataCount <= 0) return;
         int titleCount = titles.length;
+        List<Point> points = new ArrayList<>();
+        //1列的情况
+        if (titleCount == 1) {
+            float peerWidth = availableWidth / 2;
+            for (int i = 0; i < dataCount; i++) {
+                LineData data = list.get(i);
+                final int lineColor = data.getLineColor();
+                float nums[] = data.getNums();
+                int numsCount = nums.length;
+                if (numsCount != titles.length)
+                    throw new IllegalArgumentException("the data nums's lengh must be " + titles.length + "!");
+                List<CirclePoint> circlePoints = new ArrayList<>();
+                circlePoints.clear();
+                float currentX = availableLeft + peerWidth;
+                float trueNum = nums[0];
+                if (trueNum >= max) trueNum = max;
+                if (trueNum <= min) trueNum = min;
+                float currentY = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
+                points.add(new Point(currentX, currentY));
+                //外圆
+                circlePoints.add(new CirclePoint(currentX, currentY));
+                dataLines.add(new LineAndCircle(lineColor, null, circlePoints));
+            }
+
+
+            return;
+        }
+
+        //>=2列的情况
         float peerWidth = availableWidth / (titleCount - 1);
 
-        List<Point> points = new ArrayList<>();
         for (int i = 0; i < dataCount; i++) {
             Path path = new Path();
 
@@ -298,11 +354,7 @@ public class LineChart extends AutoView {
             }
         }
         drawCoordinate(canvas);//绘制刻度
-        if (isError) {
-            drawError(canvas);
-        } else {
-            drawLineAndPoints(canvas);//绘制折线
-        }
+        drawLineAndPoints(canvas);//绘制折线
     }
 
     List<LineAndCircle> animatorLineAndCircleList = new ArrayList<>();
@@ -359,11 +411,6 @@ public class LineChart extends AutoView {
         invalidate();
     }
 
-    //绘制错误
-    private void drawError(Canvas canvas) {
-        drawErrorText(canvas, width, height);
-    }
-
     /**
      * 绘制折线
      *
@@ -373,13 +420,17 @@ public class LineChart extends AutoView {
 
         for (LineAndCircle lineAndCircle : animatorLineAndCircleList) {
             linePaint.setColor(lineAndCircle.getLineColor());
-            if (!isShowAnimation) {
-                canvas.drawPath(lineAndCircle.getPath(), linePaint);
+            if (titles.length == 1) {
                 drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
             } else {
-                canvas.drawPath(lineAndCircle.getPath(), linePaint);
-                if (animationEnd) {
+                if (!isShowAnimation) {
+                    canvas.drawPath(lineAndCircle.getPath(), linePaint);
                     drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                } else {
+                    canvas.drawPath(lineAndCircle.getPath(), linePaint);
+                    if (animationEnd) {
+                        drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                    }
                 }
             }
         }
@@ -439,6 +490,9 @@ public class LineChart extends AutoView {
 
         //竖向line
         int verLineNum = titles.length - 2;
+        if (titles.length == 1) {
+            verLineNum = 1;
+        }
         if (verLineNum > 0) {
             float peerWidth = availableWidth / (verLineNum + 1);
             for (int i = 1; i <= verLineNum; i++) {
@@ -452,6 +506,24 @@ public class LineChart extends AutoView {
         regionDatas.clear();
         int titleCount = titles.length;
         float peerWidth = availableWidth / (titleCount - 1);
+        if (titleCount == 1) {
+            peerWidth = availableWidth / 2;
+            float currentTitleWidth = titlePaint.measureText(titles[0]);
+            float titleCenterX = availableLeft + peerWidth;
+            float currentX = titleCenterX - currentTitleWidth / 2;
+            float currentY = availableBottom + titleTextSize + coordinateTextSize / 2;
+            canvas.drawText(titles[0], currentX, currentY, titlePaint);
+
+            Region region = new Region(
+                    (int) (currentX - offset),
+                    (int) (currentY - titleTextSize - offset),
+                    (int) (currentX + currentTitleWidth + offset),
+                    (int) (currentY + offset)
+            );
+            regionDatas.add(new RegionData(region, 0, titles[0]));
+
+            return;
+        }
         for (int i = 0; i < titleCount; i++) {
             float currentTitleWidth = titlePaint.measureText(titles[i]);
             float titleCenterX = availableLeft + i * peerWidth;

@@ -36,7 +36,7 @@ allprojects {
 ext {
     userOrg = 'xcht1209'
     groupId = 'com.vinctor'
-    publishVersion = '0.1.16'
+    publishVersion = '0.1.22'
     website = 'https://github.com/Vinctor/VCharts'
     licences = ['Apache-2.0']
 }

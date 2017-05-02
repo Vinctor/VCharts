@@ -44,9 +44,12 @@
         <attr name="lineGradutaionColor" format="color" />
         <attr name="lineTitleColor" format="color" />
         <attr name="lineTitleTextSize" format="dimension" />
-        <attr name="lineGradutaionLineWidth" format="dimension" />
+        <attr name="lineWidth" format="dimension" />
+        <attr name="lineGradutaionWidth" format="dimension" />
         <attr name="linedensity" format="integer" />
         <attr name="lineMin" format="float" />
         <attr name="lineMax" format="float" />
+        <attr name="showAnimation" format="boolean" />
+        <attr name="animationduration" format="integer" />
     </declare-styleable>
 </resources>
