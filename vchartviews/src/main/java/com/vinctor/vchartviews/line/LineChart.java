@@ -210,6 +210,10 @@ public class LineChart extends AutoView {
             setDensity(ta.getInt(R.styleable.LineChart_linedensity, density));
             setMin(ta.getFloat(R.styleable.LineChart_lineMin, min));
             setMax(ta.getFloat(R.styleable.LineChart_lineMax, max));
+
+            checkMinAndMax();
+            setPaint();
+            ta.recycle();
         }
         setClickable(true);
         setBackgroundColor(0xffffffff);
@@ -257,7 +261,7 @@ public class LineChart extends AutoView {
             List<CirclePoint> circlePoints = new ArrayList<>();
             circlePoints.clear();
             for (int j = 0; j < numsCount; j++) {
-                float currentX = availableLeft + j * (peerWidth );
+                float currentX = availableLeft + j * (peerWidth);
                 float trueNum = nums[j];
                 if (trueNum >= max) trueNum = max;
                 if (trueNum <= min) trueNum = min;
