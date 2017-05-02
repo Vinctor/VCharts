@@ -4,7 +4,7 @@
 
 
 ![bar](screenshot/diagram.png)
-![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.png) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.png)![line](screenshot/line_animation.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
@@ -47,7 +47,18 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
     <com.vinctor.vchartviews.bar.BarCharSingle
         android:id="@+id/bar"
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_height="400dp"
+        app:barTextSize="28px"
+        app:barTitleMargin="28px"
+        app:barWidth="58px"
+        app:density="5"
+        app:gradutaionColor="@color/$d2d2d2"
+        app:gradutaionLineWidth="2px"
+        app:gradutionTextSize="26px"
+        app:max="100"
+        app:min="0"
+        app:titleColor="@color/$999999"
+        app:titleTextSize="32px"/>
         
 ```java```代码中
 
@@ -72,9 +83,21 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
 添加至```xml```中
 
     <com.vinctor.vchartviews.bar.BarCharMulti
-        android:id="@+id/bar"
-        android:layout_width="match_parent"
-        android:layout_height="400dp" />
+                    android:id="@+id/bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="500px"
+                    android:layout_marginTop="34px"
+                    app:barTextSize="28px"
+                    app:barTitleMargin="28px"
+                    app:barWidth="58px"
+                    app:density="5"
+                    app:gradutaionColor="@color/$d2d2d2"
+                    app:gradutaionLineWidth="2px"
+                    app:gradutionTextSize="26px"
+                    app:max="100"
+                    app:min="0"
+                    app:titleColor="@color/$999999"
+                    app:titleTextSize="32px" />
         
 ```java```代码中
 
@@ -107,15 +130,25 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
 
 添加至```xml```中
 
-    <com.vinctor.vchartviews.line.LineChart
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+      <com.vinctor.vchartviews.line.LineChart
+                    android:id="@+id/line"
+                    android:layout_width="match_parent"
+                    android:layout_height="500px"
+                    android:layout_marginTop="34px"
+                    app:lineGradutaionColor="@color/$d2d2d2"
+                    app:lineGradutaionLineWidth="2px"
+                    app:lineGradutionTextSize="26px"
+                    app:lineMax="100"
+                    app:lineMin="0"
+                    app:lineTitleColor="@color/$9b9b9b"
+                    app:lineTitleTextSize="32px"
+                    app:linedensity="5" />
         
 ```java```中
 
       line.setDensity(5)
-                .setTitleTextSize(30)//底部标题大小
+                  .setShowAnimation(true)//动画
+                  .setTitleTextSize(30)//底部标题大小
                 .setLineSmoothness(0.3f)//折线平滑度
                 .setCoordinateTextSize(30)//刻度文字大小
                 .setCoorinateColor(0xff888888)//刻度文字颜色
