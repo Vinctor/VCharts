@@ -3,6 +3,7 @@ package com.vinctor.vcharts;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.vinctor.vchartviews.line.LineChart;
@@ -28,13 +29,8 @@ public class LineActivity extends BaseActivity {
         line = (LineChart) findViewById(R.id.line);
         line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
                 .clearDatas()
-                .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, 76}, 0xff61B6E7))//需与title长度一致
+                .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                 .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
-//                .addData(new LineData(new float[]{-10, 30, 80, 50, 60, 80, 1500}, 0xffF593A0))
-//                .addData(new LineData(new float[]{10, 60, 80, 65, 0, 80, 100}, 0xff61B6E7))//需与title长度一致
-//
-//                .addData(new LineData(new float[]{90, 90, 87, 78, 60, 50, 0}, 0xfffFeeA0))
-//                .addData(new LineData(new float[]{0, 90, 98, 40, 80, 80, 0}, 0xffF85558))
                 .setShowAnimation(true)
                 .commit();
         line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
@@ -45,11 +41,38 @@ public class LineActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.auto)
-    public void onViewClicked() {
-        line.setTitles(new String[]{"语文"})
-                .clearDatas()
-                .addData(new LineData(new float[]{20}, 0xff61B6E7))
-                .commit();
+    @OnClick({R.id.auto, R.id.showtag, R.id.startAni, R.id.single, R.id.multi})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.auto:
+                line.setAuto(!line.isAuto());
+                line.commit();
+                break;
+            case R.id.showtag:
+                line.setShowTag(!line.isShowTag()).commit();
+                break;
+            case R.id.startAni:
+                line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
+                        .clearDatas()
+                        .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
+                        .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
+                        .setShowAnimation(true)
+                        .commit();
+                break;
+            case R.id.single:
+                line.setTitles(new String[]{"语文"})
+                        .clearDatas()
+                        .addData(new LineData(new float[]{20}, 0xff61B6E7))
+                        .commit();
+                break;
+            case R.id.multi:
+                line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
+                        .clearDatas()
+                        .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
+                        .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
+                        .setShowAnimation(true)
+                        .commit();
+                break;
+        }
     }
 }

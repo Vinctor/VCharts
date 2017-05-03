@@ -70,10 +70,28 @@ public class LineChart extends AutoView {
     List<LineAndCircle> dataLines = new ArrayList<>();
     private ValueAnimator animatior;
 
-    //原点点击
+    //圆圈点击
+    boolean isShowTag = true;
     int circleClickIndex[] = new int[]{-1, -1};
+    private float circlrClickOffset = 0;
 
     private GestureDetectorCompat mDetector;
+    private int tagpadding;
+    private float tagMargin;
+
+    public LineChart setCirclrClickOffset(float circlrClickOffset) {
+        this.circlrClickOffset = getAutoWidthSize(circlrClickOffset);
+        return this;
+    }
+
+    public boolean isShowTag() {
+        return isShowTag;
+    }
+
+    public LineChart setShowTag(boolean showTag) {
+        isShowTag = showTag;
+        return this;
+    }
 
     public LineChart setDuration(int duration) {
         this.duration = duration;
@@ -247,6 +265,7 @@ public class LineChart extends AutoView {
             setMax(ta.getFloat(R.styleable.LineChart_lineMax, max));
             setShowAnimation(ta.getBoolean(R.styleable.LineChart_showAnimation, false));
             setDuration(ta.getInteger(R.styleable.LineChart_animationduration, 3000));
+            setCirclrClickOffset(ta.getDimensionPixelOffset(R.styleable.LineChart_circleClickOffset, 0));
 
             checkMinAndMax();
             setPaint();
@@ -279,10 +298,14 @@ public class LineChart extends AutoView {
     }
 
     private void setAvaiable() {
+        tagpadding = coordinateTextSize;
+        tagMargin = getCircleRadius(innerCircleRadius) + coordinateTextSize / 3;
+
         float leftWidth = getLeftWidth();
         availableLeft = leftWidth;
-        availableTop = coordinateTextSize;
-        availableRight = width - Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2, getCircleRadius(innerCircleRadius) / 2);
+        availableTop = tagMargin + getCircleRadius(innerCircleRadius) + coordinateTextSize + tagpadding + 10;//10为上方空隙,可为0,getCircleRadius为drawTag中三角形高度
+        availableRight = width - Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2,
+                Math.max(circlePaint.measureText(max + "") / 2 + tagpadding, circlePaint.measureText(min + "")) / 2 + tagpadding);
         availableBottom = height - titleTextSize * 2;
         availableHeight = availableBottom - availableTop;
         availableWidth = availableRight - availableLeft;
@@ -376,8 +399,10 @@ public class LineChart extends AutoView {
                 animatorLineAndCircleList.addAll(dataLines);
             }
         }
+        tagCircles.clear();
         drawCoordinate(canvas);//绘制刻度
         drawLineAndPoints(canvas);//绘制折线
+        drawTag(canvas);
     }
 
     List<LineAndCircle> animatorLineAndCircleList = new ArrayList<>();
@@ -460,6 +485,8 @@ public class LineChart extends AutoView {
         }
     }
 
+    List<CirclePoint> tagCircles = new ArrayList<>();
+
     /**
      * 绘制点
      *
@@ -481,7 +508,7 @@ public class LineChart extends AutoView {
             circlePaint.setAlpha(255);
             canvas.drawCircle(point.getX(), point.getY(), outRadius, circlePaint);
             if (isDrawTag) {
-                drawTag(canvas, point, circlePaint);
+                tagCircles.add(new CirclePoint(lineColor, point));
             }
 
             if (!(circleClickIndex[1] == i && isDrawTag)) {
@@ -492,39 +519,44 @@ public class LineChart extends AutoView {
         }
     }
 
-    private void drawTag(Canvas canvas, CirclePoint point, Paint circlePaint) {
-        float tagpadding = coordinateTextSize;
-        float tagMargin = getCircleRadius(innerCircleRadius) + coordinateTextSize / 3;
-        float sanjiaoHeight = getCircleRadius(innerCircleRadius);
-
-        float currentX = point.getX();
-        float currentY = point.getY();
-        String num = point.getNum() + "";
-        if (num.substring(num.length() - 1, num.length()).equals("0")) {
-            num = (int) point.getNum() + "";
+    //点击标签
+    private void drawTag(Canvas canvas) {
+        int tagCircleCount = tagCircles.size();
+        if (tagCircleCount == 0) {
+            return;
         }
-        float numWidth = circlePaint.measureText(num + "");
-        float tagWidth = numWidth + 2 * tagpadding;
-        float tagRectHeight = coordinateTextSize + 2 * (tagpadding / 2);
-        circlePaint.setAlpha(255);
-        //tag矩形
-        float tagLeft = currentX - tagWidth / 2;
-        float tagRight = tagLeft + tagWidth;
-        float tagRectBottom = currentY - tagMargin - sanjiaoHeight;
-        float tagRectTop = tagRectBottom - tagRectHeight;
-        canvas.drawRect(tagLeft, tagRectTop, tagRight, tagRectBottom, circlePaint);
-        //三角
-        Path sanjiaoPath = new Path();
-        sanjiaoPath.moveTo(tagLeft + tagWidth / 3, tagRectBottom - 1);
-        sanjiaoPath.lineTo(tagRight - tagWidth / 3, tagRectBottom - 1);
-        sanjiaoPath.lineTo(currentX, currentY - tagMargin);
-        canvas.drawPath(sanjiaoPath, circlePaint);
+        float sanjiaoHeight = getCircleRadius(innerCircleRadius);
+        for (CirclePoint point : tagCircles) {
+            float currentX = point.getX();
+            float currentY = point.getY();
+            String num = point.getNum() + "";
+            if (num.substring(num.length() - 1, num.length()).equals("0")) {
+                num = (int) point.getNum() + "";
+            }
+            float numWidth = circlePaint.measureText(num + "");
+            float tagWidth = numWidth + 2 * tagpadding;
+            float tagRectHeight = coordinateTextSize + 2 * (tagpadding / 2);
+            circlePaint.setAlpha(255);
+            //tag矩形
+            circlePaint.setColor(point.color);
+            float tagLeft = currentX - tagWidth / 2;
+            float tagRight = tagLeft + tagWidth;
+            float tagRectBottom = currentY - tagMargin - sanjiaoHeight;
+            float tagRectTop = tagRectBottom - tagRectHeight;
+            canvas.drawRect(tagLeft, tagRectTop, tagRight, tagRectBottom, circlePaint);
+            //三角
+            Path sanjiaoPath = new Path();
+            sanjiaoPath.moveTo(tagLeft + tagWidth / 3, tagRectBottom - 1);
+            sanjiaoPath.lineTo(tagRight - tagWidth / 3, tagRectBottom - 1);
+            sanjiaoPath.lineTo(currentX, currentY - tagMargin);
+            canvas.drawPath(sanjiaoPath, circlePaint);
 
-        //num
-        circlePaint.setAlpha(255);
-        circlePaint.setColor(0xffffffff);
+            //num
+            circlePaint.setAlpha(255);
+            circlePaint.setColor(0xffffffff);
 
-        canvas.drawText(num, currentX - numWidth / 2, tagRectBottom - tagpadding / 2, circlePaint);
+            canvas.drawText(num, currentX - numWidth / 2, tagRectBottom - tagpadding / 2, circlePaint);
+        }
     }
 
     private float getCircleRadius(float innerCircleRadius) {
@@ -637,6 +669,9 @@ public class LineChart extends AutoView {
     }
 
     public int[] getPressCircleIndex(int x, int y) {
+        if (!isShowTag) {
+            return new int[]{-1, -1};
+        }
         int[] index = new int[]{-1, -1};
         int lineCount = animatorLineAndCircleList.size();
         for (int i = 0; i < lineCount; i++) {
@@ -667,7 +702,6 @@ public class LineChart extends AutoView {
         innerCircleRadius = lineStrokeWidth;
     }
 
-
     private float getLeftWidth() {
         float graduationTextWidth = measureGraduationTextWidth();
         leftMargin = Math.max(graduationTextWidth / 4, getCircleRadius(innerCircleRadius));
@@ -683,7 +717,14 @@ public class LineChart extends AutoView {
         float num;
         float x;
         float y;
+        int color;
 
+        public CirclePoint(int color, CirclePoint point) {
+            this.num = point.num;
+            this.x = point.x;
+            this.y = point.y;
+            this.color = color;
+        }
 
         public CirclePoint(float nums, float x, float y) {
             this.num = nums;
@@ -704,10 +745,14 @@ public class LineChart extends AutoView {
         }
 
         public Region getCircleRegion() {
-            float offset = innerCircleRadius * 2;
+            float offset = circlrClickOffset;
             //click
             Region currentRegion = new Region();
-            currentRegion.set((int) (x - offset), (int) (y - offset), (int) (x + offset), (int) (y + offset));
+            currentRegion.set(
+                    (int) (x - getCircleRadius(innerCircleRadius) - offset),
+                    (int) (y - getCircleRadius(innerCircleRadius) - offset),
+                    (int) (x + getCircleRadius(innerCircleRadius) + offset),
+                    (int) (y + getCircleRadius(innerCircleRadius) + offset));
             return currentRegion;
         }
     }
@@ -791,24 +836,6 @@ public class LineChart extends AutoView {
 
     public interface OnTitleClickListener {
         void onClick(LineChart linechart, String title, int index);
-    }
-
-    static class CircleClickPoint {
-        Point point;
-        Region region;
-
-        public CircleClickPoint(Point point, Region region) {
-            this.point = point;
-            this.region = region;
-        }
-
-        public Point getPoint() {
-            return point;
-        }
-
-        public Region getRegion() {
-            return region;
-        }
     }
 
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
