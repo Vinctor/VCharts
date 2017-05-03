@@ -4,7 +4,7 @@
 
 
 ![bar](screenshot/diagram.png)
-![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.png)![line](screenshot/line_animation.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
@@ -138,6 +138,7 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
                     app:lineGradutaionColor="@color/$d2d2d2"
                     app:lineGradutaionLineWidth="2px"
                     app:lineGradutionTextSize="26px"
+                    app:circleClickOffset="12px"//点击区域偏移
                     app:lineMax="100"
                     app:lineMin="0"
                     app:lineTitleColor="@color/$9b9b9b"
@@ -151,6 +152,7 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
                   .setTitleTextSize(30)//底部标题大小
                 .setLineSmoothness(0.3f)//折线平滑度
                 .setCoordinateTextSize(30)//刻度文字大小
+                .setShowTag(false)//点击圆圈是否显示tag
                 .setCoorinateColor(0xff888888)//刻度文字颜色
                 .setLineStrokeWidth(8)//网格线宽度
                 .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学"})//底部标题,需与折线数据长度一致
