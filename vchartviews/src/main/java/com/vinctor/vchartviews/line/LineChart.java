@@ -95,6 +95,9 @@ public class LineChart extends AutoView {
 
     public LineChart setDuration(int duration) {
         this.duration = duration;
+        if (animatior != null) {
+            animatior.setDuration(duration);
+        }
         return this;
     }
 
@@ -286,6 +289,7 @@ public class LineChart extends AutoView {
 
 
         mDetector = new GestureDetectorCompat(context, new MyGestureListener());
+
     }
 
     @Override
