@@ -11,7 +11,9 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.animation.LinearInterpolator;
 
@@ -60,13 +62,18 @@ public class LineChart extends AutoView {
 
     private String titles[] = new String[]{"", "", "", "", ""};
     List<LineData> list = new ArrayList<>();
-    List<RegionData> regionDatas = new ArrayList<>();
+    List<TitleClickRegionData> titleRegionDatas = new ArrayList<>();
     private OnTitleClickListener onTitleClickListener;
     //animator
     boolean isShowAnimation = false;
     private boolean animationEnd = false;
     List<LineAndCircle> dataLines = new ArrayList<>();
     private ValueAnimator animatior;
+
+    //原点点击
+    int circleClickIndex[] = new int[]{-1, -1};
+
+    private GestureDetectorCompat mDetector;
 
     public LineChart setDuration(int duration) {
         this.duration = duration;
@@ -256,6 +263,10 @@ public class LineChart extends AutoView {
 
         circlePaint.setAntiAlias(true);
         circlePaint.setStyle(Paint.Style.FILL);
+        circlePaint.setTextSize(coordinateTextSize);
+
+
+        mDetector = new GestureDetectorCompat(context, new MyGestureListener());
     }
 
     @Override
@@ -267,9 +278,21 @@ public class LineChart extends AutoView {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
+    private void setAvaiable() {
+        float leftWidth = getLeftWidth();
+        availableLeft = leftWidth;
+        availableTop = coordinateTextSize;
+        availableRight = width - Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2, getCircleRadius(innerCircleRadius) / 2);
+        availableBottom = height - titleTextSize * 2;
+        availableHeight = availableBottom - availableTop;
+        availableWidth = availableRight - availableLeft;
+    }
 
     private void computeLines() {
         dataLines.clear();
+        //circle click
+        circleClickIndex = new int[]{-1, -1};
+
         int dataCount = list.size();
         if (dataCount <= 0) return;
         int titleCount = titles.length;
@@ -283,7 +306,7 @@ public class LineChart extends AutoView {
                 float nums[] = data.getNums();
                 int numsCount = nums.length;
                 if (numsCount != titles.length)
-                    throw new IllegalArgumentException("the data nums's lengh must be " + titles.length + "!");
+                    throw new IllegalArgumentException("the data num's lengh must be " + titles.length + "!");
                 List<CirclePoint> circlePoints = new ArrayList<>();
                 circlePoints.clear();
                 float currentX = availableLeft + peerWidth;
@@ -293,10 +316,10 @@ public class LineChart extends AutoView {
                 float currentY = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
                 points.add(new Point(currentX, currentY));
                 //外圆
-                circlePoints.add(new CirclePoint(currentX, currentY));
+                circlePoints.add(new CirclePoint(nums[0], currentX, currentY));
                 dataLines.add(new LineAndCircle(lineColor, null, circlePoints));
-            }
 
+            }
 
             return;
         }
@@ -312,7 +335,7 @@ public class LineChart extends AutoView {
             float nums[] = data.getNums();
             int numsCount = nums.length;
             if (numsCount != titles.length)
-                throw new IllegalArgumentException("the data nums's lengh must be " + titles.length + "!");
+                throw new IllegalArgumentException("the data num's lengh must be " + titles.length + "!");
             points.clear();
             List<CirclePoint> circlePoints = new ArrayList<>();
             circlePoints.clear();
@@ -324,7 +347,7 @@ public class LineChart extends AutoView {
                 float currentY = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
                 points.add(new Point(currentX, currentY));
                 //外圆
-                circlePoints.add(new CirclePoint(currentX, currentY));
+                circlePoints.add(new CirclePoint(nums[j], currentX, currentY));
             }
             //贝塞尔曲线
             List<Point> besselPoints = BesselCalculator.computeBesselPoints(points);
@@ -417,19 +440,20 @@ public class LineChart extends AutoView {
      * @param canvas
      */
     private void drawLineAndPoints(Canvas canvas) {
-
-        for (LineAndCircle lineAndCircle : animatorLineAndCircleList) {
+        int lineSize = animatorLineAndCircleList.size();
+        for (int i = 0; i < lineSize; i++) {
+            LineAndCircle lineAndCircle = animatorLineAndCircleList.get(i);
             linePaint.setColor(lineAndCircle.getLineColor());
             if (titles.length == 1) {
-                drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
             } else {
                 if (!isShowAnimation) {
                     canvas.drawPath(lineAndCircle.getPath(), linePaint);
-                    drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                    drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
                 } else {
                     canvas.drawPath(lineAndCircle.getPath(), linePaint);
                     if (animationEnd) {
-                        drawCircleRing(lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                        drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
                     }
                 }
             }
@@ -443,16 +467,64 @@ public class LineChart extends AutoView {
      * @param lineColor
      * @param canvas
      */
-    private void drawCircleRing(List<CirclePoint> list, int lineColor, Canvas canvas) {
-        for (CirclePoint point : list) {
+    private void drawCircleRing(int lineIndex, List<CirclePoint> list, int lineColor, Canvas canvas) {
+
+        boolean isDrawTag = lineIndex == circleClickIndex[0];
+
+        int circlrCount = list.size();
+        for (int i = 0; i < circlrCount; i++) {
+            CirclePoint point = list.get(i);
             circlePaint.setColor(lineColor);
+            float outRadius = getCircleRadius(innerCircleRadius);
+            float innerRadius = innerCircleRadius;
 
+            circlePaint.setAlpha(255);
+            canvas.drawCircle(point.getX(), point.getY(), outRadius, circlePaint);
+            if (isDrawTag) {
+                drawTag(canvas, point, circlePaint);
+            }
 
-            canvas.drawCircle(point.getX(), point.getY(), getCircleRadius(innerCircleRadius), circlePaint);
-
-            circlePaint.setColor(0xffffffff);
-            canvas.drawCircle(point.getX(), point.getY(), innerCircleRadius, circlePaint);
+            if (!(circleClickIndex[1] == i && isDrawTag)) {
+                circlePaint.setAlpha(255);
+                circlePaint.setColor(0xffffffff);
+                canvas.drawCircle(point.getX(), point.getY(), innerRadius, circlePaint);
+            }
         }
+    }
+
+    private void drawTag(Canvas canvas, CirclePoint point, Paint circlePaint) {
+        float tagpadding = coordinateTextSize;
+        float tagMargin = getCircleRadius(innerCircleRadius) + coordinateTextSize / 3;
+        float sanjiaoHeight = getCircleRadius(innerCircleRadius);
+
+        float currentX = point.getX();
+        float currentY = point.getY();
+        String num = point.getNum() + "";
+        if (num.substring(num.length() - 1, num.length()).equals("0")) {
+            num = (int) point.getNum() + "";
+        }
+        float numWidth = circlePaint.measureText(num + "");
+        float tagWidth = numWidth + 2 * tagpadding;
+        float tagRectHeight = coordinateTextSize + 2 * (tagpadding / 2);
+        circlePaint.setAlpha(255);
+        //tag矩形
+        float tagLeft = currentX - tagWidth / 2;
+        float tagRight = tagLeft + tagWidth;
+        float tagRectBottom = currentY - tagMargin - sanjiaoHeight;
+        float tagRectTop = tagRectBottom - tagRectHeight;
+        canvas.drawRect(tagLeft, tagRectTop, tagRight, tagRectBottom, circlePaint);
+        //三角
+        Path sanjiaoPath = new Path();
+        sanjiaoPath.moveTo(tagLeft + tagWidth / 3, tagRectBottom - 1);
+        sanjiaoPath.lineTo(tagRight - tagWidth / 3, tagRectBottom - 1);
+        sanjiaoPath.lineTo(currentX, currentY - tagMargin);
+        canvas.drawPath(sanjiaoPath, circlePaint);
+
+        //num
+        circlePaint.setAlpha(255);
+        circlePaint.setColor(0xffffffff);
+
+        canvas.drawText(num, currentX - numWidth / 2, tagRectBottom - tagpadding / 2, circlePaint);
     }
 
     private float getCircleRadius(float innerCircleRadius) {
@@ -503,7 +575,7 @@ public class LineChart extends AutoView {
 
         //title
         float offset = titleTextSize / 2;
-        regionDatas.clear();
+        titleRegionDatas.clear();
         int titleCount = titles.length;
         float peerWidth = availableWidth / (titleCount - 1);
         if (titleCount == 1) {
@@ -511,16 +583,16 @@ public class LineChart extends AutoView {
             float currentTitleWidth = titlePaint.measureText(titles[0]);
             float titleCenterX = availableLeft + peerWidth;
             float currentX = titleCenterX - currentTitleWidth / 2;
-            float currentY = availableBottom + titleTextSize + coordinateTextSize / 2;
+            float currentY = availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
             canvas.drawText(titles[0], currentX, currentY, titlePaint);
 
             Region region = new Region(
                     (int) (currentX - offset),
-                    (int) (currentY - titleTextSize - offset),
+                    (int) (currentY - titleTextSize),
                     (int) (currentX + currentTitleWidth + offset),
-                    (int) (currentY + offset)
+                    (int) (currentY + 2 * offset)
             );
-            regionDatas.add(new RegionData(region, 0, titles[0]));
+            titleRegionDatas.add(new TitleClickRegionData(region, 0, titles[0]));
 
             return;
         }
@@ -528,74 +600,57 @@ public class LineChart extends AutoView {
             float currentTitleWidth = titlePaint.measureText(titles[i]);
             float titleCenterX = availableLeft + i * peerWidth;
             float currentX = titleCenterX - currentTitleWidth / 2;
-            float currentY = availableBottom + titleTextSize + coordinateTextSize / 2;
+            float currentY = availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
             canvas.drawText(titles[i], currentX, currentY, titlePaint);
             //add region
 
             Region region = new Region(
                     (int) (currentX - offset),
-                    (int) (currentY - titleTextSize - offset),
+                    (int) (currentY - titleTextSize),
                     (int) (currentX + currentTitleWidth + offset),
-                    (int) (currentY + offset)
+                    (int) (currentY + 2 * offset)
             );
-            regionDatas.add(new RegionData(region, i, titles[i]));
+            titleRegionDatas.add(new TitleClickRegionData(region, i, titles[i]));
         }
     }
-
-    int downIndex = -1;
-    int upIndex = -1;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (onTitleClickListener == null) {
+        if (mDetector.onTouchEvent(event))
+            return true;
+        else
             return false;
-        }
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-
-        int action = event.getAction();
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                downIndex = getPressIndex(x, y);
-                if (downIndex < 0) {
-                    return false;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                upIndex = getPressIndex(x, y);
-                if (upIndex < 0) {
-                    return false;
-                }
-                if (upIndex == downIndex && onTitleClickListener != null) {
-                    onTitleClickListener.onClick(this, regionDatas.get(downIndex).getTitle(), downIndex);
-                    downIndex = -1;
-                    upIndex = -1;
-                    return true;
-                }
-                downIndex = -1;
-                upIndex = -1;
-                return false;
-            case MotionEvent.ACTION_CANCEL:
-                downIndex = -1;
-                upIndex = -1;
-                break;
-        }
-        return super.onTouchEvent(event);
     }
 
-    private int getPressIndex(int x, int y) {
-        int size = regionDatas.size();
+    public int getPressTitleIndex(int x, int y) {
+        int size = titleRegionDatas.size();
         if (size < 1) {
             return -1;
         }
         for (int i = 0; i < size; i++) {
-            Region region = regionDatas.get(i).getRegion();
+            Region region = titleRegionDatas.get(i).getRegion();
             if (region.contains(x, y)) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public int[] getPressCircleIndex(int x, int y) {
+        int[] index = new int[]{-1, -1};
+        int lineCount = animatorLineAndCircleList.size();
+        for (int i = 0; i < lineCount; i++) {
+            LineAndCircle dataline = animatorLineAndCircleList.get(i);
+            int circleCount = dataline.getCirclePoints().size();
+            for (int j = 0; j < circleCount; j++) {
+                CirclePoint circlePoint = dataline.getCirclePoints().get(j);
+                if (circlePoint.getCircleRegion().contains(x, y)) {
+                    index = new int[]{i, j};
+                    return index;
+                }
+            }
+        }
+        return index;
     }
 
     private void setPaint() {
@@ -608,17 +663,10 @@ public class LineChart extends AutoView {
 
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeWidth(lineStrokeWidth);
+
+        innerCircleRadius = lineStrokeWidth;
     }
 
-    private void setAvaiable() {
-        float leftWidth = getLeftWidth();
-        availableLeft = leftWidth;
-        availableTop = coordinateTextSize;
-        availableRight = width - Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2, getCircleRadius(innerCircleRadius) / 2);
-        availableBottom = height - titleTextSize * 2;
-        availableHeight = availableBottom - availableTop;
-        availableWidth = availableRight - availableLeft;
-    }
 
     private float getLeftWidth() {
         float graduationTextWidth = measureGraduationTextWidth();
@@ -631,11 +679,14 @@ public class LineChart extends AutoView {
         return Math.max(coordinatePaint.measureText(max + ""), coordinatePaint.measureText(min + ""));
     }
 
-    static class CirclePoint {
+    class CirclePoint {
+        float num;
         float x;
         float y;
 
-        public CirclePoint(float x, float y) {
+
+        public CirclePoint(float nums, float x, float y) {
+            this.num = nums;
             this.x = x;
             this.y = y;
         }
@@ -647,14 +698,26 @@ public class LineChart extends AutoView {
         public float getY() {
             return y;
         }
+
+        public float getNum() {
+            return num;
+        }
+
+        public Region getCircleRegion() {
+            float offset = innerCircleRadius * 2;
+            //click
+            Region currentRegion = new Region();
+            currentRegion.set((int) (x - offset), (int) (y - offset), (int) (x + offset), (int) (y + offset));
+            return currentRegion;
+        }
     }
 
-    static class RegionData {
+    static class TitleClickRegionData {
         Region region;
         int index;
         String title;
 
-        public RegionData(Region region, int index, String title) {
+        public TitleClickRegionData(Region region, int index, String title) {
             this.region = region;
             this.index = index;
             this.title = title;
@@ -728,5 +791,52 @@ public class LineChart extends AutoView {
 
     public interface OnTitleClickListener {
         void onClick(LineChart linechart, String title, int index);
+    }
+
+    static class CircleClickPoint {
+        Point point;
+        Region region;
+
+        public CircleClickPoint(Point point, Region region) {
+            this.point = point;
+            this.region = region;
+        }
+
+        public Point getPoint() {
+            return point;
+        }
+
+        public Region getRegion() {
+            return region;
+        }
+    }
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            int x = (int) e.getX();
+            int y = (int) e.getY();
+
+            int pressTitleIndex = getPressTitleIndex(x, y);
+            if (pressTitleIndex != -1 && onTitleClickListener != null) {
+                onTitleClickListener.onClick(LineChart.this, titleRegionDatas.get(pressTitleIndex).getTitle(), pressTitleIndex);
+                return true;
+            }
+            int[] pressCircleIndex = getPressCircleIndex(x, y);
+            if (pressCircleIndex[0] != -1 && pressCircleIndex[1] != -1) {
+                circleClickIndex = pressCircleIndex;
+                invalidate();
+                return true;
+            } else {
+                circleClickIndex = new int[]{-1, -1};
+                invalidate();
+            }
+            return super.onSingleTapUp(e);
+        }
     }
 }

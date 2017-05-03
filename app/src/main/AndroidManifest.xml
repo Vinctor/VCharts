@@ -10,10 +10,10 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="design_width"
-            android:value="480" />
+            android:value="1080" />
         <meta-data
             android:name="design_height"
-            android:value="800" />
+            android:value="1920" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

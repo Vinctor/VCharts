@@ -26,11 +26,10 @@ public class LineActivity extends BaseActivity {
         setContentView(R.layout.activity_line);
         ButterKnife.bind(this);
         line = (LineChart) findViewById(R.id.line);
-        setSetting();
-        line
+        line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
                 .clearDatas()
-                .addData(new LineData(new float[]{20, 50, 20, 70, 90, 70, 76}, 0xff61B6E7))//需与title长度一致
-                .addData(new LineData(new float[]{30, 80, 50, 80, 70, 60, 100}, 0xffF8AC58))
+                .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, 76}, 0xff61B6E7))//需与title长度一致
+                .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
 //                .addData(new LineData(new float[]{-10, 30, 80, 50, 60, 80, 1500}, 0xffF593A0))
 //                .addData(new LineData(new float[]{10, 60, 80, 65, 0, 80, 100}, 0xff61B6E7))//需与title长度一致
 //
@@ -51,19 +50,6 @@ public class LineActivity extends BaseActivity {
         line.setTitles(new String[]{"语文"})
                 .clearDatas()
                 .addData(new LineData(new float[]{20}, 0xff61B6E7))
-                .commit();
-    }
-
-    void setSetting() {
-        line.setDensity(5)
-                .setTitleTextSize(30)//底部标题大小
-                //.setLineSmoothness(0.3f)//折线平滑度
-                .setCoordinateTextSize(30)//刻度文字大小
-                .setCoorinateColor(0xff888888)//刻度文字颜色
-                .setLineStrokeWidth(3)//网格线宽度
-                .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
-                .setTitleTextSize(30)//底部标题文字大小
-                .setMinAndMax(0, 100)
                 .commit();
     }
 }

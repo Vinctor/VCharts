@@ -9,6 +9,15 @@
     <com.vinctor.vchartviews.line.LineChart
         android:id="@+id/line"
         android:layout_width="match_parent"
+        app:lineGradutaionColor="#d2d2d2"
+        app:lineGradutaionWidth="2px"
+        app:lineGradutionTextSize="26px"
+        app:lineMax="100"
+        app:lineMin="0"
+        app:lineTitleColor="#9b9b9b"
+        app:lineTitleTextSize="32px"
+        app:lineWidth="8px"
+        app:linedensity="5"
         android:layout_height="400dp" />
 
     <Button
