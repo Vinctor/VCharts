@@ -3,12 +3,15 @@ package com.vinctor.vcharts;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.vinctor.vchartviews.line.LineChart;
 import com.vinctor.vchartviews.line.LineData;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -20,6 +23,9 @@ public class LineActivity extends BaseActivity {
     }
 
     LineChart line;
+    @BindView(R.id.column_input)
+    EditText input;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +37,6 @@ public class LineActivity extends BaseActivity {
                 .clearDatas()
                 .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                 .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
-                .setShowAnimation(true)
                 .commit();
         line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
             @Override
@@ -41,12 +46,23 @@ public class LineActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.auto, R.id.showtag, R.id.startAni, R.id.single, R.id.multi})
+    @OnClick({R.id.can, R.id.cannot, R.id.showtag, R.id.startAni, R.id.single, R.id.multi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.auto:
-                line.setAuto(!line.isAuto());
-                line.commit();
+            case R.id.can:
+                String num = input.getText().toString();
+                if (TextUtils.isEmpty(num)) {
+                    num = "3";
+                }
+                line.setAllowScroll(true)
+                        .setMaxColumn(Integer.parseInt(num))
+                        .setShowAnimation(true)
+                        .commit();
+                break;
+            case R.id.cannot:
+                line.setAllowScroll(false)
+                        .setShowAnimation(true)
+                        .commit();
                 break;
             case R.id.showtag:
                 line.setShowTag(!line.isShowTag()).commit();

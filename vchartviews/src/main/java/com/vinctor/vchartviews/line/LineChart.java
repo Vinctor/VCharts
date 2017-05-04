@@ -13,9 +13,14 @@ import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.Scroller;
 
 import com.vinctor.vchartviews.AutoView;
 import com.vinctor.vchartviews.R;
@@ -78,9 +83,30 @@ public class LineChart extends AutoView {
     private GestureDetectorCompat mDetector;
     private int tagpadding;
     private float tagMargin;
+    //滑动
+    private float peerWidth;
+    private boolean isAllowScroll = false;
+    private int maxColumn = 6;
+    private float factRectWidth;
+    private float factRight;
+    private float factRectRight;
 
     public LineChart setCirclrClickOffset(float circlrClickOffset) {
         this.circlrClickOffset = getAutoWidthSize(circlrClickOffset);
+        return this;
+    }
+
+    public LineChart setAllowScroll(boolean allowScroll) {
+        isAllowScroll = allowScroll;
+        return this;
+    }
+
+    public boolean isAllowScroll() {
+        return isAllowScroll;
+    }
+
+    public LineChart setMaxColumn(int maxColumn) {
+        this.maxColumn = maxColumn;
         return this;
     }
 
@@ -269,6 +295,9 @@ public class LineChart extends AutoView {
             setShowAnimation(ta.getBoolean(R.styleable.LineChart_showAnimation, false));
             setDuration(ta.getInteger(R.styleable.LineChart_animationduration, 3000));
             setCirclrClickOffset(ta.getDimensionPixelOffset(R.styleable.LineChart_circleClickOffset, 0));
+            setAllowScroll(ta.getBoolean(R.styleable.LineChart_allowScroll, isAllowScroll));
+            setMaxColumn(ta.getInteger(R.styleable.LineChart_maxColnum, maxColumn));
+
 
             checkMinAndMax();
             setPaint();
@@ -289,7 +318,9 @@ public class LineChart extends AutoView {
 
 
         mDetector = new GestureDetectorCompat(context, new MyGestureListener());
-
+        //滑动
+        scroller = new Scroller(context, new DecelerateInterpolator(2f));
+        touchSlop = ViewConfiguration.getTouchSlop();
     }
 
     @Override
@@ -302,17 +333,40 @@ public class LineChart extends AutoView {
     }
 
     private void setAvaiable() {
+        scrollTo(0, 0);
         tagpadding = coordinateTextSize;
         tagMargin = getCircleRadius(innerCircleRadius) + coordinateTextSize / 3;
 
         float leftWidth = getLeftWidth();
         availableLeft = leftWidth;
         availableTop = tagMargin + getCircleRadius(innerCircleRadius) + coordinateTextSize + tagpadding + 10;//10为上方空隙,可为0,getCircleRadius为drawTag中三角形高度
-        availableRight = width - Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2,
+        float rightPadding = Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2,
                 Math.max(circlePaint.measureText(max + "") / 2 + tagpadding, circlePaint.measureText(min + "")) / 2 + tagpadding);
+        availableRight = width - rightPadding;
         availableBottom = height - titleTextSize * 2;
         availableHeight = availableBottom - availableTop;
         availableWidth = availableRight - availableLeft;
+
+        int titleCount = titles.length;
+        if (titleCount == 1) {
+            peerWidth = availableWidth / 2;
+            factRectWidth = availableWidth;
+            factRectRight = availableLeft + factRectWidth;
+            factRight = factRectRight + rightPadding;
+        } else {
+            if (!isAllowScroll) {
+                peerWidth = availableWidth / (titleCount - 1);
+                factRectWidth = availableWidth;
+                factRight = availableRight + rightPadding;
+                factRectRight = availableLeft + factRectWidth;
+            } else {
+                int counmeCunt = maxColumn < titleCount - 1 ? maxColumn : titleCount - 1;
+                peerWidth = availableWidth / counmeCunt;
+                factRectWidth = peerWidth * (titleCount - 1);
+                factRectRight = availableLeft + factRectWidth;
+                factRight = factRectRight + rightPadding;
+            }
+        }
     }
 
     private void computeLines() {
@@ -326,7 +380,6 @@ public class LineChart extends AutoView {
         List<Point> points = new ArrayList<>();
         //1列的情况
         if (titleCount == 1) {
-            float peerWidth = availableWidth / 2;
             for (int i = 0; i < dataCount; i++) {
                 LineData data = list.get(i);
                 final int lineColor = data.getLineColor();
@@ -345,18 +398,14 @@ public class LineChart extends AutoView {
                 //外圆
                 circlePoints.add(new CirclePoint(nums[0], currentX, currentY));
                 dataLines.add(new LineAndCircle(lineColor, null, circlePoints));
-
             }
 
             return;
         }
 
         //>=2列的情况
-        float peerWidth = availableWidth / (titleCount - 1);
-
         for (int i = 0; i < dataCount; i++) {
             Path path = new Path();
-
             LineData data = list.get(i);
             final int lineColor = data.getLineColor();
             float nums[] = data.getNums();
@@ -574,13 +623,13 @@ public class LineChart extends AutoView {
      */
     private void drawCoordinate(Canvas canvas) {
         coordinatePaint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(availableLeft, availableTop, availableRight, availableBottom, coordinatePaint);
+        canvas.drawRect(availableLeft, availableTop, factRectRight, availableBottom, coordinatePaint);
 
         float peerCoordinateHeight = availableHeight / density;
         //横向line
         for (int i = 0; i < density; i++) {
             float currentY = availableTop + i * peerCoordinateHeight;
-            canvas.drawLine(availableLeft, currentY, availableRight, currentY, coordinatePaint);
+            canvas.drawLine(availableLeft, currentY, factRectRight, currentY, coordinatePaint);
         }
 
         //数字
@@ -602,7 +651,6 @@ public class LineChart extends AutoView {
             verLineNum = 1;
         }
         if (verLineNum > 0) {
-            float peerWidth = availableWidth / (verLineNum + 1);
             for (int i = 1; i <= verLineNum; i++) {
                 float currentX = availableLeft + i * peerWidth;
                 canvas.drawLine(currentX, availableTop, currentX, availableBottom, coordinatePaint);
@@ -613,9 +661,7 @@ public class LineChart extends AutoView {
         float offset = titleTextSize / 2;
         titleRegionDatas.clear();
         int titleCount = titles.length;
-        float peerWidth = availableWidth / (titleCount - 1);
         if (titleCount == 1) {
-            peerWidth = availableWidth / 2;
             float currentTitleWidth = titlePaint.measureText(titles[0]);
             float titleCenterX = availableLeft + peerWidth;
             float currentX = titleCenterX - currentTitleWidth / 2;
@@ -650,19 +696,12 @@ public class LineChart extends AutoView {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (mDetector.onTouchEvent(event))
-            return true;
-        else
-            return false;
-    }
-
     public int getPressTitleIndex(int x, int y) {
         int size = titleRegionDatas.size();
         if (size < 1) {
             return -1;
         }
+        x += getScrollX();
         for (int i = 0; i < size; i++) {
             Region region = titleRegionDatas.get(i).getRegion();
             if (region.contains(x, y)) {
@@ -676,6 +715,7 @@ public class LineChart extends AutoView {
         if (!isShowTag) {
             return new int[]{-1, -1};
         }
+        x += getScrollX();
         int[] index = new int[]{-1, -1};
         int lineCount = animatorLineAndCircleList.size();
         for (int i = 0; i < lineCount; i++) {
@@ -842,9 +882,13 @@ public class LineChart extends AutoView {
         void onClick(LineChart linechart, String title, int index);
     }
 
+    boolean isScrolling = false;
+
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+
         @Override
         public boolean onDown(MotionEvent e) {
+            L("onDown");
             return true;
         }
 
@@ -868,6 +912,149 @@ public class LineChart extends AutoView {
                 invalidate();
             }
             return super.onSingleTapUp(e);
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            if (!isAllowScroll) {
+                return false;
+            }
+            L("distanceX" + distanceX + "--distanceY" + distanceY);
+            isScrolling = true;
+            getParent().requestDisallowInterceptTouchEvent(true);
+
+            int offset = width + getScrollX() - (int) factRight;
+            if (distanceX < 0) {
+                if (getScrollX() > -100) {
+                    scrollBy((int) distanceX, 0);
+                }
+            }
+            if (distanceX > 0) {
+                if (offset < 100) {
+                    scrollBy((int) distanceX, 0);
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (!isAllowScroll) {
+                return false;
+            }
+            if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                if (Math.abs(velocityX) < 800) {
+                    return true;
+                }
+                int distanceX = 500;
+                if (velocityX < 0) {//左滑-->滑动至尾部
+                    int leftWidth = (int) factRight - Math.abs(getScrollX()) - width;
+                    if (Math.abs(distanceX) > leftWidth) {
+                        distanceX = leftWidth;
+                    }
+                } else {//右滑-->滑动至头部
+                    if (Math.abs(distanceX) > Math.abs(getScrollX())) {
+                        distanceX = Math.abs(getScrollX());
+                    }
+                    distanceX = -distanceX;
+                }
+                if (getScrollX() < 0) {//头部超出边界
+                    distanceX = -getScrollX();
+                }
+                scroller.startScroll(getScrollX(), 0, distanceX, 0,scrollDuration);
+                invalidate();
+                return true;
+            }
+            return false;
+        }
+    }
+
+    float lastX;
+    float lastY;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        ViewGroup viewGroup = (ViewGroup) getParent();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                lastX = event.getX();
+                lastY = event.getY();
+            case MotionEvent.ACTION_MOVE:
+                float currentX = event.getX();
+                float currentY = event.getY();
+                float distanceX = currentX - lastX;
+                float distanceY = currentY - lastY;
+
+                L("move--" + isScrolling);
+                L("distanceX" + distanceX + "--distanceY" + distanceY);
+                if (!isScrolling) {
+                    if (Math.abs(distanceX) < Math.abs(distanceY)) {
+                        viewGroup.requestDisallowInterceptTouchEvent(false);
+                        return false;//竖向滑动
+                    }
+
+                    int offset = width + getScrollX() - (int) factRight;
+                    if ((getScrollX() == 0 && distanceX > 0) || (offset == 0 && distanceX < 0)) {
+                        viewGroup.requestDisallowInterceptTouchEvent(false);
+                        return false;//横向滑动
+                    }
+
+                }
+                viewGroup.requestDisallowInterceptTouchEvent(true);
+                lastX = currentX;
+                lastY = currentY;
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                isScrolling = false;
+                lastX = 0f;
+                lastY = 0f;
+                viewGroup.requestDisallowInterceptTouchEvent(false);
+                break;
+        }
+
+
+        if (mDetector.onTouchEvent(event))
+            return true;
+        else {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                isScrolling = false;
+                if (getScrollX() < 0) {//头部滑动超出边界,回退
+                    scroller.startScroll(getScrollX(), 0, 0 - getScrollX(), 0, scrollDuration);
+                    invalidate();
+                    return true;
+                } else {
+                    //尾部滑动超出边界,回退
+                    int offset = width + getScrollX() - (int) factRight;
+                    if (offset > 0) {
+                        scroller.startScroll(getScrollX(), 0, -offset, 0, scrollDuration);
+                        invalidate();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    int scrollDuration = 500;
+
+    @Override
+    public void computeScroll() {
+        if (scroller.computeScrollOffset()) {
+            scrollTo(scroller.getCurrX(), 0);
+            postInvalidate();
+        }
+    }
+
+    //滑动
+    Scroller scroller;
+    int touchSlop;
+
+    private void L(String msg) {
+        if (false) {
+            Log.e("vinctor", msg);
         }
     }
 }

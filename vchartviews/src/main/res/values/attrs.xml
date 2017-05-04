@@ -52,5 +52,7 @@
         <attr name="showAnimation" format="boolean" />
         <attr name="animationduration" format="integer" />
         <attr name="circleClickOffset" format="dimension" />
+        <attr name="allowScroll" format="boolean" />
+        <attr name="maxColnum" format="integer" />
     </declare-styleable>
 </resources>

@@ -1,58 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.vinctor.vchartviews.line.LineChart
-        android:id="@+id/line"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        app:circleClickOffset="12px"
-        app:lineGradutaionColor="#d2d2d2"
-        app:lineGradutaionWidth="2px"
-        app:lineGradutionTextSize="26px"
-        app:lineMax="100"
-        app:lineMin="0"
-        app:lineTitleColor="#9b9b9b"
-        app:lineTitleTextSize="32px"
-        app:lineWidth="8px"
-        app:linedensity="5" />
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
-    <com.vinctor.vchartviews.diagram.FlowLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <com.vinctor.vchartviews.line.LineChart
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            app:allowScroll="true"
+            app:circleClickOffset="12px"
+            app:lineGradutaionColor="#d2d2d2"
+            app:lineGradutaionWidth="2px"
+            app:lineGradutionTextSize="26px"
+            app:lineMax="100"
+            app:lineMin="0"
+            app:lineTitleColor="#9b9b9b"
+            app:lineTitleTextSize="32px"
+            app:lineWidth="8px"
+            app:linedensity="5"
+            app:maxColnum="5" />
 
-        <Button
-            android:id="@+id/auto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="AutoLayout" />
 
-        <Button
-            android:id="@+id/showtag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="是/否显示tag" />
+        <com.vinctor.vchartviews.diagram.FlowLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/startAni"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="开始动画" />
+            <EditText
+                android:id="@+id/column_input"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="滑动时最多列数"
+                android:inputType="number" />
 
-        <Button
-            android:id="@+id/single"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="单条数据" />
+            <Button
+                android:id="@+id/can"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="可滑动" />
 
-        <Button
-            android:id="@+id/multi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="多条数据" />
-    </com.vinctor.vchartviews.diagram.FlowLayout>
+            <Button
+                android:id="@+id/cannot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="不可滑动" />
 
-</LinearLayout>
+            <Button
+                android:id="@+id/showtag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="是/否显示tag" />
+
+            <Button
+                android:id="@+id/startAni"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始动画" />
+
+            <Button
+                android:id="@+id/single"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="单条数据" />
+
+            <Button
+                android:id="@+id/multi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="多条数据" />
+        </com.vinctor.vchartviews.diagram.FlowLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2000px"
+            android:background="#aaaaaa" />
+    </LinearLayout>
+</ScrollView>
