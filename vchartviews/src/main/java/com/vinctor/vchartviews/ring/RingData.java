@@ -8,9 +8,9 @@ import java.util.List;
 
 public class RingData {
     List<Data> list;
-    int colors[];
+    Integer colors[];
 
-    public RingData(List<Data> list, int[] colors) {
+    public RingData(List<Data> list, Integer[] colors) {
         this.list = list;
         this.colors = colors;
         if (list.size() != colors.length) {
@@ -22,7 +22,7 @@ public class RingData {
         return list;
     }
 
-    public int[] getColors() {
+    public Integer[] getColors() {
         return colors;
     }
 }

@@ -164,12 +164,12 @@ public class RingChart extends AutoView {
             return;
         }
         List<Data> list = data.getList();
-        int colors[] = data.getColors();
+        Integer colors[] = data.getColors();
         int ringCount = list.size();
         if (ringCount <= 0) return;
 
         int intervalCount = ringCount;
-        if (ringCount == 1) ringCount = 0;
+        if (ringCount == 1) intervalCount = 0;
 
         int totalNum = 0;
         for (int i = 0; i < ringCount; i++) {
