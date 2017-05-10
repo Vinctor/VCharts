@@ -46,7 +46,7 @@ public class LineActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.can, R.id.cannot, R.id.showtag, R.id.startAni, R.id.single, R.id.multi})
+    @OnClick({R.id.can, R.id.cannot, R.id.showtag, R.id.startAni, R.id.single, R.id.multi, R.id.shadow})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.can:
@@ -86,6 +86,13 @@ public class LineActivity extends BaseActivity {
                         .clearDatas()
                         .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
+                        .setShowAnimation(true)
+                        .commit();
+                break;
+            case R.id.shadow:
+                line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
+                        .clearDatas()
+                        .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .setShowAnimation(true)
                         .commit();
                 break;

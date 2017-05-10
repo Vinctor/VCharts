@@ -9,6 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
@@ -16,6 +18,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -31,7 +34,6 @@ import java.util.List;
 /**
  * Created by Vinctor on 2017/4/10.
  */
-
 public class LineChart extends AutoView {
     private int[] animatorMinAndMax = new int[]{0, 100};
     private int duration = 3000;
@@ -90,6 +92,12 @@ public class LineChart extends AutoView {
     private float factRectWidth;
     private float factRight;
     private float factRectRight;
+
+    //阴影
+    int shadowColor = 0x88888888;
+    int shadowIndexStart = 3;
+    int shadowIndexEnd = 5;
+    Paint shadowPaint = new Paint();
 
     public LineChart setCirclrClickOffset(float circlrClickOffset) {
         this.circlrClickOffset = getAutoWidthSize(circlrClickOffset);
@@ -303,6 +311,7 @@ public class LineChart extends AutoView {
             setPaint();
             ta.recycle();
         }
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         setClickable(true);
         setBackgroundColor(0xffffffff);
 
@@ -455,7 +464,7 @@ public class LineChart extends AutoView {
         tagCircles.clear();
         drawCoordinate(canvas);//绘制刻度
         drawLineAndPoints(canvas);//绘制折线
-        drawTag(canvas);
+        drawTag(canvas);//标签
     }
 
     List<LineAndCircle> animatorLineAndCircleList = new ArrayList<>();
@@ -527,15 +536,69 @@ public class LineChart extends AutoView {
             } else {
                 if (!isShowAnimation) {
                     canvas.drawPath(lineAndCircle.getPath(), linePaint);
+                    //drawShadow(canvas, lineAndCircle);
                     drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
                 } else {
                     canvas.drawPath(lineAndCircle.getPath(), linePaint);
                     if (animationEnd) {
+                        //drawShadow(canvas, lineAndCircle);
                         drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
                     }
                 }
             }
         }
+    }
+
+    //shadow阴影
+    private void drawShadow(Canvas canvas, LineAndCircle lineAndCircle) {
+
+        List<Point> points = new ArrayList<>();
+        List<CirclePoint> circlePointts = lineAndCircle.getCirclePoints();
+        int pointCount = circlePointts.size();
+        if (shadowIndexEnd > pointCount - 1) {
+            shadowIndexEnd = pointCount - 1;
+        }
+        if (shadowIndexStart > shadowIndexEnd) {
+            throw new IllegalArgumentException("shadow start index must less than end index");
+        }
+
+        for (int i = 0; i < pointCount; i++) {
+            points.add(new Point(circlePointts.get(i).getX(), circlePointts.get(i).getY()));
+        }
+
+        //贝塞尔曲线
+        Path shadowPath = new Path();
+        List<Point> besselPoints = BesselCalculator.computeBesselPoints(points);
+        for (int j = 0; j < besselPoints.size(); j = j + 3) {
+            if (j == 0) {
+                shadowPath.moveTo(besselPoints.get(j).x, besselPoints.get(j).y);
+            } else
+                shadowPath.cubicTo(besselPoints.get(j - 2).x, besselPoints.get(j - 2).y, besselPoints.get(j - 1).x, besselPoints.get(j - 1).y, besselPoints.get(j).x, besselPoints.get(j).y);
+        }
+        shadowPath.lineTo(availableLeft + factRectWidth, availableBottom);
+        shadowPath.lineTo(availableLeft, availableBottom);
+        shadowPath.close();
+
+        int layerId = canvas.saveLayer(0, 0, factRight, canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
+
+//        Bitmap rectMask = Bitmap.createBitmap((int) factRight, height, Bitmap.Config.ALPHA_8);
+//        Canvas rectMaskCanvas = new Canvas(rectMask);
+        shadowPaint.setColor(0xff888888);
+        canvas.drawRect(availableLeft + peerWidth * shadowIndexStart, 0, availableLeft + peerWidth * shadowIndexEnd, height, shadowPaint);
+//        canvas.drawBitmap(rectMask, 0, 0, shadowPaint);
+
+
+        PorterDuffXfermode mXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+        shadowPaint.setXfermode(mXfermode);
+
+//        Bitmap pathMask = Bitmap.createBitmap((int) factRight, height, Bitmap.Config.ALPHA_8);
+//        Canvas pathMaskCanvas = new Canvas(pathMask);
+        shadowPaint.setColor(shadowColor);
+        canvas.drawPath(shadowPath, shadowPaint);
+//        canvas.drawBitmap(pathMask, 0, 0, shadowPaint);
+
+        shadowPaint.setXfermode(null);
+        canvas.restoreToCount(layerId);
     }
 
     List<CirclePoint> tagCircles = new ArrayList<>();
@@ -743,6 +806,10 @@ public class LineChart extends AutoView {
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeWidth(lineStrokeWidth);
 
+        shadowPaint.setAntiAlias(true);
+        shadowPaint.setColor(shadowColor);
+        shadowPaint.setStyle(Paint.Style.FILL);
+
         innerCircleRadius = lineStrokeWidth;
     }
 
@@ -923,16 +990,17 @@ public class LineChart extends AutoView {
             isScrolling = true;
             getParent().requestDisallowInterceptTouchEvent(true);
 
-            int offset = width + getScrollX() - (int) factRight;
+
             if (distanceX < 0) {
-                if (getScrollX() > -100) {
-                    scrollBy((int) distanceX, 0);
-                }
+                if (getScrollX() + distanceX <= 0) {
+                    scrollTo(0, 0);
+                } else scrollBy((int) distanceX, 0);
             }
+            int offset = width + getScrollX() - (int) factRight;
             if (distanceX > 0) {
-                if (offset < 100) {
-                    scrollBy((int) distanceX, 0);
-                }
+                if (offset + distanceX >= 0) {
+                    scrollTo((int) factRight - width, 0);
+                } else scrollBy((int) distanceX, 0);
             }
 
             return false;
@@ -962,7 +1030,7 @@ public class LineChart extends AutoView {
                 if (getScrollX() < 0) {//头部超出边界
                     distanceX = -getScrollX();
                 }
-                scroller.startScroll(getScrollX(), 0, distanceX, 0,scrollDuration);
+                scroller.startScroll(getScrollX(), 0, distanceX, 0, scrollDuration);
                 invalidate();
                 return true;
             }
