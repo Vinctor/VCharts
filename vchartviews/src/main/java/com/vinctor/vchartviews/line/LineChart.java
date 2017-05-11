@@ -9,8 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
@@ -342,6 +340,9 @@ public class LineChart extends AutoView {
     }
 
     private void setAvaiable() {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
         scrollTo(0, 0);
         tagpadding = coordinateTextSize;
         tagMargin = getCircleRadius(innerCircleRadius) + coordinateTextSize / 3;
@@ -371,6 +372,13 @@ public class LineChart extends AutoView {
             } else {
                 int counmeCunt = maxColumn < titleCount - 1 ? maxColumn : titleCount - 1;
                 peerWidth = availableWidth / counmeCunt;
+                //避免title文字相互遮挡
+                float maxTwoTitleLength = getMaxTwoTitleLenth();
+                while (maxTwoTitleLength > peerWidth && peerWidth > 0) {
+                    counmeCunt -= 1;
+                    peerWidth = availableWidth / counmeCunt;
+                }
+
                 factRectWidth = peerWidth * (titleCount - 1);
                 factRectRight = availableLeft + factRectWidth;
                 factRight = factRectRight + rightPadding;
@@ -378,7 +386,25 @@ public class LineChart extends AutoView {
         }
     }
 
+    private float getMaxTwoTitleLenth() {
+        int count = titles.length;
+        if (count == 0) {
+            return 0f;
+        }
+        float result = 0f;
+        for (int i = 0; i < count - 1; i++) {
+            float temp = titlePaint.measureText(titles[i]) / 2 + titlePaint.measureText(titles[i + 1]) / 2;
+            if (temp > result) {
+                result = temp;
+            }
+        }
+        return result;
+    }
+
     private void computeLines() {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
         dataLines.clear();
         //circle click
         circleClickIndex = new int[]{-1, -1};
@@ -552,7 +578,6 @@ public class LineChart extends AutoView {
     //shadow阴影
     private void drawShadow(Canvas canvas, LineAndCircle lineAndCircle) {
 
-        List<Point> points = new ArrayList<>();
         List<CirclePoint> circlePointts = lineAndCircle.getCirclePoints();
         int pointCount = circlePointts.size();
         if (shadowIndexEnd > pointCount - 1) {
@@ -562,43 +587,16 @@ public class LineChart extends AutoView {
             throw new IllegalArgumentException("shadow start index must less than end index");
         }
 
-        for (int i = 0; i < pointCount; i++) {
-            points.add(new Point(circlePointts.get(i).getX(), circlePointts.get(i).getY()));
-        }
-
-        //贝塞尔曲线
         Path shadowPath = new Path();
-        List<Point> besselPoints = BesselCalculator.computeBesselPoints(points);
-        for (int j = 0; j < besselPoints.size(); j = j + 3) {
-            if (j == 0) {
-                shadowPath.moveTo(besselPoints.get(j).x, besselPoints.get(j).y);
-            } else
-                shadowPath.cubicTo(besselPoints.get(j - 2).x, besselPoints.get(j - 2).y, besselPoints.get(j - 1).x, besselPoints.get(j - 1).y, besselPoints.get(j).x, besselPoints.get(j).y);
+        for (int i = shadowIndexStart; i <= shadowIndexEnd; i++) {
+            if (i == shadowIndexStart) {
+                shadowPath.moveTo(circlePointts.get(i).getX(), circlePointts.get(i).getY());
+            } else shadowPath.lineTo(circlePointts.get(i).getX(), circlePointts.get(i).getY());
         }
-        shadowPath.lineTo(availableLeft + factRectWidth, availableBottom);
-        shadowPath.lineTo(availableLeft, availableBottom);
+        shadowPath.lineTo(availableLeft + peerWidth * shadowIndexEnd, availableBottom);
+        shadowPath.lineTo(availableLeft + peerWidth * shadowIndexStart, availableBottom);
         shadowPath.close();
-
-        int layerId = canvas.saveLayer(0, 0, factRight, canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);// 新增透明图层
-
-//        Bitmap rectMask = Bitmap.createBitmap((int) factRight, height, Bitmap.Config.ALPHA_8);
-//        Canvas rectMaskCanvas = new Canvas(rectMask);
-        shadowPaint.setColor(0xff888888);
-        canvas.drawRect(availableLeft + peerWidth * shadowIndexStart, 0, availableLeft + peerWidth * shadowIndexEnd, height, shadowPaint);
-//        canvas.drawBitmap(rectMask, 0, 0, shadowPaint);
-
-
-        PorterDuffXfermode mXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
-        shadowPaint.setXfermode(mXfermode);
-
-//        Bitmap pathMask = Bitmap.createBitmap((int) factRight, height, Bitmap.Config.ALPHA_8);
-//        Canvas pathMaskCanvas = new Canvas(pathMask);
-        shadowPaint.setColor(shadowColor);
         canvas.drawPath(shadowPath, shadowPaint);
-//        canvas.drawBitmap(pathMask, 0, 0, shadowPaint);
-
-        shadowPaint.setXfermode(null);
-        canvas.restoreToCount(layerId);
     }
 
     List<CirclePoint> tagCircles = new ArrayList<>();
@@ -1012,10 +1010,10 @@ public class LineChart extends AutoView {
                 return false;
             }
             if (Math.abs(velocityX) > Math.abs(velocityY)) {
-                if (Math.abs(velocityX) < 800) {
+                if (Math.abs(velocityX) < 1000) {
                     return true;
                 }
-                int distanceX = 500;
+                int distanceX = (int) (Math.abs(velocityX) / 1000 * 150);
                 if (velocityX < 0) {//左滑-->滑动至尾部
                     int leftWidth = (int) factRight - Math.abs(getScrollX()) - width;
                     if (Math.abs(distanceX) > leftWidth) {
