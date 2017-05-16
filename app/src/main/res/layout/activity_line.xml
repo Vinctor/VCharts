@@ -11,6 +11,17 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
+        <com.vinctor.vchartviews.diagram.DiagramFlowLayout
+            android:id="@+id/flowlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18px"
+            app:contentColor="#9b9b9b"
+            app:contentMargin="14px"
+            app:contentSize="24px"
+            app:tagViewSize="20px" />
+
+
         <com.vinctor.vchartviews.line.LineChart
             android:id="@+id/line"
             android:layout_width="match_parent"

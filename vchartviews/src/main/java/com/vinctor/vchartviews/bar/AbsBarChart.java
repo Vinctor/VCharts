@@ -123,8 +123,12 @@ public abstract class AbsBarChart extends AutoView {
     }
 
     private void checkMinAndMax() {
-        if (min >= max) {
+        if (min > max) {
             throw new IllegalArgumentException("you cannot set max less than max!");
+        }
+        if (min == max) {
+            min = 0;
+            max = 100;
         }
     }
 
@@ -260,5 +264,15 @@ public abstract class AbsBarChart extends AutoView {
 
     protected float getBarY(int num) {
         return availableBottom - (num - min) * (availableBottom - availableTop) / (max - min);
+    }
+
+    public interface OnShowDataListener {
+        String onShow(int num);
+    }
+
+    protected OnShowDataListener onShowDataListener;
+
+    public void setOnShowDataListener(OnShowDataListener onShowDataListener) {
+        this.onShowDataListener = onShowDataListener;
     }
 }

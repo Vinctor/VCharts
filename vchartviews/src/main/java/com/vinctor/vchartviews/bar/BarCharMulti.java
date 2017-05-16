@@ -96,11 +96,15 @@ public class BarCharMulti extends AbsBarChart {
 
 
                 //数字
-                float currentTextWidth = barPaint.measureText(num + "");
+                String dataToShow = num + "";
+                if (onShowDataListener != null) {
+                    dataToShow = onShowDataListener.onShow(num);
+                }
+                float currentTextWidth = barPaint.measureText(dataToShow);
                 float textCenterX = (singleLeft + singleRight) / 2;
                 float textY = singleTop - barTextMargin;
                 float textX = textCenterX - currentTextWidth / 2;
-                canvas.drawText(num + "", textX, textY, barPaint);
+                canvas.drawText(dataToShow, textX, textY, barPaint);
             }
 
             //title

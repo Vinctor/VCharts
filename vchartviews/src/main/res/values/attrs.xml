@@ -7,8 +7,17 @@
         <attr name="contentSize" format="dimension" />
         <attr name="contentMargin" format="dimension" />
         <attr name="contentColor" format="color" />
-        <attr name="viewColor" format="color" />
-        <attr name="viewSize" format="dimension" />
+
+
+        <attr name="tagViewSize" format="dimension" />//大小
+        <attr name="tagViewborderWidth" format="dimension" />//边框大小
+
+        <attr name="tagViewBorderColorUnSelected" format="color" />//未选中边框颜色
+        <attr name="tagViewInnerColorUnSelected" format="color" />//未选中内部颜色
+
+        <attr name="tagViewBorderColorSelected" format="color" />//选中边框颜色
+        <attr name="tagViewInnerColorSelected" format="color" />//选中内部颜色
+
     </declare-styleable>
 
     <declare-styleable name="DiagramViewFlowLayout">

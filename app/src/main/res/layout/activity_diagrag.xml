@@ -22,8 +22,8 @@
         app:contentColor="#9b9b9b"
         app:contentMargin="14px"
         app:contentSize="24px"
-        app:viewColor="#9b9b9b"
-        app:viewSize="20px" />
+        app:tagViewInnerColorSelected="#9b9b9b"
+        app:tagViewSize="20px" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,5 +40,5 @@
         app:contentColor="#9b9b9b"
         app:contentMargin="14px"
         app:contentSize="24px"
-        app:viewSize="20px" />
+        app:tagViewSize="20px" />
 </LinearLayout>

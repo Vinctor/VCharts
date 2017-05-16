@@ -80,11 +80,15 @@ public class BarCharSingle extends AbsBarChart {
             canvas.drawRoundRect(rectF, barWidth / 10, barWidth / 10, barPaint);
 
             //数字
-            float currentTextWidth = barPaint.measureText(num + "");
+            String dataToShow = num + "";
+            if (onShowDataListener != null) {
+                dataToShow = onShowDataListener.onShow(num);
+            }
+            float currentTextWidth = barPaint.measureText(dataToShow);
             float textCenterX = (currentBarLeft + currentBarRight) / 2;
             float textY = currentBarTop - barTextMargin;
             float textX = textCenterX - currentTextWidth / 2;
-            canvas.drawText(num + "", textX, textY, barPaint);
+            canvas.drawText(dataToShow, textX, textY, barPaint);
 
             //标题文字
             float currentTitleWidth = titlePaint.measureText(title);

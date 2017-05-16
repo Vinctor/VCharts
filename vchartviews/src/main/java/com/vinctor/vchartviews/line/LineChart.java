@@ -76,7 +76,7 @@ public class LineChart extends AutoView {
     private ValueAnimator animatior;
 
     //圆圈点击
-    boolean isShowTag = true;
+    boolean isAllowClickShowTag = true;
     int circleClickIndex[] = new int[]{-1, -1};
     private float circlrClickOffset = 0;
 
@@ -97,6 +97,15 @@ public class LineChart extends AutoView {
     int shadowIndexEnd = 5;
     Paint shadowPaint = new Paint();
 
+
+    public void setShowTagLineIndex(int index) {
+        if (index >= titles.length) {
+            return;
+        }
+        circleClickIndex = new int[]{index, -1};
+        invalidate();
+    }
+
     public LineChart setCirclrClickOffset(float circlrClickOffset) {
         this.circlrClickOffset = getAutoWidthSize(circlrClickOffset);
         return this;
@@ -116,12 +125,12 @@ public class LineChart extends AutoView {
         return this;
     }
 
-    public boolean isShowTag() {
-        return isShowTag;
+    public boolean isAllowClickShowTag() {
+        return isAllowClickShowTag;
     }
 
-    public LineChart setShowTag(boolean showTag) {
-        isShowTag = showTag;
+    public LineChart setAllowClickShowTag(boolean allowClickShowTag) {
+        isAllowClickShowTag = allowClickShowTag;
         return this;
     }
 
@@ -243,6 +252,7 @@ public class LineChart extends AutoView {
     public void commit() {
         checkMinAndMax();
         setPaint();
+        circleClickIndex = new int[]{-1, -1};
         setAvaiable();
         computeLines();
         if (titles.length == 1) {
@@ -259,6 +269,9 @@ public class LineChart extends AutoView {
     public void startAnimation() {
         isShowAnimation = true;
         initAnimation();
+        if (dataLines.size() == 0) {
+            invalidate();
+        }
         if (animatior != null) {
             animatior.cancel();
             animatior.start();
@@ -407,7 +420,7 @@ public class LineChart extends AutoView {
         }
         dataLines.clear();
         //circle click
-        circleClickIndex = new int[]{-1, -1};
+
 
         int dataCount = list.size();
         if (dataCount <= 0) return;
@@ -624,7 +637,6 @@ public class LineChart extends AutoView {
             if (isDrawTag) {
                 tagCircles.add(new CirclePoint(lineColor, point));
             }
-
             if (!(circleClickIndex[1] == i && isDrawTag)) {
                 circlePaint.setAlpha(255);
                 circlePaint.setColor(0xffffffff);
@@ -773,7 +785,7 @@ public class LineChart extends AutoView {
     }
 
     public int[] getPressCircleIndex(int x, int y) {
-        if (!isShowTag) {
+        if (!isAllowClickShowTag) {
             return new int[]{-1, -1};
         }
         x += getScrollX();
@@ -967,15 +979,18 @@ public class LineChart extends AutoView {
                 onTitleClickListener.onClick(LineChart.this, titleRegionDatas.get(pressTitleIndex).getTitle(), pressTitleIndex);
                 return true;
             }
-            int[] pressCircleIndex = getPressCircleIndex(x, y);
-            if (pressCircleIndex[0] != -1 && pressCircleIndex[1] != -1) {
-                circleClickIndex = pressCircleIndex;
-                invalidate();
-                return true;
-            } else {
-                circleClickIndex = new int[]{-1, -1};
-                invalidate();
+            if (isAllowClickShowTag) {
+                int[] pressCircleIndex = getPressCircleIndex(x, y);
+                if (pressCircleIndex[0] != -1 && pressCircleIndex[1] != -1) {
+                    circleClickIndex = pressCircleIndex;
+                    invalidate();
+                    return true;
+                } else {
+                    circleClickIndex = new int[]{-1, -1};
+                    invalidate();
+                }
             }
+
             return super.onSingleTapUp(e);
         }
 

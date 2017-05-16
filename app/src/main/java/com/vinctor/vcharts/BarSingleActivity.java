@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import com.vinctor.vchartviews.bar.AbsBarChart;
 import com.vinctor.vchartviews.bar.BarCharSingle;
 import com.vinctor.vchartviews.bar.BarDataSingle;
 
@@ -28,6 +29,12 @@ public class BarSingleActivity extends BaseActivity {
         ButterKnife.bind(this);
         singleBar = (BarCharSingle) findViewById(R.id.bar_single);
         setStyle();
+        singleBar.setOnShowDataListener(new AbsBarChart.OnShowDataListener() {
+            @Override
+            public String onShow(int num) {
+                return num + "分";
+            }
+        });
         singleBar.setData(new BarDataSingle("语文", 0, Color.BLUE))
                 .addData(new BarDataSingle("数学", 80, Color.RED))
                 .addData(new BarDataSingle("英语", 120, Color.MAGENTA))
