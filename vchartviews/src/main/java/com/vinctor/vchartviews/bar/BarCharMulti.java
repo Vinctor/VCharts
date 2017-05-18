@@ -90,9 +90,25 @@ public class BarCharMulti extends AbsBarChart {
                 float singleLeft = lastLeft + (barWidth + intervalBarWidth) * j;
                 float singleTop = getBarY(trueNum);
                 float singleRight = singleLeft + barWidth;
-                RectF rect = new RectF(singleLeft, singleTop, singleRight, availableBottom);
-                barPaint.setColor(barColor);
-                canvas.drawRoundRect(rect, barWidth / 10, barWidth / 10, barPaint);
+
+
+                //bar
+                //outer
+                RectF outRectF = new RectF(singleLeft, singleTop, singleRight, availableBottom);
+                int barStrokeColor = single.getBarStrokeColor();
+                barPaint.setColor(barStrokeColor);
+                canvas.drawRoundRect(outRectF, barWidth / 8, barWidth / 8, barPaint);
+                //inner
+                if (barStrokeWidth > 0) {
+                    RectF innerRectF = new RectF(
+                            singleLeft + barStrokeWidth,
+                            singleTop + barStrokeWidth,
+                            singleRight - barStrokeWidth,
+                            availableBottom - barStrokeWidth
+                    );
+                    barPaint.setColor(barColor);
+                    canvas.drawRoundRect(innerRectF, (barWidth - barStrokeWidth) / 8, (barWidth - barStrokeWidth) / 8, barPaint);
+                }
 
 
                 //数字

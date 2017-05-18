@@ -73,11 +73,26 @@ public class BarCharSingle extends AbsBarChart {
             float currentBarRight = currentBarLeft + barWidth;
             float currentBarBottom = availableBottom;
             float currentBarTop = getBarY(trueNum);
-            RectF rectF = new RectF(currentBarLeft, currentBarTop, currentBarRight, currentBarBottom);
+
 
             //柱子
-            barPaint.setColor(barColor);
-            canvas.drawRoundRect(rectF, barWidth / 10, barWidth / 10, barPaint);
+            //outer
+            RectF outRectF = new RectF(currentBarLeft, currentBarTop, currentBarRight, currentBarBottom);
+            int barStrokeColor = data.getBarStrokeColor();
+            barPaint.setColor(barStrokeColor);
+            canvas.drawRoundRect(outRectF, barWidth / 8, barWidth / 8, barPaint);
+            //inner
+            if (barStrokeWidth > 0) {
+                RectF innerRectF = new RectF(
+                        currentBarLeft + barStrokeWidth,
+                        currentBarTop + barStrokeWidth,
+                        currentBarRight - barStrokeWidth,
+                        currentBarBottom - barStrokeWidth
+                );
+                barPaint.setColor(barColor);
+                canvas.drawRoundRect(innerRectF, (barWidth - barStrokeWidth) / 8, (barWidth - barStrokeWidth) / 8, barPaint);
+            }
+
 
             //数字
             String dataToShow = num + "";

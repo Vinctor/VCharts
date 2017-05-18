@@ -8,6 +8,7 @@ public class BarDataSingle {
     String title;
     int num;
     int barColor;
+    int barStrokeColor;
 
     public BarDataSingle() {
     }
@@ -16,6 +17,14 @@ public class BarDataSingle {
         this.title = title;
         this.num = num;
         this.barColor = color;
+        this.barStrokeColor = color;
+    }
+
+    public BarDataSingle(String title, int num, int barColor, int barStrokeColor) {
+        this.title = title;
+        this.num = num;
+        this.barColor = barColor;
+        this.barStrokeColor = barStrokeColor;
     }
 
     public String getTitle() {
@@ -40,5 +49,9 @@ public class BarDataSingle {
 
     public void setBarColor(int barColor) {
         this.barColor = barColor;
+    }
+
+    public int getBarStrokeColor() {
+        return barStrokeColor;
     }
 }

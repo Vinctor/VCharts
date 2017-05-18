@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.vinctor.vchartviews.AutoView;
 import com.vinctor.vchartviews.R;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Created by Vinctor on 2017/4/9.
@@ -45,6 +49,24 @@ public abstract class AbsBarChart extends AutoView {
     protected boolean isEnableGraduation = true;
 
     private float graduaionMargin;
+
+    protected float barStrokeWidth = 2;
+
+
+    @IntDef({NORMAL_STYLE, STROKE_STYLE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface BarStyle {
+    }
+
+    public final static int NORMAL_STYLE = 0;
+    public final static int STROKE_STYLE = 1;
+
+    protected int barStyle = 0;
+
+    public AbsBarChart setBarStyle(@BarStyle int barStyle) {
+        this.barStyle = barStyle;
+        return this;
+    }
 
     public AbsBarChart setBarTitleMargin(float barTitleMargin) {
         this.barTitleMargin = getAutoHeightSize(barTitleMargin);
