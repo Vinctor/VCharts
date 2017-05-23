@@ -28,7 +28,11 @@
         <activity android:name=".BarMultiActivity" />
         <activity android:name=".RingActivity" />
         <activity android:name=".BaseActivity" />
-        <activity android:name=".DiagragActivity"></activity>
+        <activity android:name=".DiagragActivity" />
+        <activity
+            android:name=".SectorActivity"
+            android:label="@string/title_activity_sector"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

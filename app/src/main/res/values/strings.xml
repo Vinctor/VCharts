@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VCharts</string>
+    <string name="title_activity_sector">SectorActivity</string>
 </resources>

@@ -15,7 +15,7 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie, R.id.diagram})
+    @OnClick({R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie, R.id.diagram,R.id.sector})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.radar:
@@ -35,6 +35,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.diagram:
                 DiagragActivity.startActivity(this);
+                break;
+            case R.id.sector:
+                SectorActivity.startActivity(this);
                 break;
         }
     }
