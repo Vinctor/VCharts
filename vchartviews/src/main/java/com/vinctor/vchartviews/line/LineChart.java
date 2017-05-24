@@ -99,7 +99,7 @@ public class LineChart extends AutoView {
 
 
     public void setShowTagLineIndex(int index) {
-        if (index >= titles.length) {
+        if (index >= list.size()) {
             return;
         }
         circleClickIndex = new int[]{index, -1};
@@ -204,6 +204,7 @@ public class LineChart extends AutoView {
 
     public LineChart clearDatas() {
         this.list.clear();
+        titles = new String[]{"", "", "", "", ""};
         return this;
     }
 

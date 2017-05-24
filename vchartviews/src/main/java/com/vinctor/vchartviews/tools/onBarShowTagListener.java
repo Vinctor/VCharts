@@ -111,10 +111,6 @@ public abstract class onBarShowTagListener implements BarCharSingle.OnShowOtherV
         return new float[]{0 - bitmap.getWidth() + AutoUtils.getPercentWidthSize(offset[0]), 0 - bitmap.getHeight() + AutoUtils.getPercentHeightSize(offset[1])};
     }
 
-    @Override
-    public int onShowIndex() {
-        return 1;
-    }
 
 
     float getRadius() {

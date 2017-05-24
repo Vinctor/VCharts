@@ -50,9 +50,15 @@ public class BarSingleActivity extends BaseActivity {
 
                 ) {
                     @Override
+                    public int onShowIndex() {
+                        return 0;
+                    }
+
+                    @Override
                     public void onClick() {//点击监听
                         Toast.makeText(thisActivity, "press", Toast.LENGTH_SHORT).show();
                     }
+
                 }
         );
         singleBar.setData(new BarDataSingle("语文", 0, Color.BLUE))

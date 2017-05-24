@@ -172,6 +172,17 @@ public class BarCharSingle extends AbsBarChart {
         return this;
     }
 
+    public BarCharSingle dismissOtherView() {
+        this.onShowOtherViewCallback = null;
+        return this;
+    }
+
+    public void dismissOtherview() {
+        this.onShowOtherViewCallback = null;
+        invalidate();
+    }
+
+
     public interface OnShowOtherViewCallback {
         Bitmap onShowBitmap();
 

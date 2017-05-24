@@ -80,7 +80,7 @@ public class SectorView extends AutoView {
         return this;
     }
 
-    public SectorView cleartData(SectorData data) {
+    public SectorView cleartData() {
         list.clear();
         return this;
     }
