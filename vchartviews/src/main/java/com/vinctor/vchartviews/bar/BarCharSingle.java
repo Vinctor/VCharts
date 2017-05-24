@@ -1,10 +1,14 @@
 package com.vinctor.vchartviews.bar;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +54,27 @@ public class BarCharSingle extends AbsBarChart {
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
+    protected void init(Context context, AttributeSet attrs) {
+        super.init(context, attrs);
+        GestureDetector.SimpleOnGestureListener simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                if (otherRegion.contains((int) (e.getX()), (int) (e.getY()))) {
+                    if (onShowOtherViewCallback != null) {
+                        onShowOtherViewCallback.onClick();
+                    }
+                }
+                return super.onSingleTapUp(e);
+            }
+        };
+        gestureDetector = new GestureDetector(context, simpleOnGestureListener);
+    }
 
     /**
      * 绘制柱状图
@@ -111,6 +136,49 @@ public class BarCharSingle extends AbsBarChart {
             float titleY = availableBottom + barTitleMargin + titleTextSize;
             float titleX = titleCenterX - currentTitleWidth / 2;
             canvas.drawText(title, titleX, titleY, titlePaint);
+
+            //otherView
+            if (onShowOtherViewCallback != null && onShowOtherViewCallback.onShowIndex() == i) {
+                Bitmap bitmap = onShowOtherViewCallback.onShowBitmap();
+                if (onShowOtherViewCallback.onShowOffsetToBar(bitmap).length < 2) {
+                    throw new IllegalArgumentException();
+                }
+                float viewX = currentBarLeft + onShowOtherViewCallback.onShowOffsetToBar(bitmap)[0];
+                float viewY = currentBarTop + onShowOtherViewCallback.onShowOffsetToBar(bitmap)[1];
+
+                otherRegion = new Region((int) viewX, (int) viewY, (int) currentBarLeft, (int) currentBarTop);
+
+                canvas.drawBitmap(bitmap, viewX, viewY, null);
+            }
         }
+    }
+
+    Region otherRegion;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (onShowOtherViewCallback == null) {
+            return super.onTouchEvent(event);
+        }
+        return gestureDetector.onTouchEvent(event);
+    }
+
+
+    OnShowOtherViewCallback onShowOtherViewCallback;
+    GestureDetector gestureDetector;
+
+    public BarCharSingle setOnShowOtherViewCallback(OnShowOtherViewCallback onShowOtherViewCallback) {
+        this.onShowOtherViewCallback = onShowOtherViewCallback;
+        return this;
+    }
+
+    public interface OnShowOtherViewCallback {
+        Bitmap onShowBitmap();
+
+        float[] onShowOffsetToBar(Bitmap bitmap);
+
+        int onShowIndex();
+
+        void onClick();
     }
 }

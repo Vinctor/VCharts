@@ -170,7 +170,7 @@ public abstract class AbsBarChart extends AutoView {
     }
 
 
-    private void init(Context context, AttributeSet attrs) {
+    protected void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.AbsBarChart);
             setBarTitleMargin(ta.getDimension(R.styleable.AbsBarChart_barTitleMargin, barTitleMargin));

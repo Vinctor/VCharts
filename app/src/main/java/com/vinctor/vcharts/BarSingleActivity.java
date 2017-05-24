@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.vinctor.vchartviews.bar.AbsBarChart;
 import com.vinctor.vchartviews.bar.BarCharSingle;
 import com.vinctor.vchartviews.bar.BarDataSingle;
+import com.vinctor.vchartviews.tools.onBarShowTagListener;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,6 +37,24 @@ public class BarSingleActivity extends BaseActivity {
                 return num + "分";
             }
         });
+        singleBar.setOnShowOtherViewCallback(
+                new onBarShowTagListener(
+                        "查看测验详情",//文字
+                        32,          //字体大小,已适配autolayout
+                        0xffffffff,     //字体颜色
+                        0xff2cb072,     //内部填充颜色
+                        0xff186d45,     //border描边颜色
+                        4,              //border宽度,已适配autolayout
+                        new int[]{-26, 0}, //定位偏移量x,y,,已适配autolayout
+                        5               //圆角半径,已适配autolayout
+
+                ) {
+                    @Override
+                    public void onClick() {//点击监听
+                        Toast.makeText(thisActivity, "press", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
         singleBar.setData(new BarDataSingle("语文", 0, Color.BLUE))
                 .addData(new BarDataSingle("数学", 80, Color.RED))
                 .addData(new BarDataSingle("英语", 120, Color.MAGENTA))

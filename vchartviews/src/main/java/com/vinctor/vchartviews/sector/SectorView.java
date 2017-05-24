@@ -150,9 +150,6 @@ public class SectorView extends AutoView {
                 it.remove();
             }
         }
-        if (list.size() != 2) {
-            throw new IllegalArgumentException();
-        }
     }
 
     @Override
