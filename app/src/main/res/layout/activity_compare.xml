@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.vinctor.vcharts.CompareActivity">
+
+    <com.vinctor.vchartviews.compare.CompareView
+        android:id="@+id/compare"
+        android:layout_width="match_parent"
+        android:layout_height="400px"
+        android:background="#ff4A90E2"
+        app:borderColor="#ff2f629d"
+        app:circleStrokeWidth="8px"
+        app:imgRes="@mipmap/ic_launcher"
+        app:lineColor="#ffffffff"
+        app:lineStrokeWidth="8px"
+        app:maxNum="100"
+        app:minNum="0"
+        app:moreDataColor="#ffff7e76"
+        app:progressHeight="30px"
+        app:progressStrokeWidth="2px"
+        app:radius="70px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="原数据" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/origin_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="参照数据" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/other_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <Button
+        android:id="@+id/change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换图片" />
+</LinearLayout>

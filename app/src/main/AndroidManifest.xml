@@ -32,7 +32,8 @@
         <activity
             android:name=".SectorActivity"
             android:label="@string/title_activity_sector"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CompareActivity"></activity>
     </application>
 
 </manifest>
