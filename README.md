@@ -1,10 +1,6 @@
 # VCharts
 
-## Preview([demo](apk/app-debug.apk))
-
-
-![bar](screenshot/diagram.png)
-![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+## ([demo](apk/app-debug.apk))
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
@@ -255,4 +251,11 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
              app:progressHeight="30px"       //数据条高度
              app:progressStrokeWidth="2px"   //数据条描边宽度
              app:radius="70px" />            //中间圆形半径
+             
+## Preview([demo](apk/app-debug.apk))
+
+
+![bar](screenshot/diagram.png)
+![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+
 ### 未完待续
