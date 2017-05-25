@@ -1,6 +1,6 @@
 # VCharts
 
-## ([demo](apk/app-debug.apk))
+## [demo](apk/app-debug.apk)( [效果图](#preview))
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
@@ -252,7 +252,7 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
              app:progressStrokeWidth="2px"   //数据条描边宽度
              app:radius="70px" />            //中间圆形半径
              
-## Preview([demo](apk/app-debug.apk))
+## <span id="preview">Preview</span>([demo](apk/app-debug.apk))
 
 
 ![bar](screenshot/diagram.png)
