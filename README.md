@@ -1,10 +1,10 @@
 # VCharts
 
-## Preview([demo](apk/app-debug.apk))
-
+## <span id="preview">Preview</span>([demo](apk/app-debug.apk))( [使用](#user-content-usagedemo))
 
 ![bar](screenshot/diagram.png)
 ![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+![bar](screenshot/compare.gif)![bar](screenshot/sector.png)
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
@@ -236,5 +236,48 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
         list.add(new DiagramData(0xff5EB9EE, "75~100个知识点"));
         flowLayout.setList(list);
 
-     
+### 对比图
+```xml```中
+
+     <com.vinctor.vchartviews.compare.CompareView
+             android:id="@+id/compare"
+             android:layout_width="match_parent"
+             android:layout_height="400px"
+             android:background="#ff4A90E2"
+             app:borderColor="#ff2f629d"     //描边颜色
+             app:circleStrokeWidth="8px"     //圆形描边宽度
+             app:imgRes="@mipmap/ic_launcher"//中间图片
+             app:lineColor="#ffffffff"       //底部线条颜色
+             app:lineStrokeWidth="8px"       //底部线条宽度
+             app:maxNum="100"                //最大
+             app:minNum="0"                  //最小
+             app:moreDataColor="#ffff7e76"   //两者中较大的数据条填充颜色
+             app:progressHeight="30px"       //数据条高度
+             app:progressStrokeWidth="2px"   //数据条描边宽度
+             app:radius="70px" />            //中间圆形半径
+             
+### 环形图 
+```xml```中
+
+      <com.vinctor.vchartviews.sector.SectorView
+             android:id="@+id/view"
+             android:layout_width="match_parent"
+             android:layout_height="400dp" />
+             
+```java```中
+
+       view = (SectorView) findViewById(R.id.view);
+             view.setOnShowDescriptionLinstener(new SectorView.OnShowDescriptionLinstener() {
+                 @Override
+                 public String onShowDes(int num) {
+                     return num + "个知识点";
+                 }
+             });
+             view.setDescriptionTextSize(30)
+                     .setBorderWidth(8)
+                     .setData(new SectorData(120, 0xff2CB072, 0xff186D45, Color.WHITE))
+                     .addData(new SectorData(60, 0xffDDF4E9, 0xff2CB072, 0xff186D45))
+                     .commit();
+
+
 ### 未完待续
