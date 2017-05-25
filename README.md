@@ -1,6 +1,6 @@
 # VCharts
 
-## [demo](apk/app-debug.apk)( [效果图](#preview))
+## [demo](apk/app-debug.apk)( [效果图](#user-content-previewdemo))
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
