@@ -1,8 +1,6 @@
 # VCharts
 
-## [demo](apk/app-debug.apk)( [效果图](#user-content-previewdemo))
-
-## <span id="preview">Preview</span>([demo](apk/app-debug.apk))
+## <span id="preview">Preview</span>([demo](apk/app-debug.apk))( [使用](#user-content-usagedemo))
 
 ![bar](screenshot/diagram.png)
 ![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
