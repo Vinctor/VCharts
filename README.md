@@ -2,6 +2,12 @@
 
 ## [demo](apk/app-debug.apk)( [效果图](#user-content-previewdemo))
 
+## <span id="preview">Preview</span>([demo](apk/app-debug.apk))
+
+![bar](screenshot/diagram.png)
+![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+![bar](screenshot/compare.gif)![bar](screenshot/sector.png)
+
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
 
@@ -252,10 +258,28 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
              app:progressStrokeWidth="2px"   //数据条描边宽度
              app:radius="70px" />            //中间圆形半径
              
-## <span id="preview">Preview</span>([demo](apk/app-debug.apk))
+### 环形图 
+```xml```中
 
+      <com.vinctor.vchartviews.sector.SectorView
+             android:id="@+id/view"
+             android:layout_width="match_parent"
+             android:layout_height="400dp" />
+             
+```java```中
 
-![bar](screenshot/diagram.png)
-![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+       view = (SectorView) findViewById(R.id.view);
+             view.setOnShowDescriptionLinstener(new SectorView.OnShowDescriptionLinstener() {
+                 @Override
+                 public String onShowDes(int num) {
+                     return num + "个知识点";
+                 }
+             });
+             view.setDescriptionTextSize(30)
+                     .setBorderWidth(8)
+                     .setData(new SectorData(120, 0xff2CB072, 0xff186D45, Color.WHITE))
+                     .addData(new SectorData(60, 0xffDDF4E9, 0xff2CB072, 0xff186D45))
+                     .commit();
+
 
 ### 未完待续
