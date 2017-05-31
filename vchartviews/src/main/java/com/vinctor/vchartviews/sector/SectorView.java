@@ -146,7 +146,7 @@ public class SectorView extends AutoView {
         Iterator<SectorData> it = list.iterator();
         while (it.hasNext()) {
             SectorData data = it.next();
-            if (data.getNum() <= 0) {
+            if (data.getNum() < 0) {
                 it.remove();
             }
         }
