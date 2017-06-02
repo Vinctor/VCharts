@@ -31,7 +31,7 @@ public abstract class AbsBarChart extends AutoView {
     protected float barTitleMargin = 20;
     protected int titleTextSize = 50;
     protected float barTextMargin = 10;
-    private int barTextSize = 50;
+    protected int barTextSize = 50;
 
 
     private Paint graduationPaint = new Paint();
@@ -127,6 +127,7 @@ public abstract class AbsBarChart extends AutoView {
     public void commit() {
         checkMinAndMax();
         setPaint();
+        compute();
         invalidate();
     }
 
@@ -208,11 +209,13 @@ public abstract class AbsBarChart extends AutoView {
         this.height = h;
         this.width = w;
         super.onSizeChanged(w, h, oldw, oldh);
+        compute();
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    private void compute() {
+        if (height == 0 || width == 0) {
+            return;
+        }
         float graduationWidth = measureGraduationTextWidth();
 
         graduaionMargin = graduationWidth * 0.5f;//刻度margin
@@ -226,8 +229,21 @@ public abstract class AbsBarChart extends AutoView {
         if (barWidth == 0) {
             barWidth = availableWidth / 10;
         }
+        onCompute();
+    }
+
+    protected abstract void onCompute();
+
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (height == 0 || width == 0) {
+            return;
+        }
+        super.onDraw(canvas);
+
         if (isEnableGraduation) {
-            drawGraduation(canvas, graduationWidth);//背景刻度
+            drawGraduation(canvas);//背景刻度
         }
         drawBar(canvas);
     }
@@ -244,7 +260,7 @@ public abstract class AbsBarChart extends AutoView {
      * @param canvas
      * @param graduationWidth
      */
-    private void drawGraduation(Canvas canvas, float graduationWidth) {
+    private void drawGraduation(Canvas canvas) {
 
         //刻度外矩形
         graduationPaint.setStyle(Paint.Style.STROKE);

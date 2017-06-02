@@ -61,7 +61,7 @@ public class BarSingleActivity extends BaseActivity {
 
                 }
         );
-        singleBar.setData(new BarDataSingle("语文", 0, Color.BLUE))
+        singleBar.setData(new BarDataSingle("语文", 100, Color.BLUE))
                 .addData(new BarDataSingle("数学", 80, Color.RED))
                 .addData(new BarDataSingle("英语", 120, Color.MAGENTA))
                 .addData(new BarDataSingle("物理", 60, Color.GREEN))

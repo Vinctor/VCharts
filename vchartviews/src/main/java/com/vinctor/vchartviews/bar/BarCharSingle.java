@@ -76,6 +76,16 @@ public class BarCharSingle extends AbsBarChart {
         gestureDetector = new GestureDetector(context, simpleOnGestureListener);
     }
 
+    @Override
+    protected void onCompute() {
+        if (onShowOtherViewCallback != null) {
+            float titleHeight = barTextSize + barTextMargin * 2;
+            Bitmap bitmap = onShowOtherViewCallback.onShowBitmap();
+            float otherViewHeight = Math.abs(onShowOtherViewCallback.onShowOffsetToBar(bitmap)[1])*1.1f;
+            availableTop = Math.max(titleHeight, otherViewHeight);
+        }
+    }
+
     /**
      * 绘制柱状图
      *

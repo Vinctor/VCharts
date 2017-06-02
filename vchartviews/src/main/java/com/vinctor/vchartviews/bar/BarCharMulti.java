@@ -63,6 +63,10 @@ public class BarCharMulti extends AbsBarChart {
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
+    protected void onCompute() {
+
+    }
 
     @Override
     protected void drawBar(Canvas canvas) {
