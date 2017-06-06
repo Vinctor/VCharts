@@ -147,8 +147,10 @@ public class RadarChart extends AutoView {
     public void commit() {
         checkMinAndMax();
         setPaint();
+        compute();
         invalidate();
     }
+
 
     private void checkMinAndMax() {
         if (min >= max) {
@@ -211,19 +213,6 @@ public class RadarChart extends AutoView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 
-        titlePaint.setTextSize(titleTextSize);
-        maxTitleWidth = getMaxTitleWidth();
-
-        titleHorMargin = maxTitleWidth / 4;
-        titleVerMargin = titleTextSize;
-
-        widthAviable = (w - 2 * maxTitleWidth - 2 * titleHorMargin);
-        heightAviable = (h - 2 * titleTextSize - 2 * titleHorMargin - titleVerMargin);
-        leftAviable = maxTitleWidth + titleHorMargin;
-        topAviable = titleTextSize + titleHorMargin;
-        rightAviable = w - maxTitleWidth;
-        bottomAviable = h - titleTextSize;
-        maxRadius = Math.min(widthAviable, heightAviable) / 2;
         height = h;
         width = w;
         //中心坐标
@@ -232,6 +221,22 @@ public class RadarChart extends AutoView {
 
         postInvalidate();
         super.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    private void compute() {
+        titlePaint.setTextSize(titleTextSize);
+        maxTitleWidth = getMaxTitleWidth();
+
+        titleHorMargin = maxTitleWidth / 4;
+        titleVerMargin = titleTextSize;
+
+        widthAviable = (width - 2 * maxTitleWidth - 2 * titleHorMargin);
+        heightAviable = (height - 2 * titleTextSize - 2 * titleHorMargin - titleVerMargin);
+        leftAviable = maxTitleWidth + titleHorMargin;
+        topAviable = titleTextSize + titleHorMargin;
+        rightAviable = width - maxTitleWidth;
+        bottomAviable = height - titleTextSize;
+        maxRadius = Math.min(widthAviable, heightAviable) / 2;
     }
 
     private float getMaxTitleWidth() {
