@@ -7,10 +7,18 @@ package com.vinctor.vchartviews.line;
 public class LineData {
     float nums[];
     int lineColor;
+    int tagBorderColor;
 
     public LineData(float[] nums, int lineColor) {
         this.nums = nums;
         this.lineColor = lineColor;
+        this.tagBorderColor = lineColor;
+    }
+
+    public LineData(float[] nums, int lineColor, int tagBorderColor) {
+        this.nums = nums;
+        this.lineColor = lineColor;
+        this.tagBorderColor = tagBorderColor;
     }
 
     public float[] getNums() {
@@ -27,5 +35,9 @@ public class LineData {
 
     public void setLineColor(int lineColor) {
         this.lineColor = lineColor;
+    }
+
+    public int getTagBorderColor() {
+        return tagBorderColor;
     }
 }

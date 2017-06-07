@@ -79,6 +79,8 @@ public class LineChart extends AutoView {
     boolean isAllowClickShowTag = true;
     int circleClickIndex[] = new int[]{-1, -1};
     private float circlrClickOffset = 0;
+    float tagCornerRadius = 5;
+    float tagBorderWidth = 5;
 
     private GestureDetectorCompat mDetector;
     private int tagpadding;
@@ -97,6 +99,15 @@ public class LineChart extends AutoView {
     int shadowIndexEnd = 5;
     Paint shadowPaint = new Paint();
 
+    public LineChart setTagBorderWidth(float tagBorderWidth) {
+        this.tagBorderWidth = getAutoWidthSize(tagBorderWidth);
+        return this;
+    }
+
+    public LineChart setTagCornerRadius(float tagCornerRadius) {
+        this.tagCornerRadius = tagCornerRadius;
+        return this;
+    }
 
     public void setShowTagLineIndex(int index) {
         if (index >= list.size()) {
@@ -365,7 +376,7 @@ public class LineChart extends AutoView {
         availableLeft = leftWidth;
         availableTop = tagMargin + getCircleRadius(innerCircleRadius) + coordinateTextSize + tagpadding + 10;//10为上方空隙,可为0,getCircleRadius为drawTag中三角形高度
         float rightPadding = Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2,
-                Math.max(circlePaint.measureText(max + "") / 2 + tagpadding, circlePaint.measureText(min + "")) / 2 + tagpadding);
+                Math.max(circlePaint.measureText(max + ".0") / 2 + tagpadding, circlePaint.measureText(min + ".0")) / 2 + tagpadding);
         availableRight = width - rightPadding;
         availableBottom = height - titleTextSize * 2;
         availableHeight = availableBottom - availableTop;
@@ -432,6 +443,7 @@ public class LineChart extends AutoView {
             for (int i = 0; i < dataCount; i++) {
                 LineData data = list.get(i);
                 final int lineColor = data.getLineColor();
+                int tagBorderColor = data.getTagBorderColor();
                 float nums[] = data.getNums();
                 int numsCount = nums.length;
                 if (numsCount != titles.length)
@@ -446,7 +458,7 @@ public class LineChart extends AutoView {
                 points.add(new Point(currentX, currentY));
                 //外圆
                 circlePoints.add(new CirclePoint(nums[0], currentX, currentY));
-                dataLines.add(new LineAndCircle(lineColor, null, circlePoints));
+                dataLines.add(new LineAndCircle(lineColor, tagBorderColor, null, circlePoints));
             }
 
             return;
@@ -457,6 +469,7 @@ public class LineChart extends AutoView {
             Path path = new Path();
             LineData data = list.get(i);
             final int lineColor = data.getLineColor();
+            int tagBorderColor = data.getTagBorderColor();
             float nums[] = data.getNums();
             int numsCount = nums.length;
             if (numsCount != titles.length)
@@ -482,7 +495,7 @@ public class LineChart extends AutoView {
                 } else
                     path.cubicTo(besselPoints.get(j - 2).x, besselPoints.get(j - 2).y, besselPoints.get(j - 1).x, besselPoints.get(j - 1).y, besselPoints.get(j).x, besselPoints.get(j).y);
             }
-            dataLines.add(new LineAndCircle(lineColor, path, circlePoints));
+            dataLines.add(new LineAndCircle(lineColor, tagBorderColor, path, circlePoints));
         }
     }
 
@@ -572,17 +585,17 @@ public class LineChart extends AutoView {
             LineAndCircle lineAndCircle = animatorLineAndCircleList.get(i);
             linePaint.setColor(lineAndCircle.getLineColor());
             if (titles.length == 1) {
-                drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), lineAndCircle.getTagBorderColor(), canvas);
             } else {
                 if (!isShowAnimation) {
                     canvas.drawPath(lineAndCircle.getPath(), linePaint);
                     //drawShadow(canvas, lineAndCircle);
-                    drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                    drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), lineAndCircle.getTagBorderColor(), canvas);
                 } else {
                     canvas.drawPath(lineAndCircle.getPath(), linePaint);
                     if (animationEnd) {
                         //drawShadow(canvas, lineAndCircle);
-                        drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), canvas);
+                        drawCircleRing(i, lineAndCircle.circlePoints, lineAndCircle.getLineColor(), lineAndCircle.getTagBorderColor(), canvas);
                     }
                 }
             }
@@ -622,7 +635,7 @@ public class LineChart extends AutoView {
      * @param lineColor
      * @param canvas
      */
-    private void drawCircleRing(int lineIndex, List<CirclePoint> list, int lineColor, Canvas canvas) {
+    private void drawCircleRing(int lineIndex, List<CirclePoint> list, int lineColor, int tagBorderColor, Canvas canvas) {
 
         boolean isDrawTag = lineIndex == circleClickIndex[0];
 
@@ -636,7 +649,7 @@ public class LineChart extends AutoView {
             circlePaint.setAlpha(255);
             canvas.drawCircle(point.getX(), point.getY(), outRadius, circlePaint);
             if (isDrawTag) {
-                tagCircles.add(new CirclePoint(lineColor, point));
+                tagCircles.add(new CirclePoint(lineColor, tagBorderColor, point));
             }
             if (!(circleClickIndex[1] == i && isDrawTag)) {
                 circlePaint.setAlpha(255);
@@ -660,8 +673,13 @@ public class LineChart extends AutoView {
             if (num.substring(num.length() - 1, num.length()).equals("0")) {
                 num = (int) point.getNum() + "";
             }
-            float numWidth = circlePaint.measureText(num + "");
-            float tagWidth = numWidth + 2 * tagpadding;
+            float numTrueWidth = circlePaint.measureText(num);
+            String measureContentString = num;
+            if (num.length() < 3) {
+                measureContentString = "000";
+            }
+            float numMeasureWidth = circlePaint.measureText(measureContentString);
+            float tagWidth = numMeasureWidth + 2 * tagpadding;
             float tagRectHeight = coordinateTextSize + 2 * (tagpadding / 2);
             circlePaint.setAlpha(255);
             //tag矩形
@@ -670,19 +688,35 @@ public class LineChart extends AutoView {
             float tagRight = tagLeft + tagWidth;
             float tagRectBottom = currentY - tagMargin - sanjiaoHeight;
             float tagRectTop = tagRectBottom - tagRectHeight;
-            canvas.drawRect(tagLeft, tagRectTop, tagRight, tagRectBottom, circlePaint);
-            //三角
-            Path sanjiaoPath = new Path();
-            sanjiaoPath.moveTo(tagLeft + tagWidth / 3, tagRectBottom - 1);
-            sanjiaoPath.lineTo(tagRight - tagWidth / 3, tagRectBottom - 1);
-            sanjiaoPath.lineTo(currentX, currentY - tagMargin);
-            canvas.drawPath(sanjiaoPath, circlePaint);
+
+            Path path = new Path();
+            path.moveTo((tagLeft + tagRight) / 2, tagRectTop);//1
+            path.lineTo(tagRight - tagCornerRadius, tagRectTop);//2
+            path.quadTo(tagRight, tagRectTop, tagRight, tagRectTop + tagCornerRadius);//3
+            path.lineTo(tagRight, tagRectBottom - tagCornerRadius);//4
+            path.quadTo(tagRight, tagRectBottom, tagRight - tagCornerRadius, tagRectBottom);//5
+            path.lineTo(tagRight - tagWidth / 3 + tagCornerRadius, tagRectBottom);//6
+            path.quadTo(tagRight - tagWidth / 3, tagRectBottom, tagRight - tagWidth / 3 - tagCornerRadius / 2, tagRectBottom + tagCornerRadius / 2);//7
+            path.lineTo(currentX, currentY - tagMargin);//8
+            path.lineTo(tagLeft + tagWidth / 3 + tagCornerRadius / 2, tagRectBottom + tagCornerRadius / 2);//9
+            path.quadTo(tagLeft + tagWidth / 3, tagRectBottom, tagLeft + tagWidth / 3 - tagCornerRadius / 2, tagRectBottom);//10
+            path.lineTo(tagLeft + tagCornerRadius, tagRectBottom);//11
+            path.quadTo(tagLeft, tagRectBottom, tagLeft, tagRectBottom - tagCornerRadius);//12
+            path.lineTo(tagLeft, tagRectTop + tagCornerRadius);//13
+            path.quadTo(tagLeft, tagRectTop, tagLeft + tagCornerRadius, tagRectTop);
+            path.close();
+            canvas.drawPath(path, circlePaint);
+
+            circlePaint.setStyle(Paint.Style.STROKE);
+            circlePaint.setStrokeWidth(tagBorderWidth);
+            circlePaint.setColor(point.tagBorderColor);
+            canvas.drawPath(path, circlePaint);
 
             //num
+            circlePaint.setStyle(Paint.Style.FILL);
             circlePaint.setAlpha(255);
             circlePaint.setColor(0xffffffff);
-
-            canvas.drawText(num, currentX - numWidth / 2, tagRectBottom - tagpadding / 2, circlePaint);
+            canvas.drawText(num, currentX - numTrueWidth / 2, tagRectBottom - tagpadding / 2 - (int) (circlePaint.descent() - circlePaint.ascent() - circlePaint.getTextSize()), circlePaint);
         }
     }
 
@@ -840,12 +874,14 @@ public class LineChart extends AutoView {
         float x;
         float y;
         int color;
+        int tagBorderColor;
 
-        public CirclePoint(int color, CirclePoint point) {
+        public CirclePoint(int color, int tagBorderColor, CirclePoint point) {
             this.num = point.num;
             this.x = point.x;
             this.y = point.y;
             this.color = color;
+            this.tagBorderColor = tagBorderColor;
         }
 
         public CirclePoint(float nums, float x, float y) {
@@ -914,18 +950,19 @@ public class LineChart extends AutoView {
         }
 
         int lineColor;
+        int tagBorderColor;
         Path path = new Path();
         List<CirclePoint> circlePoints;
 
-        public LineAndCircle(int lineColor, List<CirclePoint> circlePoints) {
+        public LineAndCircle(int lineColor, int tagBorderColor, android.graphics.Path path, List<CirclePoint> circlePoints) {
             this.lineColor = lineColor;
+            this.tagBorderColor = tagBorderColor;
+            this.path = path;
             this.circlePoints = circlePoints;
         }
 
-        public LineAndCircle(int lineColor, android.graphics.Path path, List<CirclePoint> circlePoints) {
-            this.lineColor = lineColor;
-            this.path = path;
-            this.circlePoints = circlePoints;
+        public int getTagBorderColor() {
+            return tagBorderColor;
         }
 
         public Path getPath() {

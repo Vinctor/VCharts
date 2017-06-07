@@ -40,11 +40,11 @@ public class LineActivity extends BaseActivity {
         setContentView(R.layout.activity_line);
         ButterKnife.bind(this);
         line = (LineChart) findViewById(R.id.line);
-        line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
-                .clearDatas()
-                .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
+        line.clearDatas()
+                .setAllowClickShowTag(true)
+                .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
+                .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff2cb072, 0xff186d45))//需与title长度一致
                 .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
-                .setAllowClickShowTag(false)
                 .commit();
         line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
             @Override
@@ -101,8 +101,8 @@ public class LineActivity extends BaseActivity {
                 line.setAllowClickShowTag(!line.isAllowClickShowTag()).commit();
                 break;
             case R.id.startAni:
-                line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
-                        .clearDatas()
+                line.clearDatas()
+                        .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
                         .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
                         .setShowAnimation(true)
@@ -115,16 +115,16 @@ public class LineActivity extends BaseActivity {
                         .commit();
                 break;
             case R.id.multi:
-                line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
-                        .clearDatas()
+                line.clearDatas()
+                        .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
                         .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
                         .setShowAnimation(true)
                         .commit();
                 break;
             case R.id.shadow:
-                line.setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
-                        .clearDatas()
+                line.clearDatas()
+                        .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
                         .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .setShowAnimation(true)
                         .commit();

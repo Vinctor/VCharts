@@ -218,12 +218,16 @@ public class RadarChart extends AutoView {
         //中心坐标
         centerX = w / 2;
         centerY = h / 2;
+        compute();
 
         postInvalidate();
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
     private void compute() {
+        if (width == 0 || height == 0) {
+            return;
+        }
         titlePaint.setTextSize(titleTextSize);
         maxTitleWidth = getMaxTitleWidth();
 
@@ -250,6 +254,9 @@ public class RadarChart extends AutoView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (width == 0 || height == 0) {
+            return;
+        }
         super.onDraw(canvas);
         peerAngle = 360 / count;
         if (tagTextSize == 0f) {
