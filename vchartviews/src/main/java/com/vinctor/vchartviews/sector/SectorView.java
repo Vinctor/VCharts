@@ -132,14 +132,16 @@ public class SectorView extends AutoView {
         computAvailable();
 
         float total = 0f;
-        for (SectorData data : list) {
-            total += data.getNum();
-        }
+        total += list.get(0).getNum();
+        total += list.get(1).getNum();
+
+
         float peerAngle = 360 / total;
-        for (SectorData data : list) {
-            data.setAngle(peerAngle * data.getNum());
-            data.setPercent((int) (data.getNum() * 100 / total));
-        }
+        list.get(0).setAngle(peerAngle * list.get(0).getNum());
+        list.get(0).setPercent((int) (list.get(0).getNum() * 100 / total));
+
+        list.get(1).setAngle(peerAngle * list.get(1).getNum());
+        list.get(1).setPercent(100 - list.get(0).getPercent());
     }
 
     private void checkList() {
