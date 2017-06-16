@@ -34,13 +34,13 @@ public class RadarChart extends AutoView {
     private Paint tagPaintBack = new Paint();//标记画笔背景
     private Paint titlePaint = new Paint();//标题画笔
     private float tagTextSize = 0f;//标记文字大小
+    private float shadowBorderWidth = 6;
     private List<RadarData> list = new ArrayList<>();
     private String[] titles = new String[]{"012345678", "fad", "d", "adf", "afd", "adf"};
     float peerAngle;
     private float min = 0;
     private float max = 100;
     private float peerDiff;
-    private int alpha = 120;
     private float maxTitleWidth;
     private int lineColor = 0xff929292;
     private int titleColor = Color.GRAY;
@@ -58,6 +58,10 @@ public class RadarChart extends AutoView {
     private float titleHorMargin;
     private int titleVerMargin;
 
+    public RadarChart setShadowBorderWidth(float shadowBorderWidth) {
+        this.shadowBorderWidth = getAutoWidthSize(shadowBorderWidth);
+        return this;
+    }
 
     public RadarChart setRadarStrokeWidth(float radarStrokeWidth) {
         this.radarStrokeWidth = getAutoWidthSize(radarStrokeWidth);
@@ -76,11 +80,6 @@ public class RadarChart extends AutoView {
 
     public RadarChart setTagTextSize(float tagTextSize) {
         this.tagTextSize = getAutoHeightSize(tagTextSize);
-        return this;
-    }
-
-    public RadarChart setAlpha(int alpha) {
-        this.alpha = alpha;
         return this;
     }
 
@@ -150,7 +149,6 @@ public class RadarChart extends AutoView {
         compute();
         invalidate();
     }
-
 
     private void checkMinAndMax() {
         if (min >= max) {
@@ -443,8 +441,15 @@ public class RadarChart extends AutoView {
                 if (i == 0) path.moveTo(x, y);
                 else path.lineTo(x, y);
             }
+            path.close();
+
+            valuePaint.setStyle(Paint.Style.FILL);
             valuePaint.setColor(item.getColor());
-            valuePaint.setAlpha(alpha);
+            canvas.drawPath(path, valuePaint);
+            //border
+            valuePaint.setStyle(Paint.Style.STROKE);
+            valuePaint.setStrokeWidth(shadowBorderWidth);
+            valuePaint.setAlpha(255);
             canvas.drawPath(path, valuePaint);
         }
     }

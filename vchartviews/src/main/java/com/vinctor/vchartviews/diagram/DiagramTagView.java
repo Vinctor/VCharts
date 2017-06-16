@@ -93,11 +93,13 @@ public class DiagramTagView extends View {
         if (innerRect != null) {
             //content
             paint.setColor(innerColor);
+            paint.setAlpha(255);
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(innerRect, paint);
 
             //borderRect
             paint.setColor(borderColor);
+            paint.setAlpha(255);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(borderWidth);
             canvas.drawRect(borderRect, paint);

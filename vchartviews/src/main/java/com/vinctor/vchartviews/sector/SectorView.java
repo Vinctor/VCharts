@@ -124,7 +124,7 @@ public class SectorView extends AutoView {
     }
 
     private void compute() {
-        if (width == 0 || height == 0) {
+        if (width == 0 || height == 0 || list.size() == 0) {
             return;
         }
         checkList();
@@ -157,7 +157,7 @@ public class SectorView extends AutoView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (width == 0 || height == 0 || outRecF == null) {
+        if (width == 0 || height == 0 || outRecF == null || list.size() == 0) {
             return;
         }
         //绘制扇形

@@ -32,12 +32,13 @@ public class RadarActivity extends BaseActivity {
 
 
         RadarData data = new RadarData();
-        data.setColor(0xff0000);
-        data.setDatas(new float[]{80, 70, 30, 70, 80, 70});
+        data.setColor(0x44F594A0);
+        data.setDatas(new float[]{80, 70, 30, 70, 80, 100});
+        list.add(data);
 
         RadarData data2 = new RadarData();
-        data2.setColor(0x0000ff);
-        data2.setDatas(new float[]{92, 88, 84, 67, 88, 78});
+        data2.setColor(0x44317AA4);
+        data2.setDatas(new float[]{92, 880, 84, 67, 88, 78});
         list.add(data2);
         setSetting();
         radarView
@@ -50,7 +51,6 @@ public class RadarActivity extends BaseActivity {
         radarView.setCount(6)//多边形几条边
                 .setDensity(6)//雷达图蜘蛛网密度
                 .setMinAndMax(0, 100)//最小与最大值
-                .setAlpha(150)//雷达图数据遮盖透明度
                 .setTitleTextSize(30)//雷达边角标题文字大小(px)默认30
                 .setTagTextSize(30)//雷达刻度文字大小
                 .commit();
