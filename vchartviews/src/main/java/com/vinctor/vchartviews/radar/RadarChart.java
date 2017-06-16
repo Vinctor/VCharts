@@ -30,13 +30,13 @@ public class RadarChart extends AutoView {
     private int density = 8;
     private Paint mainPaint = new Paint();//雷达底图画笔
     private Paint tagPaint = new Paint();//标记画笔
-    private Paint valuePaint = new Paint();//雷达范围画笔
+    private Paint valuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);//雷达范围画笔
     private Paint tagPaintBack = new Paint();//标记画笔背景
     private Paint titlePaint = new Paint();//标题画笔
     private float tagTextSize = 0f;//标记文字大小
     private float shadowBorderWidth = 6;
     private List<RadarData> list = new ArrayList<>();
-    private String[] titles = new String[]{"012345678", "fad", "d", "adf", "afd", "adf"};
+    private String[] titles = new String[]{};
     float peerAngle;
     private float min = 0;
     private float max = 100;
@@ -223,7 +223,7 @@ public class RadarChart extends AutoView {
     }
 
     private void compute() {
-        if (width == 0 || height == 0) {
+        if (width == 0 || height == 0 || titles.length == 0) {
             return;
         }
         titlePaint.setTextSize(titleTextSize);
@@ -252,7 +252,7 @@ public class RadarChart extends AutoView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (width == 0 || height == 0) {
+        if (width == 0 || height == 0 || titles.length == 0) {
             return;
         }
         super.onDraw(canvas);
