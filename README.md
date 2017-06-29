@@ -4,7 +4,7 @@
 
 ![bar](screenshot/diagram.png)
 ![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
-![bar](screenshot/compare.gif)![bar](screenshot/sector.png)
+![bar](screenshot/compare.gif)![bar](screenshot/sector.png)![bar](screenshot/progress.gif)
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
 ![line](screenshot/auto.gif)
@@ -279,5 +279,21 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
                      .addData(new SectorData(60, 0xffDDF4E9, 0xff2CB072, 0xff186D45))
                      .commit();
 
+### 进度条
+
+```xml```中
+
+           <com.vinctor.vchartviews.progress.ProgressBarView
+                  android:id="@+id/progress"
+                  android:layout_width="match_parent"
+                  android:layout_height="100dp" />
+                  
+```java```中
+
+           progressBarView
+                .setProgressBarHeight(30)
+                .setIndicatorCircleRadius(50)
+                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pic))
+                .commit();
 
 ### 未完待续
