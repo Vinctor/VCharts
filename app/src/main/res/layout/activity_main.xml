@@ -1,89 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.vinctor.vcharts.MainActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/diagram"
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="图例"
-        android:textSize="20dp" />
+        android:orientation="vertical"
+        tools:context="com.vinctor.vcharts.MainActivity">
 
-    <TextView
-        android:id="@+id/radar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="雷达图"
-        android:textSize="20dp" />
+        <TextView
+            android:id="@+id/diagram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="图例"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/bar_single"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="单柱柱状图"
-        android:textSize="20dp" />
+        <TextView
+            android:id="@+id/radar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="雷达图"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/bar_multi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="多柱柱状图"
-        android:textSize="20dp" />
+        <TextView
+            android:id="@+id/bar_single"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="单柱柱状图"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="折线图"
-        android:textSize="20dp" />
+        <TextView
+            android:id="@+id/bar_multi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="多柱柱状图"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/pie"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="环形图"
-        android:textSize="20dp" />
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="折线图"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/sector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="饼状图"
-        android:textSize="20dp" />
+        <TextView
+            android:id="@+id/pie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="环形图"
+            android:textSize="15dp" />
 
-    <TextView
-        android:id="@+id/compare"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/back"
-        android:padding="15dp"
-        android:text="对比图"
-        android:textSize="20dp" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/sector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="饼状图"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/compare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="对比图"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="进度图"
+            android:textSize="15dp" />
+    </LinearLayout>
+</ScrollView>

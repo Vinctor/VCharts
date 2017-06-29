@@ -44,6 +44,7 @@ public class RadarChart extends AutoView {
     private float maxTitleWidth;
     private int lineColor = 0xff929292;
     private int titleColor = Color.GRAY;
+    private boolean isShowShadow = true;
 
 
     private float radarStrokeWidth = 3;
@@ -57,6 +58,11 @@ public class RadarChart extends AutoView {
 
     private float titleHorMargin;
     private int titleVerMargin;
+
+    public RadarChart setShowShadow(boolean showShadow) {
+        isShowShadow = showShadow;
+        return this;
+    }
 
     public RadarChart setShadowBorderWidth(float shadowBorderWidth) {
         this.shadowBorderWidth = getAutoWidthSize(shadowBorderWidth);
@@ -443,9 +449,12 @@ public class RadarChart extends AutoView {
             }
             path.close();
 
-            valuePaint.setStyle(Paint.Style.FILL);
             valuePaint.setColor(item.getColor());
-            canvas.drawPath(path, valuePaint);
+            if (isShowShadow) {
+                valuePaint.setStyle(Paint.Style.FILL);
+                canvas.drawPath(path, valuePaint);
+            }
+
             //border
             valuePaint.setStyle(Paint.Style.STROKE);
             valuePaint.setStrokeWidth(shadowBorderWidth);

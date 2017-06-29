@@ -33,7 +33,8 @@
             android:name=".SectorActivity"
             android:label="@string/title_activity_sector"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CompareActivity"></activity>
+        <activity android:name=".CompareActivity" />
+        <activity android:name=".ProgressBarViewActivity"></activity>
     </application>
 
 </manifest>

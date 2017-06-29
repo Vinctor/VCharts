@@ -49,8 +49,8 @@ public class CompareView extends AutoView {
     private PathEffect pathEffect;
     private int min = 0;
     private int max = 100;
-    private int origin = 95;
-    private int other = 50;
+    private float origin = 95;
+    private float other = 50;
     private int imgResID = -1;
 
 
@@ -394,21 +394,21 @@ public class CompareView extends AutoView {
         return this;
     }
 
-    public CompareView setOrigin(int origin) {
+    public CompareView setOrigin(float origin) {
         this.origin = origin;
         return this;
     }
 
-    public CompareView setOther(int other) {
+    public CompareView setOther(float other) {
         this.other = other;
         return this;
     }
 
-    public int getOrigin() {
+    public float getOrigin() {
         return origin;
     }
 
-    public int getOther() {
+    public float getOther() {
         return other;
     }
 

@@ -365,7 +365,7 @@ public class LineChart extends AutoView {
     }
 
     private void setAvaiable() {
-        if (width <= 0 || height <= 0) {
+        if (width <= 0 || height <= 0 || titles.length == 0) {
             return;
         }
         scrollTo(0, 0);
@@ -503,6 +503,9 @@ public class LineChart extends AutoView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (width <= 0 || height <= 0 || titles.length == 0) {
+            return;
+        }
         super.onDraw(canvas);
         if (isFirst) {
             isFirst = false;
@@ -862,6 +865,9 @@ public class LineChart extends AutoView {
         float graduationTextWidth = measureGraduationTextWidth();
         leftMargin = Math.max(graduationTextWidth / 4, getCircleRadius(innerCircleRadius));
         float availableLeftmargin = graduationTextWidth + leftMargin;
+        if (titles[0] == null) {
+            titles[0] = "";
+        }
         return Math.max(availableLeftmargin, titlePaint.measureText(titles[0]) / 2);
     }
 

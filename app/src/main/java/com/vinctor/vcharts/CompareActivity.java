@@ -52,7 +52,7 @@ public class CompareActivity extends BaseActivity {
 
 
         AppCompatSeekBar origin_seekbar = (AppCompatSeekBar) findViewById(R.id.origin_seekbar);
-        origin_seekbar.setProgress(compareView.getOrigin());
+        origin_seekbar.setProgress((int) compareView.getOrigin());
         origin_seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -72,7 +72,7 @@ public class CompareActivity extends BaseActivity {
 
 
         AppCompatSeekBar other_seekbar = (AppCompatSeekBar) findViewById(R.id.other_seekbar);
-        other_seekbar.setProgress(compareView.getOther());
+        other_seekbar.setProgress((int) compareView.getOther());
         other_seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
