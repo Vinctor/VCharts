@@ -71,6 +71,16 @@
             android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/dount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back"
+            android:padding="8dp"
+            android:text="环形图2"
+            android:textSize="15dp" />
+
+        <TextView
             android:id="@+id/sector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -13,9 +13,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        DountActivity.startActivity(thisActivity);
     }
 
-    @OnClick({R.id.progress, R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie, R.id.diagram, R.id.sector, R.id.compare})
+    @OnClick({R.id.dount,R.id.progress, R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie, R.id.diagram, R.id.sector, R.id.compare})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.radar:
@@ -44,6 +46,10 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.progress:
                 ProgressBarViewActivity.startActivity(thisActivity);
+                break;
+
+            case R.id.dount:
+                DountActivity.startActivity(thisActivity);
                 break;
         }
     }

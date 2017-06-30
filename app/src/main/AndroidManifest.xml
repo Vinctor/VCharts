@@ -34,7 +34,8 @@
             android:label="@string/title_activity_sector"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CompareActivity" />
-        <activity android:name=".ProgressBarViewActivity"></activity>
+        <activity android:name=".ProgressBarViewActivity" />
+        <activity android:name=".DountActivity"></activity>
     </application>
 
 </manifest>
