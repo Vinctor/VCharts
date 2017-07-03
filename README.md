@@ -303,7 +303,7 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
              app:progressStrokeWidth="2px"   //数据条描边宽度
              app:radius="70px" />            //中间圆形半径
              
-### 环形图 
+### 扇形图 
 ```xml```中
 
       <com.vinctor.vchartviews.sector.SectorView
