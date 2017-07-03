@@ -23,6 +23,7 @@ public class DountActivity extends AppCompatActivity {
 
         DountView dountView = (DountView) findViewById(R.id.dount);
 
+
         dountView.clearList()///清楚数据
                 .addData(new DountData(5))
                 .addData(new DountData(5))

@@ -205,6 +205,12 @@ public class DountView extends AutoView {
                 leftBottomIndex = j;
             }
         }
+        if (rightBottomIndex == 0) {
+            rightBottomIndex = rightTopIndex;
+        }
+        if (leftBottomIndex == 0) {
+            leftBottomIndex = rightBottomIndex;
+        }
         tagLastY = 0;
         lastGravity = Gravity.RIGHT;
         //右上
@@ -216,7 +222,7 @@ public class DountView extends AutoView {
         tagLastY = 0;
         lastGravity = Gravity.LEFT;
         //左下
-        for (int i = leftBottomIndex; i > rightBottomIndex + 1; i--) {
+        for (int i = leftBottomIndex; i > rightBottomIndex; i--) {
             DountData data = datas.get(i);
             float centerAngle = centerAngles[i];
             drawLeftBottomTag(canvas, centerAngle, data);
