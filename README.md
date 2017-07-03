@@ -203,10 +203,16 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
 ### 环形图(折线标注)
 ```xml```中
 
-           <com.vinctor.vchartviews.dount.DountView
-             android:id="@+id/dount"
-             android:layout_width="match_parent"
-             android:layout_height="400dp" />
+     <com.vinctor.vchartviews.dount.DountView
+        android:id="@+id/dount"
+        android:layout_width="match_parent"
+        app:dountWidth="80px"
+        app:spaceAngle="5"
+        app:tagLineColor="#4E9AC1"
+        app:tagLineWidth="3px"
+        app:tagTextColor="#E47C6D"
+        app:tagTextSize="30px"
+        android:layout_height="400dp" />
              
 ```java```中
 
