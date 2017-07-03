@@ -79,4 +79,13 @@
         <attr name="maxNum" format="integer" />
         <attr name="imgRes" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="DountView">
+        <attr name="spaceAngle" format="integer" />
+        <attr name="dountWidth" format="dimension" />
+        <attr name="tagTextSize" format="dimension" />
+        <attr name="tagTextColor" format="color" />
+        <attr name="tagLineColor" format="color" />
+        <attr name="tagLineWidth" format="dimension" />
+    </declare-styleable>
 </resources>

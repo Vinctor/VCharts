@@ -1,6 +1,7 @@
 package com.vinctor.vchartviews.dount;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -12,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 
 import com.vinctor.vchartviews.AutoView;
+import com.vinctor.vchartviews.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -72,7 +74,16 @@ public class DountView extends AutoView {
     private void init(Context context, AttributeSet attrs) {
 
         if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DountView);
 
+            spaceAngle = ta.getInt(R.styleable.DountView_spaceAngle, 3);
+            setDountWidth(ta.getDimension(R.styleable.DountView_dountWidth, dountWidth));
+            setTextSize(ta.getDimensionPixelSize(R.styleable.DountView_tagTextSize, textSize));
+            tagTextColor = ta.getColor(R.styleable.DountView_tagTextColor, tagTextColor);
+            tagLineColor = ta.getColor(R.styleable.DountView_tagLineColor, tagLineColor);
+            setTagLineWidth(ta.getDimension(R.styleable.DountView_tagLineWidth, tagLineWidth));
+
+            ta.recycle();
         }
         setPaint();
     }
@@ -82,7 +93,6 @@ public class DountView extends AutoView {
         compute();
         invalidate();
     }
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -122,7 +132,6 @@ public class DountView extends AutoView {
             data.setAngle(peerNumAngle * data.getNum());
         }
     }
-
 
     private void setPaint() {
         dountPaint.setStyle(Paint.Style.STROKE);
@@ -207,7 +216,7 @@ public class DountView extends AutoView {
         tagLastY = 0;
         lastGravity = Gravity.LEFT;
         //左下
-        for (int i = leftBottomIndex; i > rightBottomIndex+1; i--) {
+        for (int i = leftBottomIndex; i > rightBottomIndex + 1; i--) {
             DountData data = datas.get(i);
             float centerAngle = centerAngles[i];
             drawLeftBottomTag(canvas, centerAngle, data);
@@ -219,7 +228,7 @@ public class DountView extends AutoView {
         for (int i = 0; i < size; i++) {
             DountData data = datas.get(i);
             float centerAngle = centerAngles[i];
-            if (centerAngle <= 0 || (centerAngle >= 90 && centerAngle <=180)) {
+            if (centerAngle <= 0 || (centerAngle >= 90 && centerAngle <= 180)) {
                 continue;
             }
 
@@ -604,12 +613,12 @@ public class DountView extends AutoView {
     }
 
     public DountView setDountWidth(float dountWidth) {
-        this.dountWidth = dountWidth;
+        this.dountWidth = getAutoWidthSize(dountWidth);
         return this;
     }
 
     public DountView setTextSize(int textSize) {
-        this.textSize = textSize;
+        this.textSize = getAutoHeightSize(textSize);
         return this;
     }
 
@@ -624,7 +633,7 @@ public class DountView extends AutoView {
     }
 
     public DountView setTagLineWidth(float tagLineWidth) {
-        this.tagLineWidth = tagLineWidth;
+        this.tagLineWidth = getAutoHeightSize(tagLineWidth);
         return this;
     }
 }
