@@ -5,12 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 
 import com.vinctor.vchartviews.AutoView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +36,7 @@ public class DountView extends AutoView {
     private float radius;
     private boolean noneData;
     private float tagMargin = 20;
-    private float tagLineTextMargin = 5;
+    private float tagLineTextMargin = 8;
     protected float[] centerAngles;
 
 
@@ -44,8 +48,10 @@ public class DountView extends AutoView {
     private float spaceAngle = 2;
     private float dountWidth = 80;
     private int textSize = 20;
+    private int tagTextColor = 0xff00ff00;
     private int tagLineColor = 0xff00ff00;
     private float tagLineWidth = 3;
+    private onShowTagCallBack onShowTagCallBack;
 
 
     public DountView(Context context) {
@@ -133,7 +139,9 @@ public class DountView extends AutoView {
             return;
         }
         drawDount(canvas);
-        drawTag(canvas);
+        if (onShowTagCallBack != null) {
+            drawTag(canvas);
+        }
     }
 
     private void drawDount(Canvas canvas) {
@@ -148,6 +156,7 @@ public class DountView extends AutoView {
                     drawDountRight - dountWidth / 2,
                     drawDountBottom - dountWidth / 2);
             canvas.drawArc(recf, 0, 360, false, dountPaint);
+            centerAngles[0] = 0f;
             return;
         }
         float startAngle = spaceAngle / 2 - 90;
@@ -171,7 +180,7 @@ public class DountView extends AutoView {
 
     private void drawTag(Canvas canvas) {
 
-        int size = datas.size();
+        int size = centerAngles.length;
         int rightTopIndex = 0;
         int rightBottomIndex = 0;
         int leftBottomIndex = 0;
@@ -198,7 +207,7 @@ public class DountView extends AutoView {
         tagLastY = 0;
         lastGravity = Gravity.LEFT;
         //左下
-        for (int i = leftBottomIndex; i > rightBottomIndex; i--) {
+        for (int i = leftBottomIndex; i > rightBottomIndex+1; i--) {
             DountData data = datas.get(i);
             float centerAngle = centerAngles[i];
             drawLeftBottomTag(canvas, centerAngle, data);
@@ -210,7 +219,7 @@ public class DountView extends AutoView {
         for (int i = 0; i < size; i++) {
             DountData data = datas.get(i);
             float centerAngle = centerAngles[i];
-            if (i < rightTopIndex || (i >= rightBottomIndex && i < leftBottomIndex)) {
+            if (centerAngle <= 0 || (centerAngle >= 90 && centerAngle <=180)) {
                 continue;
             }
 
@@ -260,9 +269,13 @@ public class DountView extends AutoView {
         path.lineTo(endX, endY);
 
         tagPaint.setStyle(Paint.Style.STROKE);
+        tagPaint.setColor(tagLineColor);
+        tagPaint.setAlpha(0xff);
         canvas.drawPath(path, tagPaint);
 
         tagPaint.setStyle(Paint.Style.FILL);
+        tagPaint.setColor(tagTextColor);
+        tagPaint.setAlpha(0xff);
         canvas.drawText(data.getTagText(), textX, endY - tagLineTextMargin, tagPaint);
     }
 
@@ -307,9 +320,13 @@ public class DountView extends AutoView {
         path.lineTo(endX, endY);
 
         tagPaint.setStyle(Paint.Style.STROKE);
+        tagPaint.setColor(tagLineColor);
+        tagPaint.setAlpha(0xff);
         canvas.drawPath(path, tagPaint);
 
         tagPaint.setStyle(Paint.Style.FILL);
+        tagPaint.setColor(tagTextColor);
+        tagPaint.setAlpha(0xff);
         canvas.drawText(data.getTagText(), textX, endY - tagLineTextMargin, tagPaint);
     }
 
@@ -340,7 +357,7 @@ public class DountView extends AutoView {
                 }
                 tagLastY = outY;
             } else
-                tagLastY = height;
+                tagLastY = outY;
             lastGravity = Gravity.LEFT;
         }
 
@@ -367,12 +384,15 @@ public class DountView extends AutoView {
         path.lineTo(endX, endY);
 
         tagPaint.setStyle(Paint.Style.STROKE);
+        tagPaint.setColor(tagLineColor);
+        tagPaint.setAlpha(0xff);
         canvas.drawPath(path, tagPaint);
 
         tagPaint.setStyle(Paint.Style.FILL);
+        tagPaint.setColor(tagTextColor);
+        tagPaint.setAlpha(0xff);
         canvas.drawText(data.getTagText(), textX, endY - tagLineTextMargin, tagPaint);
     }
-
 
     /**
      * 得到需要计算的角度
@@ -466,13 +486,45 @@ public class DountView extends AutoView {
 
 
     private float getMaxTagWidthWithMargin() {
-        float max = 0;
+        if (onShowTagCallBack == null) {
+            return 0;
+        }
+        int maxNum = 0;
+        int minNum = datas.get(0).getNum();
         for (DountData data : datas) {
+            int num = data.getNum();
+            //max
+            if (maxNum < num) {
+                maxNum = num;
+            }
+            //min
+            if (minNum > num) {
+                minNum = num;
+            }
+        }
+
+        float max = 0;
+        for (int i = 0; i < datas.size(); i++) {
+            DountData data = datas.get(i);
+            int num = data.getNum();
+            int type = NUM_TYPE_DEFAULT;
+            if (num == maxNum) {
+                type = NUM_TYPE_MAX;
+            }
+            if (num == minNum) {
+                type = NUM_TYPE_MIN;
+            }
+            String tag = onShowTagCallBack.onShowTag(num, i, type);
+            if (TextUtils.isEmpty(tag)) {
+                tag = data.getNum() + "";
+            }
+            data.setTagText(tag);
             float temp = tagPaint.measureText(data.getTagText());
             if (temp > max) {
                 max = temp;
             }
         }
+
         max += tagMargin;
         return max;
     }
@@ -490,7 +542,6 @@ public class DountView extends AutoView {
         else noneData = false;
     }
 
-
     private int getSpaceCount() {
         int dataSize = datas.size();
         if (dataSize == 1) {
@@ -506,11 +557,19 @@ public class DountView extends AutoView {
         return result;
     }
 
-    private boolean isInRangeAngleCount(float current, float rangleFrom, float rangleTo) {
-        if (current >= rangleFrom && current <= rangleTo) {
-            return true;
-        }
-        return false;
+    public interface onShowTagCallBack {
+        String onShowTag(int num, int position, @DountNumType int tag);
+
+    }
+
+    public final static int NUM_TYPE_DEFAULT = -1;
+    public final static int NUM_TYPE_MAX = 0;
+    public final static int NUM_TYPE_MIN = 1;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({NUM_TYPE_MAX, NUM_TYPE_MIN, NUM_TYPE_DEFAULT})
+    public @interface DountNumType {
+
     }
 
     public DountView clearList() {
@@ -531,6 +590,41 @@ public class DountView extends AutoView {
 
     public DountView addData(DountData data) {
         datas.add(data);
+        return this;
+    }
+
+    public DountView setOnShowTagCallBack(DountView.onShowTagCallBack onShowTagCallBack) {
+        this.onShowTagCallBack = onShowTagCallBack;
+        return this;
+    }
+
+    public DountView setSpaceAngle(float spaceAngle) {
+        this.spaceAngle = spaceAngle;
+        return this;
+    }
+
+    public DountView setDountWidth(float dountWidth) {
+        this.dountWidth = dountWidth;
+        return this;
+    }
+
+    public DountView setTextSize(int textSize) {
+        this.textSize = textSize;
+        return this;
+    }
+
+    public DountView setTagLineColor(int tagLineColor) {
+        this.tagLineColor = tagLineColor;
+        return this;
+    }
+
+    public DountView setTagTextColor(int tagTextColor) {
+        this.tagTextColor = tagTextColor;
+        return this;
+    }
+
+    public DountView setTagLineWidth(float tagLineWidth) {
+        this.tagLineWidth = tagLineWidth;
         return this;
     }
 }

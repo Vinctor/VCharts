@@ -7,16 +7,18 @@ package com.vinctor.vchartviews.dount;
 public class DountData {
     private int num;
     private int dountColor = 0xFF645E;
-    private String tagText = "啊啊啊啊啊测试";
 
 
     public DountData(int num) {
         this.num = num;
     }
 
-    public String getTagText() {
-        return tagText;
+
+    public DountData(int num, int dountColor) {
+        this.num = num;
+        this.dountColor = dountColor;
     }
+
 
     public int getNum() {
         return num;
@@ -26,6 +28,7 @@ public class DountData {
         return dountColor;
     }
 
+
     private float angle;
 
     float getAngle() {
@@ -34,5 +37,15 @@ public class DountData {
 
     void setAngle(float angle) {
         this.angle = angle;
+    }
+
+    private String tagText;
+
+    String getTagText() {
+        return tagText;
+    }
+
+    void setTagText(String tagText) {
+        this.tagText = tagText;
     }
 }
