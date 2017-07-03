@@ -4,6 +4,7 @@
 
 ![bar](screenshot/diagram.png)
 ![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![radar](screenshot/radar.png) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+![line](screenshot/dount.png)
 ![bar](screenshot/compare.gif)![bar](screenshot/sector.png)![bar](screenshot/progress.gif)
 
 ## 适配AUTO([AutoLayout](https://github.com/hongyangAndroid/AndroidAutoLayout))
@@ -170,7 +171,7 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
             }
         });
                 
-### 环形图
+### 环形图(三角标签)
 
 ```xml```中
 
@@ -197,6 +198,52 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
                 .setMinRingWidth(70)
                 .setData(new RingData(datas,
                         new int[]{0xff5EB9EE, 0xffC9E9FE, 0xff3B8DBD, 0xff31769F, Color.GREEN, Color.CYAN, 0xff3176eF, 0xff3f769F,}));
+  
+  
+### 环形图(折线标注)
+```xml```中
+
+           <com.vinctor.vchartviews.dount.DountView
+             android:id="@+id/dount"
+             android:layout_width="match_parent"
+             android:layout_height="400dp" />
+             
+```java```中
+
+        dountView.clearList()///清楚数据
+                .addData(new DountData(5))
+                .addData(new DountData(200, 0x3468A4))//自定义圆环块颜色
+                .addData(new DountData(570))
+                .addData(new DountData(4))
+                .addData(new DountData(5))
+                .addData(new DountData(6))
+                .addData(new DountData(5))
+                .setDountWidth(80)//圆环的宽度
+                .setSpaceAngle(5)//白色间隔的角度
+                .setTagLineWidth(3)//标签线的线宽
+                .setTagLineColor(0x4E9AC1)//标签线的颜色
+                .setTagTextColor(0xE47C6D)//标签文字颜色
+                .setTextSize(30)//标签文字大小
+                .setOnShowTagCallBack(new DountView.onShowTagCallBack() {//显示文字回调
+                    @Override
+                    public String onShowTag(int num, int position, @DountView.DountNumType int tag) {
+                        //数字类型
+                        // NUM_TYPE_DEFAULT 正常
+                        // NUM_TYPE_MAX  最大
+                        // NUM_TYPE_MIN  最小
+                        if (num == 200) {
+                            return num + ",自定义颜色";
+                        }
+                        if (tag == DountView.NUM_TYPE_MAX) {
+                            return num + ",这是最大值!";
+                        }
+                        if (tag == DountView.NUM_TYPE_MIN) {
+                            return num + ",这是最小值!";
+                        }
+                        return num + "个人";
+                    }
+                })
+                .commit();//提交进行绘制
   
 ### 图例
 
