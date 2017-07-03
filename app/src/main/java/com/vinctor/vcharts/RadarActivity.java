@@ -42,6 +42,7 @@ public class RadarActivity extends BaseActivity {
         list.add(data2);
         setSetting();
         radarView
+//                .setShowShadow(false)
                 .setList(list)//设置数据
                 .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "生物"})//边角文字
                 .commit();//以上设置需要此方法才能生效
