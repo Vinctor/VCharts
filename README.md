@@ -149,7 +149,20 @@ lastest version：x.y.z-> ![Download](https://api.bintray.com/packages/xcht1209/
 ```java```中
 
       line.setDensity(5)
-                  .setShowAnimation(true)//动画
+                 .setHorizontalOpen(true)//---是否左右开放,无坐标轴
+                .setShowHorGraduation(false)//---在setHorizontalOpen(false)的前提下,设置是否按照setDensity(int)显示刻度线
+                .setSpecialLineNum(60.3f)//---在setHorizontalOpen(false)的前提下,设置特殊刻度(比如合格线)
+                .setShowTagBack(false)//---设置是否显示数字标签的背景,默认true
+                .setShowAllTag(true)//----设置是否显示全部的数字标签,默认为false
+                .setCoordinateRectLineWidth(10)//---设置刻度矩形的线宽
+                .setSpecialLineWidth(10)//--设置setSpecialLineNum(float)中特殊线的线宽
+
+                .setShowAnimation(false)//设置绘制时是否显示动画
+                .setDensity(5)//设置刻度密度
+                .setAllowClickShowTag(true)//设置是否允许点击节点显示当前线的tag
+                .setLineSmoothness(0f)//--设置曲线的平滑系数(0.0f~0.5f),默认0.4
+                .setCoordinateTextSize(30)//设置刻度文字的大小
+                .setTagTextSize(40)//设置数字标签的字体大小(px)
                   .setTitleTextSize(30)//底部标题大小
                 .setLineSmoothness(0.3f)//折线平滑度
                 .setCoordinateTextSize(30)//刻度文字大小
