@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.RectF;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
@@ -33,6 +34,17 @@ import java.util.List;
  * Created by Vinctor on 2017/4/10.
  */
 public class LineChart extends AutoView {
+    //new style
+    private boolean isHorizontalOpen = false;//水平方向两端是否打开
+    private boolean isShowHorGraduation = true;//是否显示水平方向的刻度
+    private float specialLineNum = Integer.MIN_VALUE;//水平方向的特殊线
+    private boolean isShowTagRectBack = false;//是否显示tag背景
+    private boolean isShowAllTag = false;
+    private float coordinateRectLineWidth = 0f;
+    private float specialLineWidth = 0f;
+    private boolean isShowTitleRect = false;
+
+
     private int[] animatorMinAndMax = new int[]{0, 100};
     private int duration = 3000;
 
@@ -53,6 +65,7 @@ public class LineChart extends AutoView {
     private int coorinateColor = 0xff888888;
     private int titleCorlor = 0xff555555;
 
+    private int tagTextSize = 30;
     private int coordinateTextSize = 30;
     private float coordinateStrokeWidth = 1;
     private int titleTextSize = 35;
@@ -92,12 +105,107 @@ public class LineChart extends AutoView {
     private float factRectWidth;
     private float factRight;
     private float factRectRight;
+    //平滑曲线
+    BesselCalculator besselCalculator = new BesselCalculator();
 
-    //阴影
-    int shadowColor = 0x88888888;
-    int shadowIndexStart = 3;
-    int shadowIndexEnd = 5;
-    Paint shadowPaint = new Paint();
+    /**
+     * 是否显示底部标题的矩形,默认为false
+     *
+     * @param showTitleRect
+     * @return
+     */
+    public LineChart setShowTitleRect(boolean showTitleRect) {
+        isShowTitleRect = showTitleRect;
+        return this;
+    }
+
+    /**
+     * 设置刻度矩形的线宽
+     *
+     * @param coordinateRectLineWidth
+     * @return
+     */
+    public LineChart setCoordinateRectLineWidth(float coordinateRectLineWidth) {
+        this.coordinateRectLineWidth = getAutoWidthSize(coordinateRectLineWidth);
+        return this;
+    }
+
+    /**
+     * 设置setSpecialLineNum(float)中特殊线的线宽
+     *
+     * @param specialLineWidth
+     * @return
+     */
+    public LineChart setSpecialLineWidth(float specialLineWidth) {
+        this.specialLineWidth = getAutoWidthSize(specialLineWidth);
+        return this;
+    }
+
+    /**
+     * 设置是否显示全部的数字标签,默认为false
+     *
+     * @param showAllTag
+     * @return
+     */
+    public LineChart setShowAllTag(boolean showAllTag) {
+        isShowAllTag = showAllTag;
+        return this;
+    }
+
+    /**
+     * 设置数字标签的字体大小(px)
+     *
+     * @param tagTextSize
+     * @return
+     */
+    public LineChart setTagTextSize(int tagTextSize) {
+        this.tagTextSize = getAutoHeightSize(tagTextSize);
+        return this;
+    }
+
+    /**
+     * 是否左右开放,无坐标轴
+     *
+     * @param horizontalOpen
+     * @return
+     */
+    public LineChart setHorizontalOpen(boolean horizontalOpen) {
+        isHorizontalOpen = horizontalOpen;
+        return this;
+    }
+
+    /**
+     * 在setHorizontalOpen(false)的前提下,设置是否按照setDensity(int)显示刻度线
+     *
+     * @param showHorGraduation
+     * @return
+     */
+    public LineChart setShowHorGraduation(boolean showHorGraduation) {
+        isShowHorGraduation = showHorGraduation;
+        return this;
+    }
+
+    /**
+     * 在setHorizontalOpen(false)的前提下,设置特殊刻度(比如合格线)
+     *
+     * @param specialLineNum
+     * @return
+     */
+    public LineChart setSpecialLineNum(float specialLineNum) {
+        this.specialLineNum = specialLineNum;
+        return this;
+    }
+
+    /**
+     * 设置是否显示数字标签的背景,默认true
+     *
+     * @param showTagRectBack
+     * @return
+     */
+    public LineChart setShowTagRectBack(boolean showTagRectBack) {
+        this.isShowTagRectBack = showTagRectBack;
+        return this;
+    }
 
     public LineChart setTagBorderWidth(float tagBorderWidth) {
         this.tagBorderWidth = getAutoWidthSize(tagBorderWidth);
@@ -140,6 +248,12 @@ public class LineChart extends AutoView {
         return isAllowClickShowTag;
     }
 
+    /**
+     * 设置是否允许点击节点显示当前线的tag
+     *
+     * @param allowClickShowTag
+     * @return
+     */
     public LineChart setAllowClickShowTag(boolean allowClickShowTag) {
         isAllowClickShowTag = allowClickShowTag;
         return this;
@@ -153,22 +267,41 @@ public class LineChart extends AutoView {
         return this;
     }
 
+    /**
+     * 设置绘制时是否显示动画
+     *
+     * @param showAnimation
+     * @return
+     */
     public LineChart setShowAnimation(boolean showAnimation) {
         isShowAnimation = showAnimation;
         return this;
     }
 
-    public void setOnTitleClickListener(OnTitleClickListener onTitleClickListener) {
+    /**
+     * 设置点击底部title的监听回调
+     *
+     * @param onTitleClickListener
+     * @return
+     */
+    public LineChart setOnTitleClickListener(OnTitleClickListener onTitleClickListener) {
         this.onTitleClickListener = onTitleClickListener;
+        return this;
     }
 
+    /**
+     * 设置曲线的平滑系数(0.0f~0.5f),默认0.4
+     *
+     * @param smoothness
+     * @return
+     */
     public LineChart setLineSmoothness(float smoothness) {
-        BesselCalculator.setSmoothness(smoothness);
+        besselCalculator.setSmoothness(smoothness);
         return this;
     }
 
     public void resetSmoothness() {
-        BesselCalculator.setSmoothness(0.4f);
+        besselCalculator.setSmoothness(0.4f);
     }
 
     public LineChart setMin(float min) {
@@ -187,6 +320,12 @@ public class LineChart extends AutoView {
         return this;
     }
 
+    /**
+     * 设置刻度密度
+     *
+     * @param density
+     * @return
+     */
     public LineChart setDensity(int density) {
         this.density = density;
         return this;
@@ -229,6 +368,12 @@ public class LineChart extends AutoView {
         return this;
     }
 
+    /**
+     * 设置刻度文字的大小
+     *
+     * @param coordinateTextSize
+     * @return
+     */
     public LineChart setCoordinateTextSize(int coordinateTextSize) {
         this.coordinateTextSize = getAutoHeightSize(coordinateTextSize);
         return this;
@@ -263,6 +408,7 @@ public class LineChart extends AutoView {
 
     public void commit() {
         checkMinAndMax();
+        checkOpen();
         setPaint();
         circleClickIndex = new int[]{-1, -1};
         setAvaiable();
@@ -275,6 +421,25 @@ public class LineChart extends AutoView {
             startAnimation();
         } else {
             showDataLine();
+        }
+    }
+
+    //检测横向开口与刻度显示是否有冲突
+    private void checkOpen() {
+        if (isHorizontalOpen) {
+            isShowHorGraduation = false;
+            specialLineNum = Integer.MIN_VALUE;
+        }
+        if (specialLineNum != Integer.MIN_VALUE) {
+            if (specialLineNum <= min || specialLineNum >= max) {
+                specialLineNum = Integer.MIN_VALUE;
+            }
+        }
+        if (coordinateRectLineWidth == 0f) {
+            coordinateRectLineWidth = coordinateStrokeWidth;
+        }
+        if (specialLineWidth == 0f) {
+            specialLineWidth = coordinateStrokeWidth;
         }
     }
 
@@ -346,7 +511,7 @@ public class LineChart extends AutoView {
 
         circlePaint.setAntiAlias(true);
         circlePaint.setStyle(Paint.Style.FILL);
-        circlePaint.setTextSize(coordinateTextSize);
+        circlePaint.setTextSize(tagTextSize);
 
 
         mDetector = new GestureDetectorCompat(context, new MyGestureListener());
@@ -378,7 +543,7 @@ public class LineChart extends AutoView {
         float rightPadding = Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2,
                 Math.max(circlePaint.measureText(max + ".0") / 2 + tagpadding, circlePaint.measureText(min + ".0")) / 2 + tagpadding);
         availableRight = width - rightPadding;
-        availableBottom = height - titleTextSize * 2;
+        availableBottom = (float) (height - titleTextSize * 2.5);
         availableHeight = availableBottom - availableTop;
         availableWidth = availableRight - availableLeft;
 
@@ -488,7 +653,7 @@ public class LineChart extends AutoView {
                 circlePoints.add(new CirclePoint(nums[j], currentX, currentY));
             }
             //贝塞尔曲线
-            List<Point> besselPoints = BesselCalculator.computeBesselPoints(points);
+            List<Point> besselPoints = besselCalculator.computeBesselPoints(points);
             for (int j = 0; j < besselPoints.size(); j = j + 3) {
                 if (j == 0) {
                     path.moveTo(besselPoints.get(j).x, besselPoints.get(j).y);
@@ -520,7 +685,34 @@ public class LineChart extends AutoView {
         tagCircles.clear();
         drawCoordinate(canvas);//绘制刻度
         drawLineAndPoints(canvas);//绘制折线
-        drawTag(canvas);//标签
+        if (isShowTagRectBack) {
+            drawTagWithBack(canvas);//标签
+        } else {
+            drawTagWithoutBack(canvas);//标签--单纯数字
+        }
+    }
+
+    //标签--不带背景
+    private void drawTagWithoutBack(Canvas canvas) {
+        int tagCircleCount = tagCircles.size();
+        if (tagCircleCount == 0) {
+            return;
+        }
+        for (CirclePoint point : tagCircles) {
+            float currentX = point.getX();
+            float currentY = point.getY();
+            float num = point.getNum();
+            String numString = num + "";
+            if (num == (int) num) {
+                numString = (int) num + "";
+            }
+            float numMeasureWidth = circlePaint.measureText(numString);
+            //num
+            circlePaint.setStyle(Paint.Style.FILL);
+            circlePaint.setColor(point.color);
+            circlePaint.setAlpha(255);
+            canvas.drawText(numString, currentX - numMeasureWidth / 2, currentY - tagMargin, circlePaint);
+        }
     }
 
     List<LineAndCircle> animatorLineAndCircleList = new ArrayList<>();
@@ -577,11 +769,7 @@ public class LineChart extends AutoView {
         invalidate();
     }
 
-    /**
-     * 绘制折线
-     *
-     * @param canvas
-     */
+    // 绘制折线
     private void drawLineAndPoints(Canvas canvas) {
         int lineSize = animatorLineAndCircleList.size();
         for (int i = 0; i < lineSize; i++) {
@@ -605,39 +793,9 @@ public class LineChart extends AutoView {
         }
     }
 
-    //shadow阴影
-    private void drawShadow(Canvas canvas, LineAndCircle lineAndCircle) {
-
-        List<CirclePoint> circlePointts = lineAndCircle.getCirclePoints();
-        int pointCount = circlePointts.size();
-        if (shadowIndexEnd > pointCount - 1) {
-            shadowIndexEnd = pointCount - 1;
-        }
-        if (shadowIndexStart > shadowIndexEnd) {
-            throw new IllegalArgumentException("shadow start index must less than end index");
-        }
-
-        Path shadowPath = new Path();
-        for (int i = shadowIndexStart; i <= shadowIndexEnd; i++) {
-            if (i == shadowIndexStart) {
-                shadowPath.moveTo(circlePointts.get(i).getX(), circlePointts.get(i).getY());
-            } else shadowPath.lineTo(circlePointts.get(i).getX(), circlePointts.get(i).getY());
-        }
-        shadowPath.lineTo(availableLeft + peerWidth * shadowIndexEnd, availableBottom);
-        shadowPath.lineTo(availableLeft + peerWidth * shadowIndexStart, availableBottom);
-        shadowPath.close();
-        canvas.drawPath(shadowPath, shadowPaint);
-    }
-
     List<CirclePoint> tagCircles = new ArrayList<>();
 
-    /**
-     * 绘制点
-     *
-     * @param list
-     * @param lineColor
-     * @param canvas
-     */
+    // 绘制点
     private void drawCircleRing(int lineIndex, List<CirclePoint> list, int lineColor, int tagBorderColor, Canvas canvas) {
 
         boolean isDrawTag = lineIndex == circleClickIndex[0];
@@ -651,7 +809,9 @@ public class LineChart extends AutoView {
 
             circlePaint.setAlpha(255);
             canvas.drawCircle(point.getX(), point.getY(), outRadius, circlePaint);
-            if (isDrawTag) {
+            if (isShowAllTag) {//显示所有的绘制点
+                tagCircles.add(new CirclePoint(lineColor, tagBorderColor, point));
+            } else if (isDrawTag) {
                 tagCircles.add(new CirclePoint(lineColor, tagBorderColor, point));
             }
             if (!(circleClickIndex[1] == i && isDrawTag)) {
@@ -662,8 +822,8 @@ public class LineChart extends AutoView {
         }
     }
 
-    //点击标签
-    private void drawTag(Canvas canvas) {
+    //标签--带背景
+    private void drawTagWithBack(Canvas canvas) {
         int tagCircleCount = tagCircles.size();
         if (tagCircleCount == 0) {
             return;
@@ -683,7 +843,7 @@ public class LineChart extends AutoView {
             }
             float numMeasureWidth = circlePaint.measureText(measureContentString);
             float tagWidth = numMeasureWidth + 2 * tagpadding;
-            float tagRectHeight = coordinateTextSize + 2 * (tagpadding / 2);
+            float tagRectHeight = tagTextSize + 2 * (tagpadding / 2);
             circlePaint.setAlpha(255);
             //tag矩形
             circlePaint.setColor(point.color);
@@ -727,33 +887,76 @@ public class LineChart extends AutoView {
         return lineStrokeWidth + innerCircleRadius;
     }
 
-    /**
-     * 绘制刻度,包括:网格线,数字标尺,底部title
-     *
-     * @param canvas
-     */
+    // 绘制刻度,包括:网格线,数字标尺,底部title
     private void drawCoordinate(Canvas canvas) {
-        coordinatePaint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(availableLeft, availableTop, factRectRight, availableBottom, coordinatePaint);
-
         float peerCoordinateHeight = availableHeight / density;
-        //横向line
-        for (int i = 0; i < density; i++) {
-            float currentY = availableTop + i * peerCoordinateHeight;
-            canvas.drawLine(availableLeft, currentY, factRectRight, currentY, coordinatePaint);
+
+
+        coordinatePaint.setStyle(Paint.Style.FILL);
+        coordinatePaint.setStrokeWidth(coordinateRectLineWidth);
+        canvas.drawLine(availableLeft, availableTop, factRectRight, availableTop, coordinatePaint);//上
+        canvas.drawLine(availableLeft, availableBottom, factRectRight, availableBottom, coordinatePaint);//下
+        if (!isHorizontalOpen) {
+            canvas.drawLine(availableLeft, availableTop, availableLeft, availableBottom, coordinatePaint);//左
+            canvas.drawLine(factRectRight, availableTop, factRectRight, availableBottom, coordinatePaint);//右
+
+            //最大 最小刻度
+            float graduationTextMaxY = availableTop + peerCoordinateHeight * 0;
+            String currentGraduationMAx = (int) max + "";
+            float currentGraduationMaxTextWidth = coordinatePaint.measureText(currentGraduationMAx);
+            canvas.drawText(currentGraduationMAx,
+                    availableLeft - currentGraduationMaxTextWidth - leftMargin, graduationTextMaxY + coordinateTextSize / 2,
+                    coordinatePaint);
+
+            float graduationTextMinY = availableTop + peerCoordinateHeight * density;
+            String currentGraduationMin = (int) min + "";
+            float currentGraduationMinTextWidth = coordinatePaint.measureText(currentGraduationMin);
+            canvas.drawText(currentGraduationMin,
+                    availableLeft - currentGraduationMinTextWidth - leftMargin, graduationTextMinY + coordinateTextSize / 2,
+                    coordinatePaint);
+        }
+        coordinatePaint.setStrokeWidth(coordinateStrokeWidth);
+        //canvas.drawRect(availableLeft, availableTop, factRectRight, availableBottom, coordinatePaint);
+
+        if (isShowHorGraduation) {//是否绘制横向刻度线
+            //横向line
+            for (int i = 0; i < density; i++) {
+                float currentY = availableTop + i * peerCoordinateHeight;
+                canvas.drawLine(availableLeft, currentY, factRectRight, currentY, coordinatePaint);
+            }
+            //数字刻度 不包含最大最小
+            float totalDiff = max - min;
+            float peerDiff = totalDiff / density;
+            coordinatePaint.setStyle(Paint.Style.FILL);
+            for (int i = 1; i < density; i++) {
+                float graduationTextY = availableTop + peerCoordinateHeight * i;
+                String currentGraduation = (int) (max - i * peerDiff) + "";
+                float currentGraduationTextWidth = coordinatePaint.measureText(currentGraduation);
+                canvas.drawText(currentGraduation,
+                        availableLeft - currentGraduationTextWidth - leftMargin, graduationTextY + coordinateTextSize / 2,
+                        coordinatePaint);
+            }
         }
 
-        //数字
-        float totalDiff = max - min;
-        float peerDiff = totalDiff / density;
-        coordinatePaint.setStyle(Paint.Style.FILL);
-        for (int i = 0; i <= density; i++) {
-            float graduationTextY = availableTop + peerCoordinateHeight * i;
-            String currentGraduation = (int) (max - i * peerDiff) + "";
-            float currentGraduationTextWidth = coordinatePaint.measureText(currentGraduation);
-            canvas.drawText(currentGraduation,
-                    availableLeft - currentGraduationTextWidth - leftMargin, graduationTextY + coordinateTextSize / 2,
+        if (specialLineNum != Integer.MIN_VALUE) {//特殊值
+            float specialDiff = max - specialLineNum;
+            float totalDiff = max - min;
+            float heightDiff = specialDiff * availableHeight / totalDiff;
+
+            float specialY = availableTop + heightDiff;
+            //line
+            coordinatePaint.setStrokeWidth(specialLineWidth);
+            canvas.drawLine(availableLeft, specialY, factRectRight, specialY, coordinatePaint);
+            coordinatePaint.setStrokeWidth(coordinateStrokeWidth);
+            //num
+            String specialNumString = specialLineNum + "";
+            if (specialLineNum == (int) specialLineNum) {
+                specialNumString = (int) specialLineNum + "";
+            }
+            float numWidth = coordinatePaint.measureText(specialNumString);
+            canvas.drawText(specialNumString, availableLeft - numWidth - leftMargin, specialY + coordinateTextSize / 2,
                     coordinatePaint);
+
         }
 
         //竖向line
@@ -772,11 +975,23 @@ public class LineChart extends AutoView {
         float offset = titleTextSize / 2;
         titleRegionDatas.clear();
         int titleCount = titles.length;
+        float rectPadding = Math.min(8, titleTextSize / 2);
         if (titleCount == 1) {
             float currentTitleWidth = titlePaint.measureText(titles[0]);
             float titleCenterX = availableLeft + peerWidth;
             float currentX = titleCenterX - currentTitleWidth / 2;
-            float currentY = availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
+            float currentY = height - rectPadding;//  availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
+
+            if (isShowTitleRect) {//显示title外的矩形
+                titlePaint.setStyle(Paint.Style.STROKE);
+                titlePaint.setStrokeWidth(coordinateStrokeWidth);
+
+                RectF recf = new RectF(currentX - rectPadding, currentY - titleTextSize - rectPadding + 5,
+                        currentX + currentTitleWidth + rectPadding, currentY + rectPadding);
+                canvas.drawRoundRect(recf, titleTextSize / 5, titleTextSize / 5, titlePaint);
+
+                titlePaint.setStyle(Paint.Style.FILL);
+            }
             canvas.drawText(titles[0], currentX, currentY, titlePaint);
 
             Region region = new Region(
@@ -793,7 +1008,17 @@ public class LineChart extends AutoView {
             float currentTitleWidth = titlePaint.measureText(titles[i]);
             float titleCenterX = availableLeft + i * peerWidth;
             float currentX = titleCenterX - currentTitleWidth / 2;
-            float currentY = availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
+            float currentY = height - rectPadding;// availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
+            if (isShowTitleRect) {//显示title外的矩形
+                titlePaint.setStyle(Paint.Style.STROKE);
+                titlePaint.setStrokeWidth(coordinateStrokeWidth);
+
+                RectF recf = new RectF(currentX - rectPadding, currentY - titleTextSize - rectPadding + 5,
+                        currentX + currentTitleWidth + rectPadding, currentY + rectPadding);
+                canvas.drawRoundRect(recf, titleTextSize / 5, titleTextSize / 5, titlePaint);
+
+                titlePaint.setStyle(Paint.Style.FILL);
+            }
             canvas.drawText(titles[i], currentX, currentY, titlePaint);
             //add region
 
@@ -854,9 +1079,7 @@ public class LineChart extends AutoView {
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeWidth(lineStrokeWidth);
 
-        shadowPaint.setAntiAlias(true);
-        shadowPaint.setColor(shadowColor);
-        shadowPaint.setStyle(Paint.Style.FILL);
+        circlePaint.setTextSize(tagTextSize);
 
         innerCircleRadius = lineStrokeWidth;
     }
@@ -872,6 +1095,9 @@ public class LineChart extends AutoView {
     }
 
     private float measureGraduationTextWidth() {
+        if (isHorizontalOpen) {//如果开放,则不考虑最大值最小值,只考虑title宽度,故此处返回0
+            return 0f;
+        }
         return Math.max(coordinatePaint.measureText(max + ""), coordinatePaint.measureText(min + ""));
     }
 

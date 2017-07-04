@@ -41,17 +41,31 @@ public class LineActivity extends BaseActivity {
         ButterKnife.bind(this);
         line = (LineChart) findViewById(R.id.line);
         line.clearDatas()
-                .setAllowClickShowTag(true)
-                .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
+                .setHorizontalOpen(true)//---是否左右开放,无坐标轴
+                .setShowHorGraduation(false)//---在setHorizontalOpen(false)的前提下,设置是否按照setDensity(int)显示刻度线
+                .setSpecialLineNum(60.3f)//---在setHorizontalOpen(false)的前提下,设置特殊刻度(比如合格线)
+                .setShowTagRectBack(false)//---设置是否显示数字标签的背景,默认true
+                .setShowAllTag(true)//----设置是否显示全部的数字标签,默认为false
+                .setCoordinateRectLineWidth(10)//---设置刻度矩形的线宽
+                .setSpecialLineWidth(10)//--设置setSpecialLineNum(float)中特殊线的线宽
+                .setShowTitleRect(true)//--是否显示底部标题的矩形,默认为false
+
+                .setShowAnimation(false)//设置绘制时是否显示动画
+                .setDensity(5)//设置刻度密度
+                .setAllowClickShowTag(true)//设置是否允许点击节点显示当前线的tag
+                .setLineSmoothness(0f)//设置曲线的平滑系数(0.0f~0.5f),默认0.4
+                .setCoordinateTextSize(30)//设置刻度文字的大小
+                .setTagTextSize(40)//设置数字标签的字体大小(px)
+                .setTitles(new String[]{"语文111", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
                 .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff2cb072, 0xff186d45))//需与title长度一致
                 .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
+                .setOnTitleClickListener(new LineChart.OnTitleClickListener() {
+                    @Override
+                    public void onClick(LineChart linechart, String title, int index) {
+                        Toast.makeText(LineActivity.this, title, Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .commit();
-        line.setOnTitleClickListener(new LineChart.OnTitleClickListener() {
-            @Override
-            public void onClick(LineChart linechart, String title, int index) {
-                Toast.makeText(LineActivity.this, title, Toast.LENGTH_SHORT).show();
-            }
-        });
 
 
         DiagramFlowLayout flowLayout = (DiagramFlowLayout) findViewById(R.id.flowlayout);
@@ -79,7 +93,7 @@ public class LineActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.can, R.id.cannot, R.id.showtag, R.id.startAni, R.id.single, R.id.multi, R.id.shadow})
+    @OnClick({R.id.can, R.id.cannot, R.id.showtag, R.id.startAni, R.id.single, R.id.multi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.can:
@@ -119,13 +133,6 @@ public class LineActivity extends BaseActivity {
                         .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
                         .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
-                        .setShowAnimation(true)
-                        .commit();
-                break;
-            case R.id.shadow:
-                line.clearDatas()
-                        .setTitles(new String[]{"语文", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
-                        .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .setShowAnimation(true)
                         .commit();
                 break;

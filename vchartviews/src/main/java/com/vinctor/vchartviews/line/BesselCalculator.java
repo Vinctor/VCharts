@@ -9,12 +9,12 @@ import java.util.List;
 
 public class BesselCalculator {
 
-    private static float smoothness = 0.4f;
+    private float smoothness = 0.4f;
 
     /**
      * 计算贝塞尔结点
      */
-    public static List<Point> computeBesselPoints(List<Point> points) {
+    public List<Point> computeBesselPoints(List<Point> points) {
         List<Point> besselPoints = new ArrayList<>();
         int count = points.size();
         besselPoints.clear();
@@ -38,7 +38,7 @@ public class BesselCalculator {
     /**
      * 计算非单调情况的贝塞尔结点
      */
-    private static void computeUnMonotonePoints(int i, List<Point> points, List<Point> besselPoints) {
+    private void computeUnMonotonePoints(int i, List<Point> points, List<Point> besselPoints) {
         if (i == 0) {
             Point p1 = points.get(0);
             Point p2 = points.get(1);
@@ -66,7 +66,7 @@ public class BesselCalculator {
      * @param points
      * @param besselPoints
      */
-    private static void computeMonotonePoints(int i, List<Point> points, List<Point> besselPoints) {
+    private void computeMonotonePoints(int i, List<Point> points, List<Point> besselPoints) {
         Point p0 = points.get(i - 1);
         Point p1 = points.get(i);
         Point p2 = points.get(i + 1);
@@ -83,7 +83,7 @@ public class BesselCalculator {
         besselPoints.add(p11);
     }
 
-    public static void setSmoothness(float smoothness) {
-        BesselCalculator.smoothness = smoothness;
+    public void setSmoothness(float smoothness) {
+        this.smoothness = smoothness;
     }
 }

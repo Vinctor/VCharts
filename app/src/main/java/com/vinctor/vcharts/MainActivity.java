@@ -13,9 +13,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        LineActivity.startActivity(thisActivity);
     }
 
-    @OnClick({R.id.dount,R.id.progress, R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie, R.id.diagram, R.id.sector, R.id.compare})
+    @OnClick({R.id.dount, R.id.progress, R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie, R.id.diagram, R.id.sector, R.id.compare})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.radar:

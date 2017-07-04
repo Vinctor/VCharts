@@ -87,11 +87,6 @@
                 android:layout_height="wrap_content"
                 android:text="多条数据" />
 
-            <Button
-                android:id="@+id/shadow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="阴影" />
         </com.vinctor.vchartviews.diagram.FlowLayout>
 
         <View
