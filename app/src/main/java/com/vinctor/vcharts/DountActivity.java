@@ -25,7 +25,7 @@ public class DountActivity extends AppCompatActivity {
 
 
         dountView.clearList()///清楚数据
-                .addData(new DountData(5))
+                .addData(new DountData(5, "5个人"))
                 .addData(new DountData(5))
                 .addData(new DountData(5))
                 .addData(new DountData(5))
@@ -73,7 +73,7 @@ public class DountActivity extends AppCompatActivity {
                 .setTextSize(30)//标签文字大小
                 .setOnShowTagCallBack(new DountView.onShowTagCallBack() {//显示文字回调
                     @Override
-                    public String onShowTag(int num, int position, @DountView.DountNumType int tag) {
+                    public String onShowTag(int num, int position, String ss, @DountView.DountNumType int tag) {
                         //数字类型
                         // NUM_TYPE_DEFAULT 正常
                         // NUM_TYPE_MAX  最大
@@ -87,7 +87,7 @@ public class DountActivity extends AppCompatActivity {
                         if (tag == DountView.NUM_TYPE_MIN) {
                             return num + ",这是最小值!";
                         }
-                        return num + "个人";
+                        return ss;
                     }
                 })
                 .commit();//提交进行绘制

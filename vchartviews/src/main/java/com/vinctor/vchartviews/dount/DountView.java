@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 
@@ -529,9 +528,9 @@ public class DountView extends AutoView {
             if (num == minNum) {
                 type = NUM_TYPE_MIN;
             }
-            String tag = onShowTagCallBack.onShowTag(num, i, type);
-            if (TextUtils.isEmpty(tag)) {
-                tag = data.getNum() + "";
+            String tag = onShowTagCallBack.onShowTag(num, i, data.getTagText(), type);
+            if (tag == null) {
+                tag = num + "";
             }
             data.setTagText(tag);
             float temp = tagPaint.measureText(data.getTagText());
@@ -573,7 +572,7 @@ public class DountView extends AutoView {
     }
 
     public interface onShowTagCallBack {
-        String onShowTag(int num, int position, @DountNumType int tag);
+        String onShowTag(int num, int position, String oldTagText, @DountNumType int tag);
 
     }
 
