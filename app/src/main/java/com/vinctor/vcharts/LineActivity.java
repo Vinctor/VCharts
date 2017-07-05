@@ -41,7 +41,7 @@ public class LineActivity extends BaseActivity {
         ButterKnife.bind(this);
         line = (LineChart) findViewById(R.id.line);
         line.clearDatas()
-                .setHorizontalOpen(true)//---是否左右开放,无坐标轴
+                .setHorizontalOpen(false)//---是否左右开放,无坐标轴
                 .setShowHorGraduation(false)//---在setHorizontalOpen(false)的前提下,设置是否按照setDensity(int)显示刻度线
                 .setSpecialLineNum(60.3f)//---在setHorizontalOpen(false)的前提下,设置特殊刻度(比如合格线)
                 .setShowTagRectBack(false)//---设置是否显示数字标签的背景,默认true

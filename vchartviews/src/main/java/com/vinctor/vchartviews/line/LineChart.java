@@ -38,11 +38,11 @@ public class LineChart extends AutoView {
     private boolean isHorizontalOpen = false;//水平方向两端是否打开
     private boolean isShowHorGraduation = true;//是否显示水平方向的刻度
     private float specialLineNum = Integer.MIN_VALUE;//水平方向的特殊线
-    private boolean isShowTagRectBack = false;//是否显示tag背景
-    private boolean isShowAllTag = false;
-    private float coordinateRectLineWidth = 0f;
-    private float specialLineWidth = 0f;
-    private boolean isShowTitleRect = false;
+    private boolean isShowTagRectBack = true;//是否显示tag背景
+    private boolean isShowAllTag = false;//是否显示全部tag数字
+    private float coordinateRectLineWidth = 0f;//矩形刻度线宽
+    private float specialLineWidth = 0f;//特殊线 线宽
+    private boolean isShowTitleRect = false;//是否显示title外的矩形
 
 
     private int[] animatorMinAndMax = new int[]{0, 100};
