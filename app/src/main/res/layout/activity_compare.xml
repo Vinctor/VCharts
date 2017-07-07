@@ -11,7 +11,7 @@
         android:id="@+id/compare"
         android:layout_width="match_parent"
         android:layout_height="400px"
-        android:background="#ff4A90E2"
+        android:background="#ffFFFFFF"
         app:borderColor="#ff2f629d"
         app:circleStrokeWidth="8px"
         app:imgRes="@mipmap/ic_launcher"

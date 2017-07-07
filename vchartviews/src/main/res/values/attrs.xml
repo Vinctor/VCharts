@@ -74,6 +74,7 @@
         <attr name="lineStrokeWidth" format="dimension" />
         <attr name="borderColor" format="color" />
         <attr name="moreDataColor" format="color" />
+        <attr name="lessDataColor" format="color" />
         <attr name="lineColor" format="color" />
         <attr name="minNum" format="integer" />
         <attr name="maxNum" format="integer" />

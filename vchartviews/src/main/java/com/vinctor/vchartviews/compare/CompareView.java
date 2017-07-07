@@ -44,7 +44,10 @@ public class CompareView extends AutoView {
     private float circleStorkeWidth = 6;
     private float lineStrokeWidth = 3;
     private int borderColor = 0xff186D45;
+    private int lessBorderColor = Integer.MAX_VALUE;
+    private int moreBorderColor = Integer.MAX_VALUE;
     private int moreDataColor = 0xffFF7E76;
+    private int lessDataColor = Color.WHITE;
     private int lineColor = Color.WHITE;
     private PathEffect pathEffect;
     private int min = 0;
@@ -80,6 +83,7 @@ public class CompareView extends AutoView {
             setLineStrokeWidth(ta.getDimension(R.styleable.compareChart_lineStrokeWidth, lineStrokeWidth));
             borderColor = ta.getColor(R.styleable.compareChart_borderColor, borderColor);
             moreDataColor = ta.getColor(R.styleable.compareChart_moreDataColor, moreDataColor);
+            lessDataColor = ta.getColor(R.styleable.compareChart_lessDataColor, lessDataColor);
             lineColor = ta.getColor(R.styleable.compareChart_lineColor, lineColor);
             min = ta.getInt(R.styleable.compareChart_minNum, min);
             max = ta.getInt(R.styleable.compareChart_maxNum, max);
@@ -123,7 +127,12 @@ public class CompareView extends AutoView {
         float destSize = (float) (raduis * Math.sqrt(2));//边长
         destSize = (float) (raduis * 1.3);
         float srcSize = Math.min(options.outHeight, options.outWidth);
-        int sample = (int) (srcSize / destSize);
+        int sample = 1;
+        if (srcSize < destSize) {
+            sample = (int) (destSize / srcSize + 1);
+        } else {
+            sample = (int) (srcSize / destSize);
+        }
         options.inSampleSize = sample;
         options.inJustDecodeBounds = false;
         bitmap = BitmapFactory.decodeResource(context.getResources(), imgResID, options);
@@ -169,7 +178,7 @@ public class CompareView extends AutoView {
             canvas.save();
             canvas.translate(leftOffset, 0);
 
-            mainPaint.setColor(borderColor);
+            mainPaint.setColor(moreBorderColor);
             mainPaint.setStyle(Paint.Style.STROKE);
             mainPaint.setStrokeWidth(progressHeight);
             canvas.drawLine(0, centerY, linewidth - progressHeight / 2, centerY, mainPaint);
@@ -178,7 +187,7 @@ public class CompareView extends AutoView {
             canvas.drawLine(0, centerY, linewidth - progressHeight / 2, centerY, mainPaint);
 
             mainPaint.setStyle(Paint.Style.FILL);
-            mainPaint.setColor(borderColor);
+            mainPaint.setColor(moreBorderColor);
             canvas.drawArc(new RectF(
                     -progressHeight / 2,
                     centerY - progressHeight / 2,
@@ -202,7 +211,7 @@ public class CompareView extends AutoView {
             canvas.save();
             canvas.translate(centerX + circleOffset, 0);
             if (linewidth >= progressHeight) {
-                mainPaint.setColor(borderColor);
+                mainPaint.setColor(moreBorderColor);
                 mainPaint.setStyle(Paint.Style.STROKE);
                 mainPaint.setStrokeWidth(progressHeight);
                 canvas.drawLine(0, centerY, linewidth - progressHeight / 2, centerY, mainPaint);
@@ -213,7 +222,7 @@ public class CompareView extends AutoView {
                 canvas.save();
                 canvas.translate(linewidth - progressHeight / 2, 0);
                 mainPaint.setStyle(Paint.Style.FILL);
-                mainPaint.setColor(borderColor);
+                mainPaint.setColor(moreBorderColor);
                 canvas.drawArc(new RectF(-progressHeight / 2, centerY - progressHeight / 2, progressHeight / 2, centerY + progressHeight / 2), -90, 180, false, mainPaint);
                 mainPaint.setColor(moreDataColor);
                 canvas.translate(-progressStrokeWidth / 2, 0);
@@ -221,7 +230,7 @@ public class CompareView extends AutoView {
                 canvas.restore();
             } else {
                 mainPaint.setStyle(Paint.Style.FILL);
-                mainPaint.setColor(borderColor);
+                mainPaint.setColor(moreBorderColor);
                 canvas.drawArc(new RectF(-progressHeight / 2, centerY - progressHeight / 2, progressHeight / 2, centerY + progressHeight / 2), -90, 180, false, mainPaint);
                 mainPaint.setColor(moreDataColor);
                 canvas.drawArc(new RectF(-progressHeight / 2 + progressStrokeWidth, centerY - progressHeight / 2 + progressStrokeWidth, progressHeight / 2 - progressStrokeWidth, centerY + progressHeight / 2 - progressStrokeWidth), -90, 180, false, mainPaint);
@@ -245,22 +254,22 @@ public class CompareView extends AutoView {
         canvas.save();
         canvas.translate(leftOffset, 0);
 
-        mainPaint.setColor(borderColor);
+        mainPaint.setColor(lessBorderColor);
         mainPaint.setStyle(Paint.Style.FILL);
         mainPaint.setStrokeWidth(progressHeight);
         canvas.drawLine(0, centerY, linewidth - progressHeight / 2, centerY, mainPaint);
         mainPaint.setStrokeWidth(progressHeight - progressStrokeWidth * 2);
-        mainPaint.setColor(Color.WHITE);
+        mainPaint.setColor(lessDataColor);
         canvas.drawLine(0, centerY, linewidth - progressHeight / 2, centerY, mainPaint);
 
         mainPaint.setStyle(Paint.Style.FILL);
-        mainPaint.setColor(borderColor);
+        mainPaint.setColor(lessBorderColor);
         canvas.drawArc(new RectF(
                 -progressHeight / 2,
                 centerY - progressHeight / 2,
                 progressHeight / 2,
                 centerY + progressHeight / 2), 90, 180, false, mainPaint);
-        mainPaint.setColor(Color.WHITE);
+        mainPaint.setColor(lessDataColor);
         canvas.translate(progressStrokeWidth / 2, 0);
         canvas.drawArc(new RectF(
                 -progressHeight / 2 + progressStrokeWidth,
@@ -275,29 +284,29 @@ public class CompareView extends AutoView {
         canvas.save();
         canvas.translate(centerX + circleOffset, 0);
         if (linewidth >= progressHeight / 2) {
-            mainPaint.setColor(borderColor);
+            mainPaint.setColor(lessBorderColor);
             mainPaint.setStyle(Paint.Style.STROKE);
             mainPaint.setStrokeWidth(progressHeight);
             canvas.drawLine(0, centerY, linewidth - progressHeight / 2, centerY, mainPaint);
             mainPaint.setStrokeWidth(progressHeight - progressStrokeWidth * 2);
-            mainPaint.setColor(Color.WHITE);
+            mainPaint.setColor(lessDataColor);
             canvas.drawLine(0, centerY, linewidth - progressHeight / 2, centerY, mainPaint);
 
             canvas.save();
             canvas.translate(linewidth - progressHeight / 2, 0);
             mainPaint.setStyle(Paint.Style.FILL);
-            mainPaint.setColor(borderColor);
+            mainPaint.setColor(lessBorderColor);
             canvas.drawArc(new RectF(-progressHeight / 2, centerY - progressHeight / 2, progressHeight / 2, centerY + progressHeight / 2), -90, 180, false, mainPaint);
-            mainPaint.setColor(Color.WHITE);
+            mainPaint.setColor(lessDataColor);
             canvas.translate(-progressStrokeWidth / 2, 0);
             canvas.drawArc(new RectF(-progressHeight / 2 + progressStrokeWidth, centerY - progressHeight / 2 + progressStrokeWidth, progressHeight / 2 - progressStrokeWidth, centerY + progressHeight / 2 - progressStrokeWidth), -90, 180, false, mainPaint);
             canvas.restore();
         } else {
             canvas.translate(-(progressHeight / 2 - linewidth), 0);
             mainPaint.setStyle(Paint.Style.FILL);
-            mainPaint.setColor(borderColor);
+            mainPaint.setColor(lessBorderColor);
             canvas.drawArc(new RectF(-progressHeight / 2, centerY - progressHeight / 2, progressHeight / 2, centerY + progressHeight / 2), -90, 180, false, mainPaint);
-            mainPaint.setColor(Color.WHITE);
+            mainPaint.setColor(lessDataColor);
             canvas.drawArc(new RectF(-progressHeight / 2 + progressStrokeWidth, centerY - progressHeight / 2 + progressStrokeWidth, progressHeight / 2 - progressStrokeWidth, centerY + progressHeight / 2 - progressStrokeWidth), -90, 180, false, mainPaint);
         }
 
@@ -318,11 +327,21 @@ public class CompareView extends AutoView {
         if (raduis > height / 2) {
             raduis = height / 2;
         }
+        checkBorderColor();
         progressOffset = progressStrokeWidth / 2;
 
         linePath.reset();
         linePath.moveTo(0, centerY);
         linePath.lineTo(width, centerY);
+    }
+
+    private void checkBorderColor() {
+        if (lessBorderColor == Integer.MAX_VALUE) {
+            lessBorderColor = borderColor;
+        }
+        if (moreBorderColor == Integer.MAX_VALUE) {
+            moreBorderColor = borderColor;
+        }
     }
 
     private void setPaint() {
@@ -417,7 +436,23 @@ public class CompareView extends AutoView {
         return this;
     }
 
+    public CompareView setLessDataColor(int lessDataColor) {
+        this.lessDataColor = lessDataColor;
+        return this;
+    }
+
+    public CompareView setLessBorderColor(int lessBorderColor) {
+        this.lessBorderColor = lessBorderColor;
+        return this;
+    }
+
+    public CompareView setMoreBorderColor(int moreBorderColor) {
+        this.moreBorderColor = moreBorderColor;
+        return this;
+    }
+
     public void commit() {
+        checkBorderColor();
         checkMinAndMax();
         invalidate();
     }

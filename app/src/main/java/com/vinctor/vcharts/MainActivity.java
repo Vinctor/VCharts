@@ -1,6 +1,7 @@
 package com.vinctor.vcharts;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import butterknife.ButterKnife;
@@ -14,7 +15,12 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        LineActivity.startActivity(thisActivity);
+        View view = findViewById(R.id.dount);
+        while (view != null) {
+            Log.e("name", view.toString());
+            view = (View) view.getParent();
+        }
+
     }
 
     @OnClick({R.id.dount, R.id.progress, R.id.radar, R.id.bar_single, R.id.bar_multi, R.id.line, R.id.pie, R.id.diagram, R.id.sector, R.id.compare})

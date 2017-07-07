@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -20,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
@@ -42,7 +44,7 @@ public class LineChart extends AutoView {
     private boolean isShowAllTag = false;//是否显示全部tag数字
     private float coordinateRectLineWidth = 0f;//矩形刻度线宽
     private float specialLineWidth = 0f;//特殊线 线宽
-    private boolean isShowTitleRect = false;//是否显示title外的矩形
+    private boolean isShowTitleRect = false;//是否显示title外的
 
 
     private int[] animatorMinAndMax = new int[]{0, 100};
@@ -982,7 +984,7 @@ public class LineChart extends AutoView {
             float currentX = titleCenterX - currentTitleWidth / 2;
             float currentY = height - rectPadding;//  availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
 
-            if (isShowTitleRect) {//显示title外的矩形
+            if (isShowTitleRect && !TextUtils.isEmpty(titles[0])) {//显示title外的矩形
                 titlePaint.setStyle(Paint.Style.STROKE);
                 titlePaint.setStrokeWidth(coordinateStrokeWidth);
 
@@ -1009,7 +1011,7 @@ public class LineChart extends AutoView {
             float titleCenterX = availableLeft + i * peerWidth;
             float currentX = titleCenterX - currentTitleWidth / 2;
             float currentY = height - rectPadding;// availableBottom + titleTextSize + getCircleRadius(innerCircleRadius);
-            if (isShowTitleRect) {//显示title外的矩形
+            if (isShowTitleRect && !TextUtils.isEmpty(titles[i])) {//显示title外的矩形
                 titlePaint.setStyle(Paint.Style.STROKE);
                 titlePaint.setStrokeWidth(coordinateStrokeWidth);
 
@@ -1271,8 +1273,8 @@ public class LineChart extends AutoView {
             }
             L("distanceX" + distanceX + "--distanceY" + distanceY);
             isScrolling = true;
-            getParent().requestDisallowInterceptTouchEvent(true);
-
+//            getParent().requestDisallowInterceptTouchEvent(true);
+            requestDisallowIntercept(true);
 
             if (distanceX < 0) {
                 if (getScrollX() + distanceX <= 0) {
@@ -1341,18 +1343,21 @@ public class LineChart extends AutoView {
                 L("distanceX" + distanceX + "--distanceY" + distanceY);
                 if (!isScrolling) {
                     if (Math.abs(distanceX) < Math.abs(distanceY)) {
-                        viewGroup.requestDisallowInterceptTouchEvent(false);
+//                        viewGroup.requestDisallowInterceptTouchEvent(false);
+                        requestDisallowIntercept(false);
                         return false;//竖向滑动
                     }
 
                     int offset = width + getScrollX() - (int) factRight;
                     if ((getScrollX() == 0 && distanceX > 0) || (offset == 0 && distanceX < 0)) {
-                        viewGroup.requestDisallowInterceptTouchEvent(false);
+//                        viewGroup.requestDisallowInterceptTouchEvent(false);
+                        requestDisallowIntercept(false);
                         return false;//横向滑动
                     }
 
                 }
-                viewGroup.requestDisallowInterceptTouchEvent(true);
+                requestDisallowIntercept(true);
+//                viewGroup.requestDisallowInterceptTouchEvent(true);
                 lastX = currentX;
                 lastY = currentY;
                 break;
@@ -1361,7 +1366,8 @@ public class LineChart extends AutoView {
                 isScrolling = false;
                 lastX = 0f;
                 lastY = 0f;
-                viewGroup.requestDisallowInterceptTouchEvent(false);
+//                viewGroup.requestDisallowInterceptTouchEvent(false);
+                requestDisallowIntercept(false);
                 break;
         }
 
@@ -1406,6 +1412,25 @@ public class LineChart extends AutoView {
     private void L(String msg) {
         if (false) {
             Log.e("vinctor", msg);
+        }
+    }
+
+    boolean isNested = false;
+
+    public LineChart setNested(boolean nested) {
+        isNested = nested;
+        return this;
+    }
+
+    void requestDisallowIntercept(boolean intercept) {
+        if (!isNested) {
+            getParent().requestDisallowInterceptTouchEvent(intercept);
+        } else {
+            ViewParent view = getParent();
+            while (view != null) {
+                view.requestDisallowInterceptTouchEvent(intercept);
+                view = view.getParent();
+            }
         }
     }
 }

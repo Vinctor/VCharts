@@ -25,6 +25,9 @@ public class CompareActivity extends BaseActivity {
 
         final CompareView compareView = (CompareView) findViewById(R.id.compare);
 //        compareView.setImgResID(R.drawable.img1).commit();
+        compareView.setLessDataColor(0xff00ff00)
+                .setMoreBorderColor(0XFF00FF00)
+        .setLessBorderColor(0xffff0000);
 
         Button change = (Button) findViewById(R.id.change);
         change.setOnClickListener(new View.OnClickListener() {
