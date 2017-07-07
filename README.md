@@ -3,7 +3,7 @@
 ## <span id="preview">Preview</span>([demo](apk/app-debug.apk))( [使用](#user-content-usagedemo))
 
 ![bar](screenshot/diagram.png)
-![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png) ![bar](screenshot/compare.gif) ![line](screenshot/line.gif) ![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
+![bar](screenshot/sigle_has.png) ![bar](screenshot/single_no.png) ![bar](screenshot/multi_has.png) ![bar](screenshot/multi_no.png)  ![line](screenshot/line.gif)![bar](screenshot/line3.png) ![bar](screenshot/compare.gif)![line](screenshot/ring_has.png) ![line](screenshot/ring_no.png)
 ![radar](screenshot/radar.png)![line](screenshot/dount.png)
 ![bar](screenshot/sector.png)![bar](screenshot/progress.gif)
 
