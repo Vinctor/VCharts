@@ -1,6 +1,7 @@
 package com.vinctor.vchartviews.progress;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -14,6 +15,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
 
 import com.vinctor.vchartviews.AutoView;
+import com.vinctor.vchartviews.R;
 
 /**
  * Created by Vinctor on 2017/6/28.
@@ -68,7 +70,14 @@ public class ProgressBarView extends AutoView {
         this.context = context;
         mainPaint.setStyle(Paint.Style.FILL);
         if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ProgressBarView);
+            progressColor = ta.getColor(R.styleable.ProgressBarView_progressColor, progressColor);
+            progressBackColor = ta.getColor(R.styleable.ProgressBarView_progressBackColor, progressBackColor);
+            setProgressBarHeight(ta.getDimension(R.styleable.ProgressBarView_progressBarHeight, progressBarHeight));
+            setIndicatorCircleRadius(ta.getDimension(R.styleable.ProgressBarView_indicatorCircleRadius, indicatorCircleRadius));
+            indicatorAngle = ta.getInteger(R.styleable.ProgressBarView_indicatorAngle, 80);
 
+            ta.recycle();
         }
     }
 

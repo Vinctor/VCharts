@@ -89,4 +89,12 @@
         <attr name="tagLineColor" format="color" />
         <attr name="tagLineWidth" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="ProgressBarView">
+        <attr name="progressColor" format="color" />
+        <attr name="progressBackColor" format="color" />
+        <attr name="progressBarHeight" format="dimension" />
+        <attr name="indicatorCircleRadius" format="dimension" />
+        <attr name="indicatorAngle" format="integer" />
+    </declare-styleable>
 </resources>
