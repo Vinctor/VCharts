@@ -258,7 +258,6 @@ public abstract class AbsBarChart extends AutoView {
      * 绘制网格线
      *
      * @param canvas
-     * @param graduationWidth
      */
     private void drawGraduation(Canvas canvas) {
 

@@ -81,7 +81,7 @@ public class BarCharSingle extends AbsBarChart {
         if (onShowOtherViewCallback != null) {
             float titleHeight = barTextSize + barTextMargin * 2;
             Bitmap bitmap = onShowOtherViewCallback.onShowBitmap();
-            float otherViewHeight = Math.abs(onShowOtherViewCallback.onShowOffsetToBar(bitmap)[1])*1.1f;
+            float otherViewHeight = Math.abs(onShowOtherViewCallback.onShowOffsetToBar(bitmap)[1]) * 1.1f;
             availableTop = Math.max(titleHeight, otherViewHeight);
         }
     }
@@ -201,5 +201,9 @@ public class BarCharSingle extends AbsBarChart {
         int onShowIndex();
 
         void onClick();
+    }
+
+    public float getPeerBarWidth() {
+        return barWidth;
     }
 }

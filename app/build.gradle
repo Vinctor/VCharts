@@ -28,6 +28,7 @@ dependencies {
     compile project(path: ':vchartviews')
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.jakewharton:butterknife:8.5.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:25.3.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
