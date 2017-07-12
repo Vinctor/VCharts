@@ -83,6 +83,9 @@ public class ProgressBarView extends AutoView {
 
     public void commit() {
         compute();
+        if (isNeedRequestLayout) {
+            requestLayout();
+        }
         invalidate();
     }
 
@@ -149,6 +152,25 @@ public class ProgressBarView extends AutoView {
         //bitmap
         bitmapBorder = indicatorCircleRadius / indicatorBorderScale * 3;
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                measureHeight(heightMeasureSpec));
+    }
+
+    private int measureHeight(int heightMeasureSpec) {
+//        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+        indicatorHeight = (float) (indicatorCircleRadius / Math.sin(indicatorAngle / 2 * Math.PI / 180))
+                + indicatorCircleRadius;
+
+        float viewHeight = indicatorHeight + progressBarHeight / 2 + 10;
+
+        return (int) viewHeight;
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -271,19 +293,23 @@ public class ProgressBarView extends AutoView {
 
     public ProgressBarView setProgressBarHeight(float progressBarHeight) {
         this.progressBarHeight = progressBarHeight;
+        isNeedRequestLayout = true;
         return this;
     }
 
+    boolean isNeedRequestLayout = false;
+
     public ProgressBarView setIndicatorCircleRadius(float indicatorCircleRadius) {
         this.indicatorCircleRadius = indicatorCircleRadius;
+        isNeedRequestLayout = true;
         return this;
     }
 
     public ProgressBarView setIndicatorAngle(int indicatorAngle) {
         this.indicatorAngle = indicatorAngle;
+        isNeedRequestLayout = true;
         return this;
     }
-
 
     public int getProgress() {
         return progress;
