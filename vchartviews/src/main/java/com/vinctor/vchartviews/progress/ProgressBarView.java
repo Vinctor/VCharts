@@ -40,6 +40,7 @@ public class ProgressBarView extends AutoView {
 
 
     //set
+    private boolean isShowIndicatorImg = true;
     private int max = 100;
     private int min = 0;
     private int progress = 0;
@@ -160,8 +161,6 @@ public class ProgressBarView extends AutoView {
     }
 
     private int measureHeight(int heightMeasureSpec) {
-//        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
         indicatorHeight = (float) (indicatorCircleRadius / Math.sin(indicatorAngle / 2 * Math.PI / 180))
                 + indicatorCircleRadius;
@@ -185,8 +184,10 @@ public class ProgressBarView extends AutoView {
         drawProgress(canvas);
         //indicator
         drawIndicator(canvas);
-        //Pic
-        drawPic(canvas);
+        if (isShowIndicatorImg) {
+            //Pic
+            drawPic(canvas);
+        }
     }
 
     private Bitmap handlerBitmap;
@@ -310,6 +311,17 @@ public class ProgressBarView extends AutoView {
         isNeedRequestLayout = true;
         return this;
     }
+
+    public ProgressBarView setShowIndicatorImg(boolean showIndicatorImg) {
+        isShowIndicatorImg = showIndicatorImg;
+        return this;
+    }
+
+    public ProgressBarView removeIndicatorImg() {
+        bitmap = null;
+        return this;
+    }
+
 
     public int getProgress() {
         return progress;
