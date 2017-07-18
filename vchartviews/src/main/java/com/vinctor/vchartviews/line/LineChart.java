@@ -44,7 +44,7 @@ public class LineChart extends AutoView {
     private boolean isShowAllTag = false;//是否显示全部tag数字
     private float coordinateRectLineWidth = 0f;//矩形刻度线宽
     private float specialLineWidth = 0f;//特殊线 线宽
-    private boolean isShowTitleRect = false;//是否显示title外的
+    private boolean isShowTitleRect = false;//是否显示title外的矩形
 
 
     private int[] animatorMinAndMax = new int[]{0, 100};
@@ -109,6 +109,10 @@ public class LineChart extends AutoView {
     private float factRectRight;
     //平滑曲线
     BesselCalculator besselCalculator = new BesselCalculator();
+
+    public boolean isShowTagRectBack() {
+        return isShowTagRectBack;
+    }
 
     /**
      * 是否显示底部标题的矩形,默认为false
@@ -541,7 +545,11 @@ public class LineChart extends AutoView {
 
         float leftWidth = getLeftWidth();
         availableLeft = leftWidth;
-        availableTop = tagMargin + getCircleRadius(innerCircleRadius) + coordinateTextSize + tagpadding + 10;//10为上方空隙,可为0,getCircleRadius为drawTag中三角形高度
+        if (isShowTagRectBack) {
+            availableTop = tagMargin + getCircleRadius(innerCircleRadius) + coordinateTextSize + tagpadding + 10;//10为上方空隙,可为0,getCircleRadius为drawTag中三角形高度
+        } else {
+            availableTop = Math.max(tagMargin + tagTextSize, coordinateTextSize / 2) + 10;
+        }
         float rightPadding = Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2,
                 Math.max(circlePaint.measureText(max + ".0") / 2 + tagpadding, circlePaint.measureText(min + ".0")) / 2 + tagpadding);
         availableRight = width - rightPadding;

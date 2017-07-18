@@ -21,6 +21,11 @@
             app:contentSize="24px"
             app:tagViewSize="20px" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ff0000" />
+
 
         <com.vinctor.vchartviews.line.LineChart
             android:id="@+id/line"
@@ -86,6 +91,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="多条数据" />
+
+            <Button
+                android:id="@+id/showtagback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="数字背景y/n" />
 
         </com.vinctor.vchartviews.diagram.FlowLayout>
 

@@ -93,7 +93,7 @@ public class LineActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.can, R.id.cannot, R.id.showtag, R.id.startAni, R.id.single, R.id.multi})
+    @OnClick({R.id.showtagback, R.id.can, R.id.cannot, R.id.showtag, R.id.startAni, R.id.single, R.id.multi})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.can:
@@ -134,6 +134,11 @@ public class LineActivity extends BaseActivity {
                         .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff61B6E7))//需与title长度一致
                         .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
                         .setShowAnimation(true)
+                        .commit();
+                break;
+
+            case R.id.showtagback:
+                line.setShowTagRectBack(!line.isShowTagRectBack())
                         .commit();
                 break;
         }

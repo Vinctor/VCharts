@@ -44,6 +44,7 @@ public class RadarChart extends AutoView {
     private float maxTitleWidth;
     private int lineColor = 0xff929292;
     private int titleColor = Color.GRAY;
+    private int degreeColor = 0xff929292;
     private boolean isShowShadow = true;
 
 
@@ -58,6 +59,12 @@ public class RadarChart extends AutoView {
 
     private float titleHorMargin;
     private int titleVerMargin;
+
+
+    public RadarChart setDegreeColor(int degreeColor) {
+        this.degreeColor = degreeColor;
+        return this;
+    }
 
     public RadarChart setShowShadow(boolean showShadow) {
         isShowShadow = showShadow;
@@ -208,8 +215,9 @@ public class RadarChart extends AutoView {
         mainPaint.setColor(lineColor);
         mainPaint.setStrokeWidth(radarStrokeWidth);
 
-        tagPaint.setColor(lineColor);
+        tagPaint.setColor(degreeColor);
         tagPaint.setStrokeWidth(3);
+
         titlePaint.setColor(titleColor);
         titlePaint.setTextSize(titleTextSize);
     }
