@@ -55,6 +55,15 @@ public class DountView extends AutoView {
     private onShowTagCallBack onShowTagCallBack;
 
 
+    //无数据状态
+    Paint emptyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    boolean isEmptyStyle = false;
+    int emptyDountColor = 0xffe0e0e0;
+    String emptyText = "无";
+    int emptyTextColor = 0xff666666;
+    float emptyTextSize = 34;
+    float emptyRadius = 0f;
+
     public DountView(Context context) {
         super(context);
         init(context, null);
@@ -105,30 +114,43 @@ public class DountView extends AutoView {
     private void compute() {
         //check
         check();
-        if (width == 0 || height == 0 || noneData) {
+        if (width == 0 || height == 0 || (noneData && !isEmptyStyle)) {
             return;
         }
-        centerAngles = new float[datas.size()];
-        //avaiable
-        float maxTagWidth = getMaxTagWidthWithMargin();
         centerX = width / 2;
         centerY = height / 2;
-        float left = maxTagWidth;
-        float right = width - maxTagWidth;
-        float top = 0;
-        float bottom = height;
-        radius = Math.min(right - left, bottom - top) / 2;
-        drawDountLeft = centerX - radius;
-        drawDountRight = centerX + radius;
-        drawDountTop = centerY - radius;
-        drawDountBottom = centerY + radius;
+        if (isEmptyStyle) {
+            if (emptyRadius == 0) {
+                radius = Math.min(height, width) / 2 - 10;
+            } else {
+                radius = Math.min(emptyRadius, Math.min(height, width) / 2 - 10);
+            }
+            drawDountLeft = centerX - radius;
+            drawDountRight = centerX + radius;
+            drawDountTop = centerY - radius;
+            drawDountBottom = centerY + radius;
+
+        } else {
+            centerAngles = new float[datas.size()];
+            //avaiable
+            float maxTagWidth = getMaxTagWidthWithMargin();
+            float left = maxTagWidth;
+            float right = width - maxTagWidth;
+            float top = 0;
+            float bottom = height;
+            radius = Math.min(radius, Math.min(right - left, bottom - top) / 2);
+            drawDountLeft = centerX - radius;
+            drawDountRight = centerX + radius;
+            drawDountTop = centerY - radius;
+            drawDountBottom = centerY + radius;
 
 
-        float spaceTotalAngle = spaceAngle * getSpaceCount();
-        float dataAvaiableAngle = 360 - spaceTotalAngle;
-        float peerNumAngle = dataAvaiableAngle / getDataNumsTotal();
-        for (DountData data : datas) {
-            data.setAngle(peerNumAngle * data.getNum());
+            float spaceTotalAngle = spaceAngle * getSpaceCount();
+            float dataAvaiableAngle = 360 - spaceTotalAngle;
+            float peerNumAngle = dataAvaiableAngle / getDataNumsTotal();
+            for (DountData data : datas) {
+                data.setAngle(peerNumAngle * data.getNum());
+            }
         }
     }
 
@@ -139,17 +161,39 @@ public class DountView extends AutoView {
         tagPaint.setColor(tagLineColor);
         tagPaint.setStrokeWidth(tagLineWidth);
         tagPaint.setTextSize(textSize);
+
+        emptyPaint.setTextSize(emptyTextSize);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (width == 0 || height == 0 || noneData) {
+        if (width == 0 || height == 0 || (noneData && !isEmptyStyle)) {
             return;
         }
-        drawDount(canvas);
-        if (onShowTagCallBack != null) {
-            drawTag(canvas);
+        if (isEmptyStyle) {
+            drawEmptyStyle(canvas);
+        } else {
+            drawDount(canvas);
+            if (onShowTagCallBack != null) {
+                drawTag(canvas);
+            }
         }
+    }
+
+    //空数据
+    private void drawEmptyStyle(Canvas canvas) {
+        emptyPaint.setColor(emptyDountColor);
+        emptyPaint.setAlpha(0xff);
+        emptyPaint.setStyle(Paint.Style.STROKE);
+        emptyPaint.setStrokeWidth(dountWidth);
+        canvas.drawCircle(centerX, centerY, radius - dountWidth / 2, emptyPaint);
+
+        emptyPaint.setStyle(Paint.Style.FILL);
+        emptyPaint.setColor(emptyTextColor);
+        emptyPaint.setAlpha(0xff);
+        float textX = centerX - emptyPaint.measureText(emptyText) / 2;
+        float textY = centerY + emptyTextSize / 2;
+        canvas.drawText(emptyText, textX, textY, emptyPaint);
     }
 
     private void drawDount(Canvas canvas) {
@@ -544,6 +588,10 @@ public class DountView extends AutoView {
     }
 
     private void check() {
+        if (isEmptyStyle) {
+            datas.clear();
+            return;
+        }
         Iterator<DountData> it = datas.iterator();
         while (it.hasNext()) {
             DountData data = it.next();
@@ -639,6 +687,45 @@ public class DountView extends AutoView {
 
     public DountView setTagLineWidth(float tagLineWidth) {
         this.tagLineWidth = getAutoHeightSize(tagLineWidth);
+        return this;
+    }
+
+    public DountView setEmptyDountColor(int emptyDountColor) {
+        this.emptyDountColor = emptyDountColor;
+        return this;
+    }
+
+    public DountView setEmptyText(String emptyText) {
+        this.emptyText = emptyText;
+        return this;
+    }
+
+    public DountView setEmptyTextColor(int emptyTextColor) {
+        this.emptyTextColor = emptyTextColor;
+        return this;
+    }
+
+    public DountView setEmptyTextSize(float emptyTextSize) {
+        this.emptyTextSize = getAutoHeightSize(emptyTextSize);
+        return this;
+    }
+
+    public boolean isEmptyStyle() {
+        return isEmptyStyle;
+    }
+
+    public DountView setEmptyStyle(boolean emptyStyle) {
+        isEmptyStyle = emptyStyle;
+        return this;
+    }
+
+    public DountView setRadius(float radius) {
+        this.radius = radius;
+        return this;
+    }
+
+    public DountView setEmptyRadius(float emptyRadius) {
+        this.emptyRadius = getAutoWidthSize(emptyRadius);
         return this;
     }
 }

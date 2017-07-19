@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -16,6 +17,9 @@ import android.util.AttributeSet;
 
 import com.vinctor.vchartviews.AutoView;
 import com.vinctor.vchartviews.R;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Created by Vinctor on 2017/6/28.
@@ -40,6 +44,7 @@ public class ProgressBarView extends AutoView {
 
 
     //set
+    private boolean isSHowIndicator = true;
     private boolean isShowIndicatorImg = true;
     private int max = 100;
     private int min = 0;
@@ -50,6 +55,13 @@ public class ProgressBarView extends AutoView {
     private float indicatorCircleRadius = 0;
     private int indicatorAngle = 80;
     private Bitmap bitmap = null;
+
+    //showType
+    private
+    @ShowType
+    int showType = SHOW_IN_PROGRESS;
+    public final static int SHOW_IN_PROGRESS = 1;
+    public final static int SHOW_IN_UN_PROGRESS = 2;
 
 
     public ProgressBarView(Context context) {
@@ -182,11 +194,13 @@ public class ProgressBarView extends AutoView {
 
         //progress
         drawProgress(canvas);
-        //indicator
-        drawIndicator(canvas);
-        if (isShowIndicatorImg) {
-            //Pic
-            drawPic(canvas);
+        if (isSHowIndicator) {
+            //indicator
+            drawIndicator(canvas);
+            if (isShowIndicatorImg) {
+                //Pic
+                drawPic(canvas);
+            }
         }
     }
 
@@ -213,12 +227,20 @@ public class ProgressBarView extends AutoView {
 
     private void drawIndicator(Canvas canvas) {
         canvas.save();
-        canvas.translate(availableLeft + progressWidth / 2 - indicatorCircleRadius, height - progressBarHeight / 2 - indicatorHeight);
+        int indicatorColor = progressColor;
+        if (showType == SHOW_IN_PROGRESS) {
+            indicatorColor = progressColor;
+            canvas.translate(availableLeft + progressWidth / 2 - indicatorCircleRadius, height - progressBarHeight / 2 - indicatorHeight);
+        } else {
+            indicatorColor = progressBackColor;
+            canvas.translate(availableLeft + progressWidth + (availableWidth - progressWidth) / 2 - indicatorCircleRadius, height - progressBarHeight / 2 - indicatorHeight);
+        }
+
         //outer
         mainPaint.setColor(0xffffffff);
         canvas.drawPath(indicatorOutPath, mainPaint);
         //inner
-        mainPaint.setColor(progressColor);
+        mainPaint.setColor(indicatorColor);
         mainPaint.setAlpha(0xff);
         canvas.drawPath(indicatorInnerPath, mainPaint);
 
@@ -322,6 +344,24 @@ public class ProgressBarView extends AutoView {
         return this;
     }
 
+    public ProgressBarView setSHowIndicator(boolean SHowIndicator) {
+        isSHowIndicator = SHowIndicator;
+        return this;
+    }
+
+    public ProgressBarView setShowType(@ShowType int showType) {
+        this.showType = showType;
+        return this;
+    }
+
+    public int getShowType() {
+        return showType;
+    }
+
+    @IntDef({SHOW_IN_PROGRESS, SHOW_IN_UN_PROGRESS})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ShowType {
+    }
 
     public int getProgress() {
         return progress;

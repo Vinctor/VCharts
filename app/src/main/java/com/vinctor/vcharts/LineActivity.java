@@ -14,6 +14,7 @@ import com.vinctor.vchartviews.diagram.DiagramFlowLayout;
 import com.vinctor.vchartviews.diagram.DiagramView;
 import com.vinctor.vchartviews.line.LineChart;
 import com.vinctor.vchartviews.line.LineData;
+import com.vinctor.vchartviews.line.OnShowTagCallBack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,23 @@ public class LineActivity extends BaseActivity {
                 .setCoordinateRectLineWidth(10)//---设置刻度矩形的线宽
                 .setSpecialLineWidth(10)//--设置setSpecialLineNum(float)中特殊线的线宽
                 .setShowTitleRect(true)//--是否显示底部标题的矩形,默认为false
+                .setOnShowTagCallBack(new OnShowTagCallBack() {
+                    @Override
+                    public String onShow(float num) {
+                        if (num < 30) {
+                            return "不及格";
+                        }
+                        return num + "分";
+                    }
+
+                    @Override
+                    public String onShow(int num) {
+                        if (num < 30) {
+                            return "不及格";
+                        }
+                        return num + "";
+                    }
+                })
 
                 .setShowAnimation(false)//设置绘制时是否显示动画
                 .setDensity(5)//设置刻度密度
@@ -57,8 +75,8 @@ public class LineActivity extends BaseActivity {
                 .setCoordinateTextSize(30)//设置刻度文字的大小
                 .setTagTextSize(40)//设置数字标签的字体大小(px)
                 .setTitles(new String[]{"语文111", "数学", "英语", "物理", "化学", "ss", "ss"})//底部标题,需与折线数据长度一致
-                .addData(new LineData(new float[]{20.5f, 50, 0, 70, 90, 70, -100}, 0xff2cb072, 0xff186d45))//需与title长度一致
-                .addData(new LineData(new float[]{30, 80, 50, 80, 70.8f, 60, 100}, 0xffF8AC58))
+                .addData(new LineData(new float[]{20.5f, 50, 0, 70.9f, 90, 70, -100}, 0xff2cb072, 0xff186d45))//需与title长度一致
+                .addData(new LineData(new float[]{30, 80, 50, 80.5f, 70.8f, 60, 100}, 0xffF8AC58))
                 .setOnTitleClickListener(new LineChart.OnTitleClickListener() {
                     @Override
                     public void onClick(LineChart linechart, String title, int index) {

@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.vinctor.vcharts.DountActivity">
 
     <com.vinctor.vchartviews.dount.DountView
         android:id="@+id/dount"
         android:layout_width="match_parent"
+        android:layout_height="400dp"
         app:dountWidth="80px"
         app:spaceAngle="5"
         app:tagLineColor="#4E9AC1"
         app:tagLineWidth="3px"
         app:tagTextColor="#E47C6D"
-        app:tagTextSize="30px"
-        android:layout_height="400dp" />
-</android.support.constraint.ConstraintLayout>
+        app:tagTextSize="30px" />
+
+    <Button
+        android:id="@+id/toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="切换空状态" />
+</LinearLayout>

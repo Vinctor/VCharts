@@ -109,6 +109,13 @@ public class LineChart extends AutoView {
     private float factRectRight;
     //平滑曲线
     BesselCalculator besselCalculator = new BesselCalculator();
+    //tag回调
+    OnShowTagCallBack onShowTagCallBack;
+
+    public LineChart setOnShowTagCallBack(OnShowTagCallBack onShowTagCallBack) {
+        this.onShowTagCallBack = onShowTagCallBack;
+        return this;
+    }
 
     public boolean isShowTagRectBack() {
         return isShowTagRectBack;
@@ -413,6 +420,7 @@ public class LineChart extends AutoView {
     }
 
     public void commit() {
+        setTagCallBack();
         checkMinAndMax();
         checkOpen();
         setPaint();
@@ -427,6 +435,23 @@ public class LineChart extends AutoView {
             startAnimation();
         } else {
             showDataLine();
+        }
+    }
+
+    private void setTagCallBack() {
+        if (onShowTagCallBack != null) {
+            for (LineData data : list) {
+                float nums[] = data.getNums();
+                int length = nums.length;
+                String[] tags = new String[nums.length];
+                for (int i = 0; i < length; i++) {
+                    if (nums[i] == (int) nums[i]) {
+                        tags[i] = onShowTagCallBack.onShow((int) nums[i]);
+                    } else
+                        tags[i] = onShowTagCallBack.onShow(nums[i]);
+                }
+                data.setTagString(tags);
+            }
         }
     }
 
@@ -548,7 +573,7 @@ public class LineChart extends AutoView {
         if (isShowTagRectBack) {
             availableTop = tagMargin + getCircleRadius(innerCircleRadius) + coordinateTextSize + tagpadding + 10;//10为上方空隙,可为0,getCircleRadius为drawTag中三角形高度
         } else {
-            availableTop = Math.max(tagMargin + tagTextSize, coordinateTextSize / 2) + 10;
+            availableTop = Math.max(tagMargin + tagTextSize, coordinateTextSize / 2) + 5;
         }
         float rightPadding = Math.max(titlePaint.measureText(titles[titles.length - 1]) / 2,
                 Math.max(circlePaint.measureText(max + ".0") / 2 + tagpadding, circlePaint.measureText(min + ".0")) / 2 + tagpadding);
@@ -620,6 +645,7 @@ public class LineChart extends AutoView {
                 final int lineColor = data.getLineColor();
                 int tagBorderColor = data.getTagBorderColor();
                 float nums[] = data.getNums();
+                String[] tagString = data.getTagString();
                 int numsCount = nums.length;
                 if (numsCount != titles.length)
                     throw new IllegalArgumentException("the data num's lengh must be " + titles.length + "!");
@@ -632,7 +658,7 @@ public class LineChart extends AutoView {
                 float currentY = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
                 points.add(new Point(currentX, currentY));
                 //外圆
-                circlePoints.add(new CirclePoint(nums[0], currentX, currentY));
+                circlePoints.add(new CirclePoint(tagString[0], currentX, currentY));
                 dataLines.add(new LineAndCircle(lineColor, tagBorderColor, null, circlePoints));
             }
 
@@ -646,6 +672,7 @@ public class LineChart extends AutoView {
             final int lineColor = data.getLineColor();
             int tagBorderColor = data.getTagBorderColor();
             float nums[] = data.getNums();
+            String[] tagString = data.getTagString();
             int numsCount = nums.length;
             if (numsCount != titles.length)
                 throw new IllegalArgumentException("the data num's lengh must be " + titles.length + "!");
@@ -660,7 +687,7 @@ public class LineChart extends AutoView {
                 float currentY = availableBottom - (trueNum - min) * (availableBottom - availableTop) / (max - min);
                 points.add(new Point(currentX, currentY));
                 //外圆
-                circlePoints.add(new CirclePoint(nums[j], currentX, currentY));
+                circlePoints.add(new CirclePoint(tagString[j], currentX, currentY));
             }
             //贝塞尔曲线
             List<Point> besselPoints = besselCalculator.computeBesselPoints(points);
@@ -711,17 +738,16 @@ public class LineChart extends AutoView {
         for (CirclePoint point : tagCircles) {
             float currentX = point.getX();
             float currentY = point.getY();
-            float num = point.getNum();
-            String numString = num + "";
-            if (num == (int) num) {
-                numString = (int) num + "";
+            String tagString = point.getNumTagString();
+            if (TextUtils.isEmpty(tagString)) {
+                continue;
             }
-            float numMeasureWidth = circlePaint.measureText(numString);
+            float numMeasureWidth = circlePaint.measureText(tagString);
             //num
             circlePaint.setStyle(Paint.Style.FILL);
             circlePaint.setColor(point.color);
             circlePaint.setAlpha(255);
-            canvas.drawText(numString, currentX - numMeasureWidth / 2, currentY - tagMargin, circlePaint);
+            canvas.drawText(tagString, currentX - numMeasureWidth / 2, currentY - tagMargin, circlePaint);
         }
     }
 
@@ -842,13 +868,13 @@ public class LineChart extends AutoView {
         for (CirclePoint point : tagCircles) {
             float currentX = point.getX();
             float currentY = point.getY();
-            String num = point.getNum() + "";
-            if (num.substring(num.length() - 1, num.length()).equals("0")) {
-                num = (int) point.getNum() + "";
+            String tagString = point.getNumTagString();
+            if (TextUtils.isEmpty(tagString)) {
+                continue;
             }
-            float numTrueWidth = circlePaint.measureText(num);
-            String measureContentString = num;
-            if (num.length() < 3) {
+            float numTrueWidth = circlePaint.measureText(tagString);
+            String measureContentString = tagString;
+            if (tagString.length() < 3) {
                 measureContentString = "000";
             }
             float numMeasureWidth = circlePaint.measureText(measureContentString);
@@ -889,7 +915,7 @@ public class LineChart extends AutoView {
             circlePaint.setStyle(Paint.Style.FILL);
             circlePaint.setAlpha(255);
             circlePaint.setColor(0xffffffff);
-            canvas.drawText(num, currentX - numTrueWidth / 2, tagRectBottom - tagpadding / 2 - (int) (circlePaint.descent() - circlePaint.ascent() - circlePaint.getTextSize()), circlePaint);
+            canvas.drawText(tagString, currentX - numTrueWidth / 2, tagRectBottom - tagpadding / 2 - (int) (circlePaint.descent() - circlePaint.ascent() - circlePaint.getTextSize()), circlePaint);
         }
     }
 
@@ -1112,22 +1138,22 @@ public class LineChart extends AutoView {
     }
 
     class CirclePoint {
-        float num;
+        String numTagString;
         float x;
         float y;
         int color;
         int tagBorderColor;
 
         public CirclePoint(int color, int tagBorderColor, CirclePoint point) {
-            this.num = point.num;
+            this.numTagString = point.numTagString;
             this.x = point.x;
             this.y = point.y;
             this.color = color;
             this.tagBorderColor = tagBorderColor;
         }
 
-        public CirclePoint(float nums, float x, float y) {
-            this.num = nums;
+        public CirclePoint(String numTagString, float x, float y) {
+            this.numTagString = numTagString;
             this.x = x;
             this.y = y;
         }
@@ -1140,8 +1166,8 @@ public class LineChart extends AutoView {
             return y;
         }
 
-        public float getNum() {
-            return num;
+        public String getNumTagString() {
+            return numTagString;
         }
 
         public Region getCircleRegion() {

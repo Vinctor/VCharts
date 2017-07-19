@@ -3,12 +3,22 @@ package com.vinctor.vcharts;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import com.vinctor.vchartviews.dount.DountData;
 import com.vinctor.vchartviews.dount.DountView;
 
-public class DountActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class DountActivity extends BaseActivity {
+
+    @BindView(R.id.dount)
+    DountView dount;
+    @BindView(R.id.toggle)
+    Button toggle;
 
     public static void startActivity(Context context) {
         Intent starter = new Intent(context, DountActivity.class);
@@ -19,12 +29,13 @@ public class DountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dount);
+        ButterKnife.bind(this);
 
+        setData().commit();
+    }
 
-        DountView dountView = (DountView) findViewById(R.id.dount);
-
-
-        dountView.clearList()///清楚数据
+    private DountView setData() {
+        return dount.clearList()///清楚数据
                 .addData(new DountData(5, "5个人"))
                 .addData(new DountData(5))
                 .addData(new DountData(5))
@@ -89,7 +100,23 @@ public class DountActivity extends AppCompatActivity {
                         }
                         return ss;
                     }
-                })
-                .commit();//提交进行绘制
+                });
+    }
+
+    @OnClick({R.id.toggle})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+//            case R.id.dount:
+//                break;
+            case R.id.toggle:
+                setData().setEmptyStyle(!dount.isEmptyStyle())
+                        .setEmptyTextSize(34)
+                        .setEmptyText("本月没有学习知识点")
+                        .setEmptyRadius(400)
+                        .setEmptyDountColor(0xe0e0e0)
+                        .setEmptyTextColor(0x666666)
+                        .commit();
+                break;
+        }
     }
 }

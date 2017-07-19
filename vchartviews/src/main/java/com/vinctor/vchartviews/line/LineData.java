@@ -13,12 +13,26 @@ public class LineData {
         this.nums = nums;
         this.lineColor = lineColor;
         this.tagBorderColor = lineColor;
+        setTagString();
+    }
+
+    private void setTagString() {
+        tagString = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == (int) nums[i]) {
+                int num = (int) nums[i];
+                tagString[i] = num + "";
+            } else {
+                tagString[i] = nums[i] + "";
+            }
+        }
     }
 
     public LineData(float[] nums, int lineColor, int tagBorderColor) {
         this.nums = nums;
         this.lineColor = lineColor;
         this.tagBorderColor = tagBorderColor;
+        setTagString();
     }
 
     public float[] getNums() {
@@ -39,5 +53,16 @@ public class LineData {
 
     public int getTagBorderColor() {
         return tagBorderColor;
+    }
+
+    private String[] tagString;
+
+    public String[] getTagString() {
+        return tagString;
+    }
+
+    public LineData setTagString(String[] tagString) {
+        this.tagString = tagString;
+        return this;
     }
 }
