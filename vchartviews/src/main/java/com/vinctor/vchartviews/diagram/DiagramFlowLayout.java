@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vinctor.vchartviews.AutoView;
 import com.vinctor.vchartviews.R;
-import com.zhy.autolayout.utils.AutoUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class DiagramFlowLayout extends FlowLayout {
     }
 
     public DiagramFlowLayout setDiagramSize(int diagramSize) {
-        this.diagramSize = AutoUtils.getPercentWidthSize(diagramSize);
+        this.diagramSize = AutoView.getAutoWidthSize(diagramSize);
         return this;
     }
 
@@ -50,12 +50,12 @@ public class DiagramFlowLayout extends FlowLayout {
     }
 
     public DiagramFlowLayout setTextSize(int textSize) {
-        this.textSize = AutoUtils.getPercentWidthSize(textSize);
+        this.textSize = AutoView.getAutoWidthSize(textSize);
         return this;
     }
 
     public DiagramFlowLayout setTextMargin(int textMargin) {
-        this.textMargin = AutoUtils.getPercentWidthSize(textMargin);
+        this.textMargin = AutoView.getAutoWidthSize(textMargin);
         return this;
     }
 
@@ -127,8 +127,8 @@ public class DiagramFlowLayout extends FlowLayout {
             lp.setMargins(
                     0,
                     0,
-                    AutoUtils.getPercentWidthSize((int) (spaceHorizontal * 1.5)),
-                    AutoUtils.getPercentWidthSize(spaceVertical));
+                    AutoView.getAutoWidthSize((int) (spaceHorizontal * 1.5)),
+                    AutoView.getAutoWidthSize(spaceVertical));
             diagramView.setLayoutParams(lp);
             addView(diagramView);
         }

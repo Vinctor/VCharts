@@ -54,7 +54,7 @@ public class RingActivity extends BaseActivity {
                 chart.setShowTag(!chart.isShowTag()).commit();
                 break;
             case R.id.auto:
-                chart.setAuto(!chart.isAuto());
+                //chart.setAuto(!chart.isAuto());
                 set();
                 break;
         }

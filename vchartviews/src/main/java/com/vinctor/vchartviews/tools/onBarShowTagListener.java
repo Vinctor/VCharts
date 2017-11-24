@@ -6,8 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import com.vinctor.vchartviews.AutoView;
 import com.vinctor.vchartviews.bar.BarCharSingle;
-import com.zhy.autolayout.utils.AutoUtils;
 
 /**
  * Created by Vinctor on 2017/5/24.
@@ -32,14 +32,14 @@ public abstract class onBarShowTagListener implements BarCharSingle.OnShowOtherV
     int[] offset = new int[]{0, 0};
 
     public onBarShowTagListener(String text, int textSize, int textColor, int innerColor, int borderColor, float borderWidth, int[] offset, int raduis) {
-        this.textSize = AutoUtils.getPercentHeightSize(textSize);
+        this.textSize = AutoView.getAutoHeightSize(textSize);
         this.textColor = textColor;
         this.innerColor = innerColor;
         this.borderColor = borderColor;
-        this.borderWidth = AutoUtils.getPercentHeightSize((int) borderWidth);
+        this.borderWidth = AutoView.getAutoHeightSize((int) borderWidth);
         this.text = text;
         this.offset = offset;
-        this.radius = AutoUtils.getPercentWidthSize(raduis);
+        this.radius = AutoView.getAutoWidthSize(raduis);
         if (offset.length < 2) {
             throw new IllegalArgumentException();
         }
@@ -108,7 +108,7 @@ public abstract class onBarShowTagListener implements BarCharSingle.OnShowOtherV
 
     @Override
     public float[] onShowOffsetToBar(Bitmap bitmap) {
-        return new float[]{0 - bitmap.getWidth() + AutoUtils.getPercentWidthSize(offset[0]), 0 - bitmap.getHeight() + AutoUtils.getPercentHeightSize(offset[1])};
+        return new float[]{0 - bitmap.getWidth() + AutoView.getAutoWidthSize(offset[0]), 0 - bitmap.getHeight() + AutoView.getAutoHeightSize(offset[1])};
     }
 
 

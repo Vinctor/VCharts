@@ -10,8 +10,8 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import com.vinctor.vchartviews.AutoView;
 import com.vinctor.vchartviews.bar.BarCharSingle;
-import com.zhy.autolayout.utils.AutoUtils;
 
 /**
  * Created by Vinctor on 2017/5/24.
@@ -41,7 +41,7 @@ public abstract class onBarShowTag2Listener implements BarCharSingle.OnShowOther
     }
 
     public onBarShowTag2Listener(BarCharSingle bar, int indicatorCircleRadius, int indicatorAngle, int color, float[] offset) {
-        this.indicatorCircleRadius = AutoUtils.getPercentWidthSize(indicatorCircleRadius);
+        this.indicatorCircleRadius = AutoView.getAutoWidthSize(indicatorCircleRadius);
         this.indicatorAngle = indicatorAngle;
         this.color = color;
         this.bar = bar;
@@ -56,12 +56,12 @@ public abstract class onBarShowTag2Listener implements BarCharSingle.OnShowOther
     }
 
     public onBarShowTag2Listener(BarCharSingle bar, int indicatorCircleRadius, int indicatorAngle, int color, float[] offset, float borderWidth) {
-        this.indicatorCircleRadius = AutoUtils.getPercentWidthSize(indicatorCircleRadius);
+        this.indicatorCircleRadius =AutoView.getAutoWidthSize(indicatorCircleRadius);
         this.indicatorAngle = indicatorAngle;
         this.color = color;
         this.bar = bar;
         this.offset = offset;
-        this.borderWidth = AutoUtils.getPercentWidthSize((int) borderWidth);
+        this.borderWidth = AutoView.getAutoWidthSize((int) borderWidth);
         if (this.borderWidth == 0) {
             this.borderWidth = this.indicatorCircleRadius / 3;
         }
@@ -135,7 +135,7 @@ public abstract class onBarShowTag2Listener implements BarCharSingle.OnShowOther
     @Override
     public float[] onShowOffsetToBar(Bitmap bitmap) {
         float offsetX = bar.getPeerBarWidth() / 2 - bitmap.getWidth() / 2;
-        return new float[]{0 + offsetX - AutoUtils.getPercentWidthSize((int) offset[0]),
-                0 - bitmap.getHeight() - AutoUtils.getPercentWidthSize((int) offset[1])};
+        return new float[]{0 + offsetX -AutoView.getAutoWidthSize((int) offset[0]),
+                0 - bitmap.getHeight() - AutoView.getAutoWidthSize((int) offset[1])};
     }
 }

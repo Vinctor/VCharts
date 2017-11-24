@@ -59,7 +59,7 @@ public class RadarActivity extends BaseActivity {
 
     @OnClick(R.id.auto)
     public void onViewClicked() {
-        radarView.setAuto(!radarView.isAuto());
+        //radarView.setAuto(!radarView.isAuto());
         setSetting();
     }
 }

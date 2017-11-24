@@ -4,25 +4,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.zhy.autolayout.config.AutoLayoutConifg;
 
 /**
  * Created by Vinctor on 2017/4/12.
  */
 
 public class AutoView extends View {
-
-    protected int screenWidth = AutoLayoutConifg.getInstance().getScreenWidth();
-    protected int designWidth = AutoLayoutConifg.getInstance().getDesignWidth();
-
-    protected int screenHeight = AutoLayoutConifg.getInstance().getScreenHeight();
-    protected int designHeight = AutoLayoutConifg.getInstance().getDesignHeight();
-
-    private boolean isAuto = true;
 
     public AutoView(Context context) {
         super(context);
@@ -41,23 +33,13 @@ public class AutoView extends View {
     }
 
 
-    public void setAuto(boolean auto) {
-        isAuto = auto;
-    }
-
-    public boolean isAuto() {
-        return isAuto;
-    }
-
     /**
      * 获取aotu之后的数值,默认以width为基准
      *
      * @param val
      * @return
      */
-    protected float getAutoWidthSize(float val) {
-        if (isAuto)
-            return val / designWidth * screenWidth;
+    public static float getAutoWidthSize(float val) {
         return val;
 
     }
@@ -68,10 +50,7 @@ public class AutoView extends View {
      * @param val
      * @return
      */
-    protected float getAutoHeightSize(float val) {
-        if (isAuto) {
-            return val / designHeight * screenHeight;
-        }
+    public static float getAutoHeightSize(float val) {
         return val;
     }
 
@@ -81,9 +60,7 @@ public class AutoView extends View {
      * @param val
      * @return
      */
-    protected int getAutoWidthSize(int val) {
-        if (isAuto)
-            return (int) (val * 1.0f / designWidth * screenWidth);
+    public static int getAutoWidthSize(int val) {
         return val;
 
     }
@@ -94,19 +71,8 @@ public class AutoView extends View {
      * @param val
      * @return
      */
-    protected int getAutoHeightSize(int val) {
-        if (isAuto) {
-            return (int) (val * 1.0f / designHeight * screenHeight);
-        }
+    public static int getAutoHeightSize(int val) {
         return val;
-    }
-
-    public float getPercentWidth1px() {
-        return 1.0f * screenWidth / designWidth;
-    }
-
-    public float getPercentHeight1px() {
-        return 1.0f * screenHeight / designHeight;
     }
 
 
@@ -166,7 +132,7 @@ public class AutoView extends View {
                 topMargin - errorTextSize - reactOffset,
                 leftMargin + textWidth + reactOffset,
                 topMargin + reactOffset);
-        canvas.drawRoundRect(rectF, errorTextSize/3, errorTextSize/3, shadowErrorPaint);
+        canvas.drawRoundRect(rectF, errorTextSize / 3, errorTextSize / 3, shadowErrorPaint);
 
         canvas.drawText(errorText, leftMargin, topMargin, errorPaint);
     }

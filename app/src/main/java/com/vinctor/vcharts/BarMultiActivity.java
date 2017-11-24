@@ -57,7 +57,7 @@ public class BarMultiActivity extends BaseActivity {
                 multiBar.setShowGraduation(!multiBar.isShowGraduation()).commit();
                 break;
             case R.id.auto:
-                multiBar.setAuto(!multiBar.isAuto());
+                //multiBar.setAuto(!multiBar.isAuto());
                 setStyle();
                 break;
         }

@@ -106,7 +106,7 @@ public class BarSingleActivity extends BaseActivity {
                 singleBar.setShowGraduation(!singleBar.isShowGraduation()).commit();
                 break;
             case R.id.auto:
-                singleBar.setAuto(!singleBar.isAuto());
+                //singleBar.setAuto(!singleBar.isAuto());
                 setStyle();
                 break;
         }

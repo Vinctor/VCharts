@@ -13,8 +13,8 @@ import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.vinctor.vchartviews.AutoView;
 import com.vinctor.vchartviews.R;
-import com.zhy.autolayout.utils.AutoUtils;
 
 
 /**
@@ -50,7 +50,7 @@ public class DiagramView extends LinearLayout implements Checkable {
         if (diagramBorderWidth == -1) {
             return this;
         }
-        this.diagramBorderWidth = AutoUtils.getPercentWidthSize(diagramBorderWidth);
+        this.diagramBorderWidth = AutoView.getAutoWidthSize(diagramBorderWidth);
         return this;
     }
 
@@ -75,7 +75,7 @@ public class DiagramView extends LinearLayout implements Checkable {
     }
 
     public DiagramView setDiagramSize(int diagramSize) {
-        this.diagramSize = AutoUtils.getPercentWidthSize(diagramSize);
+        this.diagramSize = AutoView.getAutoWidthSize(diagramSize);
         return this;
     }
 
@@ -98,12 +98,12 @@ public class DiagramView extends LinearLayout implements Checkable {
     }
 
     public DiagramView setTextSize(int textSize) {
-        this.textSize = AutoUtils.getPercentWidthSize(textSize);
+        this.textSize = AutoView.getAutoWidthSize(textSize);
         return this;
     }
 
     public DiagramView setTextMargin(int textMargin) {
-        this.textMargin = AutoUtils.getPercentWidthSize(textMargin);
+        this.textMargin = AutoView.getAutoWidthSize(textMargin);
         return this;
     }
 
