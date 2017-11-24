@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/VCharts.iml" filepath="$PROJECT_DIR$/VCharts.iml" />
+      <module fileurl="file://G:\Pro\GitHub\VinctorCharts\VCharts.iml" filepath="G:\Pro\GitHub\VinctorCharts\VCharts.iml" />
       <module fileurl="file://$PROJECT_DIR$/VinctorCharts.iml" filepath="$PROJECT_DIR$/VinctorCharts.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/vchartviews/vchartviews.iml" filepath="$PROJECT_DIR$/vchartviews/vchartviews.iml" />
